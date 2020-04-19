@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>Lifelong Learning Rocks!</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, height=device-height">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
+<style>
+body {font-family: "Lato", sans-serif}
+.mySlides {display: none}
+
+#mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
+
+.timeline{
+  counter-reset: step 0;
+  position: relative;
+}
+
+.timeline li{
+  list-style: none;
+  float: left;
+  width: 33.3333%;
+  position: relative;
+  text-align: center;
+  font-family: 'Dosis', sans-serif;
+}
+
+ul:nth-child(1){
+  color: #4caf50;
+}
+
+.timeline li:before{
+  counter-increment: step;
+  content: counter(step);
+  width: 50px;
+  height: 50px;
+  border: 3px solid #4caf50;
+  border-radius: 50%;
+  display: block;
+  text-align: center;
+  line-height: 50px;
+  margin: 0 auto 10px auto;
+  background: #F1F1F1;
+  color: #000;
+  transition: all ease-in-out .3s;
+  cursor: pointer;
+}
+
+.timeline li:after{
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background-color: grey;
+  top: 25px;
+  left: -50%;
+  z-index: -999;
+  transition: all ease-in-out .3s;
+}
+
+.timeline li:first-child:after{
+  content: none;
+}
+.timeline li.active{
+  color: #555555;
+}
+.timeline li.active:before{
+  background: #4caf50;
+  color: #F1F1F1;
+}
+
+.timeline li.active + li:after{
+  background: #4caf50;
+}
+
+</style>
+<body>
+
+<!-- Header -->
+<div class="w3-top">
+  <div class="w3-bar w3-black w3-card w3-center">
+    <h1>Lifelong Learning Rocks!!!</h1>
+  </div>
+</div>
+
+
+<!-- Page content -->
+<div class="w3-content" style="max-width:2000px;margin-top:46px;">
+
+  <!-- Automatic Slideshow Images -->
+  <div class="mySlides w3-display-container w3-center">
+    <img src="/static/Jupiter,_image_taken_by_NASA's_Hubble_Space_Telescope,_June_2019_-_Edited.jpg" style="height:95vh;">
+    <div class="w3-display-middle w3-container w3-text-black w3-padding-32 w3-xlarge">
+      <p>How fast are the winds on Jupiter?</p>
+      <p>What is the pressure inside of Jupiter?</p>
+      <p>How long would it take to get to Jupiter?</p>
+    </div>
+    <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small">
+      <p>By NASA, ESA, and A. Simon (NASA Goddard), edited by PlanetUser -
+        <a href="https://www.nasa.gov/feature/goddard/2019/hubble-new-portrait-of-jupiter">https://www.nasa.gov/feature/goddard/2019/hubble-new-portrait-of-jupiter</a>
+        , Public Domain, <a href="https://commons.wikimedia.org/w/index.php?curid=81259729">https://commons.wikimedia.org/w/index.php?curid=81259729</a></p>
+    </div>
+  </div>
+  <div class="mySlides w3-display-container w3-center">
+    <img src="static/supplyAndDemandPicture.png" style="height:95vh;">
+    <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small">
+    </div>
+  </div>
+  <div class="mySlides w3-display-container w3-center">
+    <img src="/static/deer.jpg" style="height:95vh;">
+    <div class="w3-display-topright w3-container w3-text-black w3-padding-32 w3-xlarge">
+      <p>Why don't the deer fall in the ice?</p>
+      <p>Why does ice float when most solids sink?</p>
+    </div>
+  </div>
+
+  <!-- The About me and Services -->
+  <div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px" id="band">
+    <h2 class="w3-wide">Who am I and what do I offer?</h2>
+    <p class="w3-opacity"><i>I love learning!</i></p>
+    <p class="w3-justify">
+      I was an Applied Physics major at the University of Regina, just finished my last semester.
+      During my time as a student, I have picked up many ways to learn, and I would like to share
+      them. Over the next few weeks and months, I intend to create some worksheets explaining physics
+      and math concepts in a hands-on problem-solving way. The first worksheets will be available for
+      free on the website, and the solutions will also be free, but I will only be releasing them via
+      email to those who ask. Eventually, some more specialized and interesting worksheets, ones that
+      answer exciting questions like those posed in the pictures, will be made available at an affordable
+      cost. In the next section, I have created a timeline of what types and services will be released.
+    </p>
+    <p class="w3-justify">
+      In addition to the worksheets, I plan to offer online 'coaching' sessions to help people to learn. These
+      sessions could be in a regular tutoring format, or I could simply help with planning how to tackle
+      learning a subject. How I envision helping is that I will guide you down a learning path with the
+      work being done by yourself. These sessions will cost $25 / hour.
+    </p>
+    <p>
+      I am also open to any suggestions on how I can help you down your learning path.
+    </p>
+    <p>
+      I am available at the following email:kodyrogers21@gmail.com.
+    </p>
+  </div>
+
+  <!-- The Timeline Section
+  The code for this timeline was greatly inspired by the css example on this link: https://codepen.io/allisonching/pen/XeLjGd
+-->
+  <div class="w3-black">
+    <div class="w3-container w3-content w3-padding-64" style="max-width:800px">
+      <ul class="timeline">
+        <li>
+          Offer learning coach services, including tutoring, learning resource hunting,
+          and study planning.
+        </li>
+        <li>
+          Upload free worksheets covering fundamental math, physics, and economics concepts.
+          Solutions will be available upon request.
+        </li>
+        <li>
+          Premium worksheets covering some of the known phenomenons related to well-known
+          objects and things made available for purchase. For example, some worksheets about
+          the planet Jupiter, the economics of the minimum wage, and canons will be created.
+        </li>
+        <li>
+          Eventually, when multiple premium worksheets are available, they will be bundled by
+          topic for purchase. For instance, perhaps there will be a worksheet for each planet
+          in the solar system, and they can all be bundled together in the "Planets of the Solar
+          System" bundle.
+        </li>
+    </ul>
+
+    </div>
+  </div>
+
+
+  <!-- The Contact Section -->
+  <div class="w3-container w3-content w3-padding-64" style="max-width:800px" id="contact">
+    <!-- Begin Mailchimp Signup Form -->
+    <div id="mc_embed_signup">
+    <form action="https://gmail.us4.list-manage.com/subscribe/post?u=caf3d492a81497a7639a70164&amp;id=0709041ae5" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+        <div id="mc_embed_signup_scroll">
+    	<h2>Subscribe To Get Updates</h2>
+    <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
+    <div class="mc-field-group">
+    	<label for="mce-EMAIL">Email Address  <span class="asterisk">*</span>
+    </label>
+    	<input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
+    </div>
+    <div class="mc-field-group">
+    	<label for="mce-FNAME">First Name </label>
+    	<input type="text" value="" name="FNAME" class="" id="mce-FNAME">
+    </div>
+    <div class="mc-field-group">
+    	<label for="mce-LNAME">Last Name </label>
+    	<input type="text" value="" name="LNAME" class="" id="mce-LNAME">
+    </div>
+    <div class="mc-field-group size1of2">
+    	<label for="mce-BIRTHDAY-month">Birthday </label>
+    	<div class="datefield">
+    		<span class="subfield monthfield"><input class="birthday " type="text" pattern="[0-9]*" value="" placeholder="MM" size="2" maxlength="2" name="BIRTHDAY[month]" id="mce-BIRTHDAY-month"></span> /
+    		<span class="subfield dayfield"><input class="birthday " type="text" pattern="[0-9]*" value="" placeholder="DD" size="2" maxlength="2" name="BIRTHDAY[day]" id="mce-BIRTHDAY-day"></span>
+    		<span class="small-meta nowrap">( mm / dd )</span>
+    	</div>
+    </div>	<div id="mce-responses" class="clear">
+    		<div class="response" id="mce-error-response" style="display:none"></div>
+    		<div class="response" id="mce-success-response" style="display:none"></div>
+    	</div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_caf3d492a81497a7639a70164_0709041ae5" tabindex="-1" value=""></div>
+        <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
+        </div>
+    </form>
+    </div>
+    <script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script><script type='text/javascript'>(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';fnames[1]='FNAME';ftypes[1]='text';fnames[2]='LNAME';ftypes[2]='text';fnames[3]='ADDRESS';ftypes[3]='address';fnames[4]='PHONE';ftypes[4]='phone';fnames[5]='BIRTHDAY';ftypes[5]='birthday';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
+    <!--End mc_embed_signup-->
+  </div>
+</div>
+<!-- End Page Content -->
+
+<!-- Footer -->
+<footer class="w3-container w3-padding-64 w3-center w3-opacity w3-light-grey w3-xlarge">
+  <!--
+  Socials are commented out for now
+  <i class="fa fa-facebook-official w3-hover-opacity"></i>
+  <i class="fa fa-instagram w3-hover-opacity"></i>
+  <i class="fa fa-snapchat w3-hover-opacity"></i>
+  <i class="fa fa-pinterest-p w3-hover-opacity"></i>
+  <i class="fa fa-twitter w3-hover-opacity"></i>
+  <i class="fa fa-linkedin w3-hover-opacity"></i>
+-->
+  <p class="w3-medium">Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
+</footer>
+
+<script>
+// Automatic Slideshow - change image every 4 seconds
+var myIndex = 0;
+carousel();
+
+function carousel() {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  myIndex++;
+  if (myIndex > x.length) {myIndex = 1}
+  x[myIndex-1].style.display = "block";
+  setTimeout(carousel, 15000);
+}
+</script>
+
+</body>
+</html>
