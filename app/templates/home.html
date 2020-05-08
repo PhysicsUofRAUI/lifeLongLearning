@@ -1,89 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<title>Lifelong Learning Rocks!</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, height=device-height">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
-<style>
-body {font-family: "Lato", sans-serif}
-.mySlides {display: none}
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
 
-#mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
-
-.timeline{
-  counter-reset: step 0;
-  position: relative;
-}
-
-.timeline li{
-  list-style: none;
-  float: left;
-  width: 33.3333%;
-  position: relative;
-  text-align: center;
-  font-family: 'Dosis', sans-serif;
-}
-
-ul:nth-child(1){
-  color: #4caf50;
-}
-
-.timeline li:before{
-  counter-increment: step;
-  content: counter(step);
-  width: 50px;
-  height: 50px;
-  border: 3px solid #4caf50;
-  border-radius: 50%;
-  display: block;
-  text-align: center;
-  line-height: 50px;
-  margin: 0 auto 10px auto;
-  background: #F1F1F1;
-  color: #000;
-  transition: all ease-in-out .3s;
-  cursor: pointer;
-}
-
-.timeline li:after{
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 1px;
-  background-color: grey;
-  top: 25px;
-  left: -50%;
-  z-index: -999;
-  transition: all ease-in-out .3s;
-}
-
-.timeline li:first-child:after{
-  content: none;
-}
-.timeline li.active{
-  color: #555555;
-}
-.timeline li.active:before{
-  background: #4caf50;
-  color: #F1F1F1;
-}
-
-.timeline li.active + li:after{
-  background: #4caf50;
-}
-
-</style>
-<body>
-
-<!-- Header -->
-<div class="w3-top">
-  <div class="w3-bar w3-black w3-card w3-center">
-    <h1>Lifelong Learning Rocks!!!</h1>
-  </div>
-</div>
+{% block body %}
 
 
 <!-- Page content -->
@@ -118,29 +36,27 @@ ul:nth-child(1){
 
   <!-- The About me and Services -->
   <div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px" id="band">
-    <h2 class="w3-wide">Who am I and what do I offer?</h2>
-    <p class="w3-opacity"><i>I love learning!</i></p>
+    <h2 class="w3-wide">What is this website?</h2>
+    <p class="w3-opacity"><i>We love learning!</i></p>
     <p class="w3-justify">
-      I was an Applied Physics major at the University of Regina, just finished my last semester.
-      During my time as a student, I have picked up many ways to learn, and I would like to share
-      them. Over the next few weeks and months, I intend to create some worksheets explaining physics
-      and math concepts in a hands-on problem-solving way. The first worksheets will be available for
-      free on the website, and the solutions will also be free, but I will only be releasing them via
-      email to those who ask. Eventually, some more specialized and interesting worksheets, ones that
-      answer exciting questions like those posed in the pictures, will be made available at an affordable
-      cost. In the next section, I have created a timeline of what types and services will be released.
+      This website has been designed to allow authors/tutors to display worksheets that they have
+      made for potential learners to consume. The focus of the worksheets will be to quickly bring
+      a person up to speed on a topic of interest. Worksheets will be made such that a broad
+      audience will be able to understand the content. These general worksheets will be made available
+      for free.
     </p>
     <p class="w3-justify">
-      In addition to the worksheets, I plan to offer online 'coaching' sessions to help people to learn. These
-      sessions could be in a regular tutoring format, or I could simply help with planning how to tackle
-      learning a subject. How I envision helping is that I will guide you down a learning path with the
-      work being done by yourself. These sessions will cost $25 / hour.
+      Eventually, worksheets covering particular applications will be made available for free or for
+      purchase. An example would be an analysis of how important is the reaction time of a hockey goalie.
+      Another could be an in-depth discussion about the planet Jupiter (how long it takes to get there,
+      what would one-kilogram weight, etc.). These worksheets are meant to be both informative and fun.
     </p>
-    <p>
-      I am also open to any suggestions on how I can help you down your learning path.
+    <p class="w3-justify">
+      For any suggestions on worksheets to cover feel free to email myself at kodyrogers21@gmail.com, or
+      any of the other authors who have listed an email address.
     </p>
-    <p>
-      I am available at the following email:kodyrogers21@gmail.com.
+    <p class="w3-justify">
+      If you want to become an author and post worksheets on this website email me at kodyrogers21@gmail.com.
     </p>
   </div>
 
@@ -151,23 +67,22 @@ ul:nth-child(1){
     <div class="w3-container w3-content w3-padding-64" style="max-width:800px">
       <ul class="timeline">
         <li>
-          Offer learning coach services, including tutoring, learning resource hunting,
-          and study planning.
+          Create website to hold worksheets (Completed)
         </li>
         <li>
-          Upload free worksheets covering fundamental math, physics, and economics concepts.
-          Solutions will be available upon request.
+          Set-up website to handle paid worksheets (In Progress)
         </li>
         <li>
-          Premium worksheets covering some of the known phenomenons related to well-known
-          objects and things made available for purchase. For example, some worksheets about
-          the planet Jupiter, the economics of the minimum wage, and canons will be created.
+          Allow exclusive videos to be bundled into paid worksheets (In Progress)
         </li>
         <li>
-          Eventually, when multiple premium worksheets are available, they will be bundled by
-          topic for purchase. For instance, perhaps there will be a worksheet for each planet
-          in the solar system, and they can all be bundled together in the "Planets of the Solar
-          System" bundle.
+          Add interactive webpages to website (In Progress)
+        </li>
+        <li>
+          Allow learners and authors to set-up an account (In Progress)
+        </li>
+        <li>
+          Allow the creation of premium paid interactive webpages (In Progress)
         </li>
     </ul>
 
@@ -218,37 +133,4 @@ ul:nth-child(1){
 </div>
 <!-- End Page Content -->
 
-<!-- Footer -->
-<footer class="w3-container w3-padding-64 w3-center w3-opacity w3-light-grey w3-xlarge">
-  <!--
-  Socials are commented out for now
-  <i class="fa fa-facebook-official w3-hover-opacity"></i>
-  <i class="fa fa-instagram w3-hover-opacity"></i>
-  <i class="fa fa-snapchat w3-hover-opacity"></i>
-  <i class="fa fa-pinterest-p w3-hover-opacity"></i>
-  <i class="fa fa-twitter w3-hover-opacity"></i>
-  <i class="fa fa-linkedin w3-hover-opacity"></i>
--->
-  <p class="w3-medium">Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
-</footer>
-
-<script>
-// Automatic Slideshow - change image every 4 seconds
-var myIndex = 0;
-carousel();
-
-function carousel() {
-  var i;
-  var x = document.getElementsByClassName("mySlides");
-  for (i = 0; i < x.length; i++) {
-    x[i].style.display = "none";
-  }
-  myIndex++;
-  if (myIndex > x.length) {myIndex = 1}
-  x[myIndex-1].style.display = "block";
-  setTimeout(carousel, 15000);
-}
-</script>
-
-</body>
-</html>
+{% endblock %}

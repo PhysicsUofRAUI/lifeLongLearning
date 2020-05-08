@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Worksheets{% endblock %}
+
+{% block body %}
+<!-- Page Container -->
+<div class="w3-content w3-margin-top" style="max-width:1400px;">
+
+<h1>Our Authors</h2>
+{% if authors %}
+{% for author in authors %}
+  {% if loop.index is divisibleby 2 %}
+    <div class="authorDark">
+      <p>
+        Name: {{ author.name }}
+      </p>
+      <p>
+        Email: {{ author.email }}
+      </p>
+      <p>
+        About: {{ author.about }}
+      </p>
+      <p>
+        Worksheets by {{ author.name }}:
+        <a href="{{ url_for('worksheets.worksheets_page', author=author.id, worksheet=None, category=None, page=0) }}">
+          {{ author.name }}'s Worksheets!
+        </a>
+      </p>
+    </div>
+  {% else %}
+  <div class="authorLight">
+    <p>
+      Name: {{ author.name }}
+    </p>
+    <p>
+      Email: {{ author.email }}
+    </p>
+    <p>
+      About: {{ author.about }}
+    </p>
+    <p>
+      Worksheets by {{ author.name }}:
+      <a href="{{ url_for('worksheets.worksheets_page', author=author.id, worksheet=None, category=None, page=0) }}">
+        {{ author.name }}'s Worksheets!
+      </a>
+    </p>
+  </div>
+  {% endif %}
+{% endfor %}
+{% endif %}
+
+</div>
+
+
+{% endblock %}

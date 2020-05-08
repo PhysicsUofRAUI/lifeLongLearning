@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>{{ title }} | Lifelong Learning Rocks!</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+<link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
+<style>
+body {font-family: "Lato", sans-serif}
+.mySlides {display: none}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+textarea {
+  width: 80%;
+  height: 500px;
+}
+
+body {font-family: "Lato", sans-serif}
+.mySlides {display: none}
+
+.authorDark {
+  background-color: black;
+  color: white;
+}
+
+.authorLight {
+  background-color: white;
+  color: black;
+}
+
+#mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
+
+.timeline{
+  counter-reset: step 0;
+  position: relative;
+}
+
+.timeline li{
+  list-style: none;
+  float: left;
+  width: 33.3333%;
+  position: relative;
+  text-align: center;
+  font-family: 'Dosis', sans-serif;
+}
+
+ul:nth-child(1){
+  color: #4caf50;
+}
+
+.timeline li:before{
+  counter-increment: step;
+  content: counter(step);
+  width: 50px;
+  height: 50px;
+  border: 3px solid #4caf50;
+  border-radius: 50%;
+  display: block;
+  text-align: center;
+  line-height: 50px;
+  margin: 0 auto 10px auto;
+  background: #F1F1F1;
+  color: #000;
+  transition: all ease-in-out .3s;
+  cursor: pointer;
+}
+
+.timeline li:after{
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background-color: grey;
+  top: 25px;
+  left: -50%;
+  z-index: -999;
+  transition: all ease-in-out .3s;
+}
+
+.timeline li:first-child:after{
+  content: none;
+}
+.timeline li.active{
+  color: #555555;
+}
+.timeline li.active:before{
+  background: #4caf50;
+  color: #F1F1F1;
+}
+
+.timeline li.active + li:after{
+  background: #4caf50;
+}
+</style>
+<body>
+
+<!-- Navbar -->
+<div class="w3-top">
+  <div class="w3-bar w3-black w3-card">
+    <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" href="javascript:void(0)" onclick="smallScreenToggle()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+    <a href="{{ url_for('other.home') }}" class="w3-bar-item w3-button w3-padding-large">HOME</a>
+    <a href="{{ url_for('other.contact') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">Contact</a>
+    <a href="{{ url_for('blogs.blog') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">Blog</a>
+    <a href="{{ url_for('worksheets.worksheets_page') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">Worksheets</a>
+  </div>
+</div>
+
+<!-- Navbar on small screens (remove the onclick attribute if you want the navbar to always show on top of the content when clicking on the links) -->
+<div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
+  <a href="{{ url_for('other.home') }}" class="w3-bar-item w3-button w3-padding-large" onclick="smallScreenToggle()">Home</a>
+  <a href="{{ url_for('other.contact') }}" class="w3-bar-item w3-button w3-padding-large" onclick="smallScreenToggle()">Contact</a>
+  <a href="{{ url_for('blogs.blog') }}" class="w3-bar-item w3-button w3-padding-large" onclick="smallScreenToggle()">Blog</a>
+  <a href="{{ url_for('worksheets.worksheets_page') }}" class="w3-bar-item w3-button w3-padding-large" onclick="smallScreenToggle()">Worksheets</a>
+</div>
+
+<br><br>
+
+<div class="w3-container">
+{% block body %}
+{% endblock %}
+</div>
+
+<!-- Footer -->
+<footer class="w3-container w3-padding-64 w3-center w3-opacity w3-light-grey w3-xlarge">
+  <p class="w3-medium">Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
+</footer>
+
+<script>
+// Automatic Slideshow - change image every 15 seconds
+var myIndex = 0;
+carousel();
+
+function carousel() {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  myIndex++;
+  if (myIndex > x.length) {myIndex = 1}
+  x[myIndex-1].style.display = "block";
+  setTimeout(carousel, 15000);
+}
+
+// Used to toggle the menu on small screens when clicking on the menu button
+function smallScreenToggle() {
+  var x = document.getElementById("navDemo");
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+  } else {
+    x.className = x.className.replace(" w3-show", "");
+  }
+}
+</script>
+</body>
+</html>

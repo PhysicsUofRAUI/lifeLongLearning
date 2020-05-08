@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Projects{% endblock %}
+{% block body %}
+
+<!-- Page Container -->
+<div class="w3-content w3-margin-top" style="max-width:1400px;">
+
+  <!-- The Grid -->
+  <div class="w3-row-padding">
+
+    <!-- Left Column -->
+    <div class="w3-twothird">
+      {% if posts %}
+        {% for blog in posts %}
+          <h2> {{ blog.name }} </h2>
+          {{ blog.content|safe }}
+          <p>
+          <a href="{{ url_for('blogs.blog', post=blog.id, page=0) }}">View</a>
+          {% if session['logged_in'] %}
+            <a href="{{ url_for('blogs.edit_post', id=blog.id) }}">Edit</a>
+            <a href="{{ url_for('blogs.delete_post', id=blog.id) }}">Delete</a>
+          {% endif %}
+          </p>
+
+        {% endfor %}
+      {% endif %}
+
+      <p>
+        {% if prev_url %}
+          <a href="{{ prev_url }}">Newer posts</a>
+        {% endif %}
+        {% if next_url %}
+          <a href="{{ next_url }}">Older posts</a>
+        {% endif %}
+      </p>
+
+    <!-- End Left Column -->
+    </div>
+
+    <!-- Right Column -->
+    <div class="w3-third">
+      <h1>Categories</h1>
+
+      <div style="overflow-y: scroll; height:400px;">
+        <ul style="list-style-type:none">
+          {% for category in categories %}
+          <li>
+            <a href="{{ url_for('blogs.blog', category=category.id, post=None, page=0,) }}">{{ category.name }}</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+    <!-- End Right Column -->
+    </div>
+
+  <!-- End Grid -->
+  </div>
+
+  <!-- End Page Container -->
+</div>
+
+{% endblock %}

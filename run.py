@@ -1,6 +1,12 @@
-from flask import Flask, render_template
-app = Flask(__name__)
+from flask import Flask
 
-@app.route('/')
-def home():
-    return render_template('index.html')
+import os
+
+from app import create_app
+
+config_name = os.getenv('FLASK_CONFIG')
+app = create_app(config_name)
+app.app_context().push()
+
+if __name__ == '__main__':
+    app.run()
