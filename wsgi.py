@@ -1,3 +1,4 @@
-#
-# When it is time to serve the site this is where server stuff will go
-#
+from run import app
+
+if __name__ == "__main__":
+    app.run()
