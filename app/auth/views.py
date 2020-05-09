@@ -37,7 +37,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
 
-        if check_password_hash(passwrd, form.password.data) and form.username.data == 'kody':
+        if check_password_hash(passwrd, form.password.data) and form.username.data == 'LLLRocks':
             session['logged_in'] = True
 
             return redirect(url_for('other.home'))
