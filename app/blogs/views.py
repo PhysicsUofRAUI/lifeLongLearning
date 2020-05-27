@@ -1,8 +1,8 @@
 from . import blogs
-from flask import render_template, session, redirect, url_for
+from flask import render_template, session, redirect, url_for, current_app
 from ..models import Post, PostCategory
 from .forms import PostForm, PostCategoryForm
-from app.database import db_session
+from .. import db
 
 #
 # Blog
@@ -34,9 +34,9 @@ def blog(post, category, page) :
         # if a specific post has been selected this if statement will be ran
         posts = Post.query.get(post)
 
-        db_session.close()
-        db_session.remove()
-        db_session.rollback()
+        db.session.close()
+        db.session.remove()
+        db.session.rollback()
 
         return render_template('blog.html', posts=posts, categories=categories, next_url=None, prev_url=None)
 
@@ -46,9 +46,9 @@ def blog(post, category, page) :
 
         more = Post.query.filter_by(category_id=category).offset((page + 1) * 5).first()
 
-        db_session.close()
-        db_session.remove()
-        db_session.rollback()
+        db.session.close()
+        db.session.remove()
+        db.session.rollback()
 
         if page != 0 :
             prev_url = url_for('blogs.blog', category=category, page=page - 1)
@@ -68,9 +68,9 @@ def blog(post, category, page) :
 
         more = Post.query.offset((page + 1) * 5).first()
 
-        db_session.close()
-        db_session.remove()
-        db_session.rollback()
+        db.session.close()
+        db.session.remove()
+        db.session.rollback()
 
         if page != 0 :
             prev_url = url_for('blogs.blog', category=category, page=page - 1)
@@ -108,12 +108,12 @@ def add_post():
         new_post = Post(name=form.title.data, content=form.content.data, category_id=form.category.data.id, category=form.category.data)
 
         try:
-            db_session.add(new_post)
-            db_session.commit()
+            db.session.add(new_post)
+            db.session.commit()
 
-            db_session.close()
-            db_session.remove()
-            db_session.rollback()
+            db.session.close()
+            db.session.remove()
+            db.session.rollback()
         except:
             # not the best behaviour and should change
             return redirect(url_for('other.home'))
@@ -148,11 +148,11 @@ def edit_post(id):
         post.category_id = form.category.data.id
         post.category = form.category.data
 
-        db_session.commit()
+        db.session.commit()
 
-        db_session.close()
-        db_session.remove()
-        db_session.rollback()
+        db.session.close()
+        db.session.remove()
+        db.session.rollback()
 
         # redirect to the home page
         return redirect(url_for('other.home'))
@@ -178,12 +178,12 @@ def delete_post(id):
         return redirect(url_for('other.home'))
 
     post = Post.query.get(id)
-    db_session.delete(post)
-    db_session.commit()
+    db.session.delete(post)
+    db.session.commit()
 
-    db_session.close()
-    db_session.remove()
-    db_session.rollback()
+    db.session.close()
+    db.session.remove()
+    db.session.rollback()
 
     # redirect to the home page
     return redirect(url_for('other.home'))
@@ -208,12 +208,12 @@ def add_blog_category():
         new_category = PostCategory(name=form.name.data)
 
         try:
-            db_session.add(new_category)
-            db_session.commit()
+            db.session.add(new_category)
+            db.session.commit()
 
-            db_session.close()
-            db_session.remove()
-            db_session.rollback()
+            db.session.close()
+            db.session.remove()
+            db.session.rollback()
         except:
             return redirect(url_for('other.home'))
 
@@ -225,7 +225,7 @@ def add_blog_category():
 # edit_blog_category
 #   allow the user to edit a blog Category
 #
-@blogs.route('/edit_blog_category/<int:id>')
+@blogs.route('/edit_blog_category/<int:id>', methods=['GET', 'POST'])
 def edit_blog_category(id) :
     """
     Edit a blog category
@@ -240,11 +240,11 @@ def edit_blog_category(id) :
     if form.validate_on_submit():
         category.name = form.name.data
 
-        db_session.commit()
+        db.session.commit()
 
-        db_session.close()
-        db_session.remove()
-        db_session.rollback()
+        db.session.close()
+        db.session.remove()
+        db.session.rollback()
 
         # redirect to the home page
         return redirect(url_for('other.home'))
@@ -267,12 +267,12 @@ def delete_blog_category(id):
         return redirect(url_for('other.home'))
 
     category = PostCategory.query.get(id)
-    db_session.delete(category)
-    db_session.commit()
+    db.session.delete(category)
+    db.session.commit()
 
-    db_session.close()
-    db_session.remove()
-    db_session.rollback()
+    db.session.close()
+    db.session.remove()
+    db.session.rollback()
 
     # redirect to the home page
     return redirect(url_for('other.home'))

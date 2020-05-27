@@ -1,6 +1,6 @@
-from flask import render_template
+from flask import render_template, current_app
 from . import other
-from app.database import db_session
+from .. import db
 from ..models import Author
 
 #
@@ -27,8 +27,8 @@ def home():
 def contact():
     authors = Author.query.all()
 
-    db_session.close()
-    db_session.remove()
-    db_session.rollback()
+    db.session.close()
+    db.session.remove()
+    db.session.rollback()
 
     return render_template("contact.html", authors=authors)

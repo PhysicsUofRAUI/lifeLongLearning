@@ -11,27 +11,17 @@ import os
 # third-party imports
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
-from app.database import db_session, init_db
+from app.database import db
 from config import Config
-db = SQLAlchemy()
 
-TOP_LEVEL_DIR = os.path.abspath(os.curdir)
-
-UPLOAD_FOLDER = TOP_LEVEL_DIR + '/app/static'
 ALLOWED_EXTENSIONS = set(['pdf'])
 
 def create_app(config_class=Config):
     app = Flask(__name__)
 
-    app.config['SECRET_KEY'] = '7$@[V@(f`h`x<j,s@%Aey]v(@yR$O9'
+    app.config.from_object(config_class)
 
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-    app.config['SQLALCHEMY_POOL_PRE_PING'] = True
-
-    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {'pool_recycle' : 3600}
-
-    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    db.init_app(app)
 
     from app import models
 
@@ -48,14 +38,14 @@ def create_app(config_class=Config):
     app.register_blueprint(worksheets_blueprint)
 
 
-    init_db()
+
 
     @app.teardown_appcontext
     def shutdown_session(exception=None):
-        db_session.remove()
+        db.session.remove()
 
-        if exception and db_session.is_active:
-            db_session.rollback()
+        if exception and db.session.is_active:
+            db.session.rollback()
 
 
     return app

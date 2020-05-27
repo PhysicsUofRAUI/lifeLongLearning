@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship, backref
-from app.database import Base
+from app.database import db
 
 
 #
@@ -16,7 +16,7 @@ from app.database import Base
 #
 #   Content: The html that will be displayed
 #
-class Post(Base) :
+class Post(db.Model) :
     """
     Create Posts Table
     """
@@ -42,7 +42,7 @@ class Post(Base) :
 #
 # Note: Each entry can be linked to many blogs
 #
-class PostCategory(Base) :
+class PostCategory(db.Model) :
     """
     Create Categories table For Posts
     """
@@ -65,7 +65,7 @@ class PostCategory(Base) :
 #   author: foreign key designated to what author created it
 #   Category: a foreign key that signifies what category the worksheet belongs to
 #
-class Worksheet(Base) :
+class Worksheet(db.Model) :
     """
     Create Posts Table
     """
@@ -98,7 +98,7 @@ class Worksheet(Base) :
 #
 # Note: Each entry can be linked to many worksheets
 #
-class WorksheetCategory(Base) :
+class WorksheetCategory(db.Model) :
     """
     Create Categories table For Worksheet Categories
     """
@@ -122,7 +122,7 @@ class WorksheetCategory(Base) :
 #
 # Note: Each entry can be linked to many worksheets
 #
-class Author(Base) :
+class Author(db.Model) :
     """
     Create Categories table For Worksheet Categories
     """
