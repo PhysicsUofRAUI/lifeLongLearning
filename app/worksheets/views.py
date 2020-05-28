@@ -237,7 +237,7 @@ def add_worksheet_category():
 # EditWorksheetCategory
 #   will handle the editing of worksheet Categories
 #
-@worksheets.route('/edit_worksheet_category/<int:id>')
+@worksheets.route('/edit_worksheet_category/<int:id>', methods=['GET', 'POST'])
 def edit_worksheet_category(id) :
     """
     Edit a blog category
@@ -348,7 +348,7 @@ def delete_author(id):
 # EditAuthor
 #   Will edit an author
 #
-@worksheets.route('/edit_author/<int:id>')
+@worksheets.route('/edit_author/<int:id>', methods=['GET', 'POST'])
 def edit_author(id) :
     """
     Edit an Author

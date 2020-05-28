@@ -63,7 +63,7 @@ def blog(post, category, page) :
         return render_template('blog.html', posts=posts, categories=categories, next_url=next_url, prev_url=prev_url)
 
     else :
-        # if a no specific photo or category has been selected this if statement will be ran
+        # if a no specific post or category has been selected this if statement will be ran
         posts = Post.query.order_by(Post.id.desc()).offset(page * 5).limit(5)
 
         more = Post.query.offset((page + 1) * 5).first()
