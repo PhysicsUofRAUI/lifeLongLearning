@@ -27,8 +27,4 @@ def home():
 def contact():
     authors = Author.query.all()
 
-    db.session.close()
-    db.session.remove()
-    db.session.rollback()
-
     return render_template("contact.html", authors=authors)

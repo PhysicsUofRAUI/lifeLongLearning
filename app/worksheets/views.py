@@ -27,21 +27,13 @@ def worksheets_page(page, category, author, worksheet) :
         # if a specific post has been selected this if statement will be ran
         worksheets = Worksheet.query.get(worksheet)
 
-        db.session.close()
-        db.session.remove()
-        db.session.rollback()
-
         return render_template('worksheets.html', worksheets=worksheets, categories=categories, next_url=None, prev_url=None)
 
     elif not author == None :
         # get the worksheets done by a specific author
-        worksheets = Worksheet.query.filter_by(author_id=author).order_by(Worksheet.id.desc()).offset(page * 5).limit(5)
+        worksheets = Worksheet.query.filter_by(author_id=author).order_by(Worksheet.id.desc()).offset(page * 5).limit(5).all()
 
         more = Worksheet.query.filter_by(author_id=author).offset((page + 1) * 5).first()
-
-        db.session.close()
-        db.session.remove()
-        db.session.rollback()
 
         if page != 0 :
             prev_url = url_for('worksheets.worksheets_page', author=author, category=category, page=page - 1)
@@ -57,13 +49,9 @@ def worksheets_page(page, category, author, worksheet) :
 
     elif not category == None:
         # get the worksheets from a specific category
-        worksheets = Worksheet.query.filter_by(category_id=category).order_by(Worksheet.id.desc()).offset(page * 5).limit(5)
+        worksheets = Worksheet.query.filter_by(category_id=category).order_by(Worksheet.id.desc()).offset(page * 5).limit(5).all()
 
         more = Worksheet.query.filter_by(category_id=category).offset((page + 1) * 5).first()
-
-        db.session.close()
-        db.session.remove()
-        db.session.rollback()
 
         if page != 0 :
             prev_url = url_for('worksheets.worksheets_page', category=category, author=author, page=page - 1)
@@ -80,13 +68,9 @@ def worksheets_page(page, category, author, worksheet) :
     else :
         # get all the worksheets
         # if a no specific photo or category has been selected this if statement will be ran
-        worksheets = Worksheet.query.order_by(Worksheet.id.desc()).offset(page * 5).limit(5)
+        worksheets = Worksheet.query.order_by(Worksheet.id.desc()).offset(page * 5).limit(5).all()
 
         more = Worksheet.query.offset((page + 1) * 5).first()
-
-        db.session.close()
-        db.session.remove()
-        db.session.rollback()
 
         if page != 0 :
             prev_url = url_for('worksheets.worksheets_page', category=category, author=author, page=page - 1)
@@ -127,10 +111,6 @@ def add_worksheet():
             db.session.add(new_worksheet)
             db.session.commit()
 
-            db.session.close()
-            db.session.remove()
-            db.session.rollback()
-
             return redirect(url_for('other.home'))
         else:
             return redirect(url_for('other.home'))
@@ -153,6 +133,8 @@ def add_worksheet():
 #     form = EditWorksheetForm(obj=worksheet)
 #
 #     if form.validate_on_submit():
+#         # delete the current pdf of the worksheet
+#         # add the new worksheet like how it is done in add worksheet
 #         worksheet.name = form.title.data
 #         worksheet.video_url = form.video_url.data
 #         worksheet.category_id = form.category.data.id
@@ -161,10 +143,6 @@ def add_worksheet():
 #         worksheet.category = form.author.data
 #
 #         db.session.commit()
-#
-#         db.session.close()
-#         db.session.remove()
-#         db.session.rollback()
 #
 #         # redirect to the home page
 #         return redirect(url_for('other.home'))
@@ -195,10 +173,6 @@ def delete_worksheet(id):
     db.session.delete(worksheet)
     db.session.commit()
 
-    db.session.close()
-    db.session.remove()
-    db.session.rollback()
-
     # redirect to the home page
     return redirect(url_for('other.home'))
 
@@ -222,10 +196,6 @@ def add_worksheet_category():
         try:
             db.session.add(new_category)
             db.session.commit()
-
-            db.session.close()
-            db.session.remove()
-            db.session.rollback()
         except:
             return redirect(url_for('other.home'))
 
@@ -254,10 +224,6 @@ def edit_worksheet_category(id) :
 
         db.session.commit()
 
-        db.session.close()
-        db.session.remove()
-        db.session.rollback()
-
         # redirect to the home page
         return redirect(url_for('other.home'))
 
@@ -282,9 +248,6 @@ def delete_worksheet_category(id):
     db.session.delete(category)
     db.session.commit()
 
-    db.session.close()
-    db.session.remove()
-    db.session.rollback()
 
     # redirect to the home page
     return redirect(url_for('other.home'))
@@ -310,9 +273,6 @@ def add_author():
             db.session.add(new_author)
             db.session.commit()
 
-            db.session.close()
-            db.session.remove()
-            db.session.rollback()
         except:
             return redirect(url_for('other.home'))
 
@@ -336,10 +296,6 @@ def delete_author(id):
     author = Author.query.get(id)
     db.session.delete(author)
     db.session.commit()
-
-    db.session.close()
-    db.session.remove()
-    db.session.rollback()
 
     # redirect to the home page
     return redirect(url_for('other.home'))
@@ -366,10 +322,6 @@ def edit_author(id) :
         author.about = form.about.data
 
         db.session.commit()
-
-        db.session.close()
-        db.session.remove()
-        db.session.rollback()
 
         # redirect to the home page
         return redirect(url_for('other.home'))

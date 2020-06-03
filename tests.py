@@ -5,7 +5,8 @@ from flask_testing import TestCase
 from flask_sqlalchemy import SQLAlchemy
 from flask import session, url_for, template_rendered
 from app.models import Worksheet, WorksheetCategory, Author, Post, PostCategory
-
+from werkzeug.datastructures import MultiDict
+from app.blogs.forms import PostForm
 from app.database import db
 from config import TestConfiguration
 from app import create_app as c_app
@@ -134,23 +135,38 @@ class TestingWhileLoggedIn(TestCase):
 
 
     def test_add_post_page_li(self):
+        p_cat = PostCategory(name='Resources')
+        p_cat1 = PostCategory(name='Ressdgources')
+        p_cat2 = PostCategory(name='Ressdgsdgources')
+        p_cat3 = PostCategory(name='Reurces')
+        db.session.add(p_cat)
+        db.session.add(p_cat1)
+        db.session.add(p_cat2)
+        db.session.add(p_cat3)
+        db.session.commit()
+
+        all_cats = PostCategory.query.all()
+
+        self.assertEqual([p_cat,p_cat1,p_cat2,p_cat3], all_cats)
+
         response = self.client.get('/add_post', follow_redirects=False)
         self.assertEqual(response.status_code, 200)
 
-        p_cat = PostCategory(name='Resources')
+        data = dict(title='Hello', content='fagkjkjas', category=p_cat)
 
+        form = PostForm(data=data)
 
+        self.assertEqual(form.validate(), True)
 
-        response_1 = self.client.post('/add_post', follow_redirects=True, data=dict(
-                                        title='Good Day',
-                                        category=p_cat,
-                                        content='How yah doing'))
+        print(form.data)
 
-        self.assertEqual(response_1.status_code, 200)
+        response_1 = self.client.post('/add_post', follow_redirects=False, data=form.data, content_type='multipart/form-data')
 
-        edited_post = Post.query.filter_by(name='Good Day').first()
+        self.assertEqual(response_1.status_code, 302)
 
-        self.assertNotEqual(edited_post, None)
+        new_post = db.session.query(Post).filter_by(name='Hello').first()
+
+        self.assertNotEqual(new_post, None)
 
 
     def test_add_blog_category_page_li(self):
@@ -166,9 +182,6 @@ class TestingWhileLoggedIn(TestCase):
         self.assertNotEqual(p_cat, None)
 
     def test_add_worksheet_page_li(self):
-        response = self.client.get('/add_worksheet', follow_redirects=False)
-        self.assertEqual(response.status_code, 200)
-
         w_cat = WorksheetCategory(name='Math')
 
         db.session.add(w_cat)
@@ -179,11 +192,15 @@ class TestingWhileLoggedIn(TestCase):
 
         db.session.commit()
 
+        response = self.client.get('/add_worksheet', follow_redirects=False)
+        self.assertEqual(response.status_code, 200)
+
         data = dict(title='trig', video_url='youtube.com', category=w_cat, author=auth)
 
         data['file'] = (io.BytesIO(b"abcdef"), 'test.pdf')
 
-        response_1 = self.client.post('/add_worksheet', follow_redirects=True, data=data, content_type='multipart/form-data')
+        with self.app.test_client() as c:
+            response_1 = c.post('/add_worksheet', follow_redirects=True, data=data, content_type='multipart/form-data')
 
         worksheet = Worksheet.query.filter_by(name='trig').first()
 
@@ -230,10 +247,13 @@ class TestingWhileLoggedIn(TestCase):
         response = self.client.get('/edit_post/1', follow_redirects=False)
         self.assertEqual(response.status_code, 200)
 
-        response_1 = self.client.post('/edit_post/1', follow_redirects=True, data=dict(
-                                        title='Good Day',
-                                        content='How yah doing',
-                                        category=p_cat))
+        form = PostForm(obj=post)
+
+        form.content.data = post.content
+        form.title.data = 'Good day'
+        form.category.data = post.category
+
+        response_1 = self.client.post('/edit_post/1', follow_redirects=True, data=form.data)
 
         self.assertEqual(response_1.status_code, 200)
 
@@ -399,7 +419,7 @@ class TestingWhileLoggedIn(TestCase):
             with captured_templates(self.app) as templates:
                 r = c.get('/worksheets_page')
                 template, context = templates[0]
-                # self.assertEqual(context['worksheets'], [worksheet])
+                self.assertEqual(context['worksheets'], [worksheet])
                 self.assertEqual(context['categories'], [w_cat])
                 self.assertEqual(context['next_url'], None)
                 self.assertEqual(context['prev_url'], None)

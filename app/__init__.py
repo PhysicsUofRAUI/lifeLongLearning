@@ -42,10 +42,9 @@ def create_app(config_class=Config):
 
     @app.teardown_appcontext
     def shutdown_session(exception=None):
+        db.session.close()
         db.session.remove()
-
-        if exception and db.session.is_active:
-            db.session.rollback()
+        db.session.rollback()
 
 
     return app
