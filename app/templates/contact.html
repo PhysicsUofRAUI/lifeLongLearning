@@ -26,6 +26,12 @@
         </a>
       </p>
     </div>
+    {% if session['logged_in'] %}
+    <p>
+      <a href="{{ url_for('worksheets.edit_author', id=author.id) }}">Edit</a>
+      <a href="{{ url_for('worksheets.delete_author', id=author.id) }}">Delete</a>
+    </p>
+    {% endif %}
   {% else %}
   <div class="authorLight">
     <p>
@@ -43,6 +49,12 @@
         {{ author.name }}'s Worksheets!
       </a>
     </p>
+    {% if session['logged_in'] %}
+    <p>
+      <a href="{{ url_for('worksheets.edit_author', id=author.id) }}">Edit</a>
+      <a href="{{ url_for('worksheets.delete_author', id=author.id) }}">Delete</a>
+    </p>
+    {% endif %}
   </div>
   {% endif %}
 {% endfor %}

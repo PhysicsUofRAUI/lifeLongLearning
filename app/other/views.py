@@ -1,7 +1,7 @@
 from flask import render_template, current_app
 from . import other
 from .. import db
-from ..models import Author
+from ..models import Author, WorksheetCategory, PostCategory
 
 #
 # Home
@@ -12,7 +12,6 @@ from ..models import Author
 #
 # Method:
 #     render the home page template
-#     (next version may include a search for Photos to make it more dynamic)
 #
 @other.route('/')
 @other.route('/home')
@@ -28,3 +27,16 @@ def contact():
     authors = Author.query.all()
 
     return render_template("contact.html", authors=authors)
+
+
+#
+# Admin:
+#   renders a page to list all the not easily found webpages for admin functions
+#
+@other.route('/admin')
+def admin() :
+    worksheet_categories = WorksheetCategory.query.all()
+
+    post_categories = PostCategory.query.all()
+
+    return render_template("admin.html", worksheet_categories=worksheet_categories, post_categories=post_categories)
