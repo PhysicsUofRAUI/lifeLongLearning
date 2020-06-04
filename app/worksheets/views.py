@@ -13,14 +13,14 @@ from .. import db
 # Note: will have to make a call to the database for each author so that the
 #   template can distinguish
 #
-@worksheets.route('/worksheets_page/<int:category>/<int:page>', defaults={'worksheet': None, 'author': None}, methods=['GET', 'POST'])
-@worksheets.route('/worksheets_page/<int:author>/<int:page>', defaults={'worksheet': None, 'category': None}, methods=['GET', 'POST'])
-@worksheets.route('/worksheets_page/<int:page>', defaults={'category': None, 'worksheet': None, 'author': None}, methods=['GET', 'POST'])
-@worksheets.route('/worksheets_page', defaults={'category': None, 'worksheet': None, 'page': 0, 'author': None}, methods=['GET', 'POST'])
-def worksheets_page(page, category, author, worksheet) :
+@worksheets.route('/worksheets_page/<int:page>', methods=['GET', 'POST'])
+@worksheets.route('/worksheets_page', defaults={'page': 0}, methods=['GET', 'POST'])
+def worksheets_page(page) :
     # The pagination may cause an error with the None trying to be an int
     #
     categories = WorksheetCategory.query.all()
+    author = request.args.get('author')
+    category = request.args.get('category')
 
     if not author == None :
         # get the worksheets done by a specific author
