@@ -171,8 +171,8 @@ def delete_worksheet(id):
 
     worksheet = Worksheet.query.get(id)
 
-    os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], worksheet.filename).commit()
-    
+    os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], worksheet.pdf_url))
+
     db.session.delete(worksheet)
     db.session.commit()
 
