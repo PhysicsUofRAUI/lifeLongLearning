@@ -1,5 +1,5 @@
 from . import blogs
-from flask import render_template, session, redirect, url_for, current_app
+from flask import render_template, session, redirect, url_for, current_app, request
 from ..models import Post, PostCategory
 from .forms import PostForm, PostCategoryForm
 from .. import db
@@ -23,32 +23,34 @@ from .. import db
 #           the second page is 'page=1'. Each page will show 5 blog posts and the posts
 #           will be in descending order (first posted to last posted)
 #
-@blogs.route('/blog/<post>/<int:page>', defaults={'category': None}, methods=['GET', 'POST'])
-@blogs.route('/blog/<post>/<category>/<int:page>', defaults={'post': None, 'page' : 0}, methods=['GET', 'POST'])
-@blogs.route('/blog/<int:page>', defaults={'category': None, 'post': None}, methods=['GET', 'POST'])
-@blogs.route('/blog', defaults={'category': None, 'post': None, 'page' : 0}, methods=['GET', 'POST'])
-def blog(post, category, page) :
+@blogs.route('/blog/<int:page>', methods=['GET', 'POST'])
+@blogs.route('/blog', defaults={'page' : 0}, methods=['GET', 'POST'])
+def blog(page) :
     categories = PostCategory.query.all()
+    post = request.args.get('post')
+    category = request.args.get('category')
 
     if not post == None :
         # if a specific post has been selected this if statement will be ran
-        posts = Post.query.get(post)
+        blog = Post.query.get(post)
+
+        posts = [blog]
 
         return render_template('blog.html', posts=posts, categories=categories, next_url=None, prev_url=None)
 
     elif not category == None :
         # if a specific category has been selected this if statement will be ran
-        posts = Post.query.filter_by(category_id=category).order_by(Post.id.desc()).offset(page * 5).limit(5)
+        posts = Post.query.filter_by(category_id=category).order_by(Post.id.desc()).offset(page * 5).limit(5).all()
 
-        more = Post.query.filter_by(category_id=category).offset((page + 1) * 5).first().all()
+        more = Post.query.filter_by(category_id=category).offset((page + 1) * 5).first()
 
         if page != 0 :
-            prev_url = url_for('blogs.blog', category=category, page=page - 1)
+            prev_url = url_for('blogs.blog', category=category, page=page - 1, post=None)
         else :
             prev_url = None
 
         if not more == None :
-            next_url = url_for('blogs.blog', category=category, page=page + 1)
+            next_url = url_for('blogs.blog', post=None, category=category, page=page + 1)
         else :
             next_url = None
 
@@ -61,12 +63,12 @@ def blog(post, category, page) :
         more = Post.query.offset((page + 1) * 5).first()
 
         if page != 0 :
-            prev_url = url_for('blogs.blog', category=category, page=page - 1)
+            prev_url = url_for('blogs.blog', category=category, page=page - 1, post=None)
         else :
             prev_url = None
 
         if not more == None :
-            next_url = url_for('blogs.blog', category=category, page=page + 1)
+            next_url = url_for('blogs.blog', category=category, page=page + 1, post=None)
         else :
             next_url = None
 

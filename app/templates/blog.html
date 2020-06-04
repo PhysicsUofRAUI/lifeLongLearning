@@ -15,7 +15,7 @@
           <h2> {{ blog.name }} </h2>
           {{ blog.content|safe }}
           <p>
-          <a href="{{ url_for('blogs.blog', post=blog.id, page=0) }}">View</a>
+          <a href="{{ url_for('blogs.blog', post=blog.id, page=0, category=None) }}">View</a>
           {% if session['logged_in'] %}
             <a href="{{ url_for('blogs.edit_post', id=blog.id) }}">Edit</a>
             <a href="{{ url_for('blogs.delete_post', id=blog.id) }}">Delete</a>
@@ -45,7 +45,7 @@
         <ul style="list-style-type:none">
           {% for category in categories %}
           <li>
-            <a href="{{ url_for('blogs.blog', category=category.id, post=None, page=0,) }}">{{ category.name }}</a>
+            <a href="{{ url_for('blogs.blog', category=category.id, post=None, page=0) }}">{{ category.name }}</a>
           </li>
           {% endfor %}
         </ul>
