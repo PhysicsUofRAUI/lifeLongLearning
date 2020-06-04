@@ -514,7 +514,7 @@ class TestingWhileLoggedIn(TestCase):
         worksheet_9 = Worksheet(pdf_url='tersoos.pdf', name='toronto', author_id=3, author=auth_3, category_id=3, category=w_cat_2)
         worksheet_10 = Worksheet(pdf_url='tudosgagos.pdf', name='ottowa', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
         worksheet_11 = Worksheet(pdf_url='tusgsgos.pdf', name='saskatoon', author_id=1, author=auth_1, category_id=1, category=w_cat)
-        worksheet_12 = Worksheet(pdf_url='tusgsssoos.pdf', name='winnipeg', author_id=2, author=auth_2, category_id=2, category=w_cat_2)
+        worksheet_12 = Worksheet(pdf_url='tusgsssoos.pdf', name='winnipeg', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
         db.session.add(worksheet_1)
         db.session.add(worksheet_2)
         db.session.add(worksheet_3)
@@ -581,6 +581,7 @@ class TestingWhileLoggedIn(TestCase):
                 self.assertEqual(context['prev_url'], url_for('worksheets.worksheets_page', category=2, author=None, page=0))
 
 
+
         #
         # Testing the worksheet page with many worksheets inputted
         #
@@ -609,6 +610,21 @@ class TestingWhileLoggedIn(TestCase):
                 self.assertEqual(context['worksheets'], [worksheet_12, worksheet_11, worksheet_10, worksheet_9, worksheet_8])
                 self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
                 self.assertEqual(context['next_url'], url_for('worksheets.worksheets_page', author=None, category=None, page=1))
+                self.assertEqual(context['prev_url'], None)
+
+        #
+        # Checking if author overwrites the category
+        #
+        worksheet_13 = Worksheet(pdf_url='tudosgadgos.pdf', name='ottowa sens', author_id=1, author=auth_1, category_id=3, category=w_cat_2)
+        worksheet_14 = Worksheet(pdf_url='tusgsghjgos.pdf', name='saskatoon hobbo', author_id=1, author=auth_1, category_id=2, category=w_cat_1)
+        worksheet_15 = Worksheet(pdf_url='tusdasgsssoos.pdf', name='winnipeg jets', author_id=1, author=auth_1, category_id=2, category=w_cat_1)
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                r = c.get(url_for('worksheets.worksheets_page', category=1, author=None, page=0))
+                template, context = templates[0]
+                self.assertEqual(context['worksheets'], [worksheet_11, worksheet_5, worksheet_1, worksheet])
+                self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
+                self.assertEqual(context['next_url'], None)
                 self.assertEqual(context['prev_url'], None)
 
 
