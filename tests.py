@@ -332,51 +332,55 @@ class TestingWhileLoggedIn(TestCase):
 
         self.assertNotEqual(edited_author, None)
 
-    # def test_edit_worksheet_page(self) :
-    #     w_cat = WorksheetCategory(name='dundk')
-    #     db.session.add(w_cat)
-    #     db.session.commit()
-    #
-    #
-    #     auth_1 = Author(name='Kidkaidf')
-    #     db.session.add(auth_1)
-    #
-    #     db.session.commit()
-    #
-    #     worksheet = Worksheet(pdf_url='tudolsoos.pdf', name='tudoloods', author_id=1, author=auth_1, category_id=1, category=w_cat)
-    #     db.session.add(worksheet)
-    #
-    #     db.session.commit()
-    #
-    #
-    #     response = self.client.get('/add_worksheet', follow_redirects=False)
-    #     self.assertEqual(response.status_code, 200)
-    #
-    #     data = dict(title='trig', video_url='youtube.com', category=w_cat, author=auth_1)
-    #
-    #     data['file'] = (io.BytesIO(b"abcdef"), 'test.pdf')
-    #
-    #     with self.app.test_client() as c:
-    #         response_1 = c.post('/add_worksheet', follow_redirects=True, data=data, content_type='multipart/form-data')
-    #
-    #
-    #     #
-    #     # Now make a new worksheet to add
-    #     #
-    #     data = dict(title='Trigonometry', video_url='youtube.com', category=w_cat_1, author=auth_1)
-    #
-    #     data['file'] = (io.BytesIO(b"abcd234ef"), 'test_1.pdf')
-    #
-    #     with self.app.test_client() as c:
-    #         response_1 = c.post('/edit_worksheet/1', follow_redirects=True, data=data, content_type='multipart/form-data')
-    #
-    #     worksheet = Worksheet.query.filter_by(name='Trigonometry').first()
-    #
-    #     self.assertNotEqual(worksheet, None)
-    #
-    #     self.assertEqual(worksheet.pdf_url, 'test_1.pdf')
-    #
-    #     self.assertEqual(False, os.path.exists('test.pdf'))
+    def test_edit_worksheet_page(self) :
+        w_cat = WorksheetCategory(name='dundk')
+        db.session.add(w_cat)
+        db.session.commit()
+
+
+        auth_1 = Author(name='Kidkaidf')
+        db.session.add(auth_1)
+
+        db.session.commit()
+
+        worksheet = Worksheet(pdf_url='tudolsoos.pdf', name='tudoloods', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        db.session.add(worksheet)
+
+        db.session.commit()
+
+        data = dict(title='trig', video_url='youtube.com', category=w_cat, author=auth_1)
+
+        data['file'] = (io.BytesIO(b"abcdef"), 'test.pdf')
+
+        with self.app.test_client() as c:
+            response = c.post('/add_worksheet', follow_redirects=True, data=data, content_type='multipart/form-data')
+
+        self.assertEqual(True, os.path.exists('test.pdf'))
+
+        worksheet = Worksheet.query.filter_by(name='trig').first()
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertNotEqual(worksheet, None)
+
+        #
+        # Now make a new worksheet to add
+        #
+        data = dict(title='Trigonometry', video_url='youtube.com', category=w_cat, author=auth_1)
+
+        data['file'] = (io.BytesIO(b"abcd234ef"), 'test_1.pdf')
+
+        with self.app.test_client() as c:
+            response_1 = c.post('/edit_worksheet/1', follow_redirects=True, data=data, content_type='multipart/form-data')
+
+        worksheet_1 = Worksheet.query.filter_by(name='Trigonometry').first()
+
+        self.assertNotEqual(worksheet, None)
+
+        self.assertEqual(worksheet.pdf_url, 'test_1.pdf')
+
+        self.assertEqual(False, os.path.exists('test.pdf'))
+        self.assertEqual(True, os.path.exists('test_1.pdf'))
 
 
 

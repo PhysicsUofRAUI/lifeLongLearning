@@ -121,38 +121,44 @@ def add_worksheet():
 # EditWorksheet
 #   will allow the user to edit an existing worksheet that is in the database
 #
-#   This function does not allow for the editing of the pdf
-#
-# @worksheets.route('/edit_worksheet/<int:id>', methods=['GET', 'POST'])
-# def edit_worksheet(id):
-#     # check if user is logged in
-#     if not session.get('logged_in'):
-#         return redirect(url_for('other.home'))
-#
-#     worksheet = Worksheet.query.get(id)
-#     form = EditWorksheetForm(obj=worksheet)
-#
-#     if form.validate_on_submit():
-#         # delete the current pdf of the worksheet
-#         # add the new worksheet like how it is done in add worksheet
-#         worksheet.name = form.title.data
-#         worksheet.video_url = form.video_url.data
-#         worksheet.category_id = form.category.data.id
-#         worksheet.category = form.category.data
-#         worksheet.category_id = form.author.data.id
-#         worksheet.category = form.author.data
-#
-#         db.session.commit()
-#
-#         # redirect to the home page
-#         return redirect(url_for('other.home'))
-#
-#     form.title.data = worksheet.name
-#     form.video_url.data = worksheet.video_url
-#     form.author.data = worksheet.author
-#     form.category.data = worksheet.category
-#
-#     return render_template('edit_worksheet.html', form=form, worksheet=worksheet, title="Edit Worksheet Category")
+@worksheets.route('/edit_worksheet/<int:id>', methods=['GET', 'POST'])
+def edit_worksheet(id):
+    # check if user is logged in
+    if not session.get('logged_in'):
+        return redirect(url_for('other.home'))
+
+    worksheet = Worksheet.query.get(id)
+    form = EditWorksheetForm(obj=worksheet)
+
+    if form.validate_on_submit():
+        # removing the old pdf
+        os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], worksheet.pdf_url))
+
+        # adding the new pdf
+        file = request.files['worksheet_pdf']
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+
+        # updating the database values
+        worksheet.pdf_url = filename
+        worksheet.name = form.title.data
+        worksheet.video_url = form.video_url.data
+        worksheet.category_id = form.category.data.id
+        worksheet.category = form.category.data
+        worksheet.category_id = form.author.data.id
+        worksheet.category = form.author.data
+
+        db.session.commit()
+
+        # redirect to the home page
+        return redirect(url_for('other.home'))
+
+    form.title.data = worksheet.name
+    form.video_url.data = worksheet.video_url
+    form.author.data = worksheet.author
+    form.category.data = worksheet.category
+
+    return render_template('edit_worksheet.html', form=form, worksheet=worksheet, title="Edit Worksheet Category")
 
 
 
