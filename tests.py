@@ -455,7 +455,7 @@ class TestingWhileLoggedIn(TestCase):
 
         self.assertEqual(auth_1, None)
 
-    def test_view_pages(self):
+    def test_worksheet_page(self) :
         # worksheet page
         response = self.client.get('/worksheets_page', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
@@ -488,6 +488,59 @@ class TestingWhileLoggedIn(TestCase):
                 self.assertEqual(context['next_url'], None)
                 self.assertEqual(context['prev_url'], None)
 
+        w_cat_1 = WorksheetCategory(name='dund32k')
+        db.session.add(w_cat_1)
+
+        w_cat_2 = WorksheetCategory(name='dundfsdk')
+        db.session.add(w_cat_2)
+        db.session.commit()
+
+
+        auth_2 = Author(name='Kidkafdidf')
+        db.session.add(auth_2)
+        auth_3 = Author(name='Kif')
+        db.session.add(auth_3)
+
+        db.session.commit()
+
+        worksheet_1 = Worksheet(pdf_url='tudolsoo.pdf', name='tloods', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        worksheet_2 = Worksheet(pdf_url='tudolsos.pdf', name='tudoldaghoods', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_3 = Worksheet(pdf_url='tudolos.pdf', name='tudol', author_id=3, author=auth_3, category_id=3, category=w_cat_2)
+        worksheet_4 = Worksheet(pdf_url='tudsoos.pdf', name='tudolsagdgsshjoods', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_5 = Worksheet(pdf_url='tolsoos.pdf', name='tudoldfag', author_id=, author=auth_1, category_id=1, category=w_cat)
+        worksheet_6 = Worksheet(pdf_url='lsoos.pdf', name='tudosdag', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_7 = Worksheet(pdf_url='tch.pdf', name='tudosgsggs', author_id=3, author=auth_3, category_id=3, category=w_cat_2)
+        worksheet_8 = Worksheet(pdf_url='tudsfgos.pdf', name='montreal', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_9 = Worksheet(pdf_url='tersoos.pdf', name='toronto', author_id=3, author=auth_3, category_id=3, category=w_cat_2)
+        worksheet_10 = Worksheet(pdf_url='tudosgagos.pdf', name='ottowa', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_11 = Worksheet(pdf_url='tusgsgos.pdf', name='saskatoon', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        worksheet_12 = Worksheet(pdf_url='tusgsssoos.pdf', name='winnipeg', author_id=2, author=auth_2, category_id=2, category=w_cat_2)
+        db.session.add(worksheet_1)
+        db.session.add(worksheet_2)
+        db.session.add(worksheet_3)
+        db.session.add(worksheet_4)
+        db.session.add(worksheet_5)
+        db.session.add(worksheet_6)
+        db.session.add(worksheet_7)
+        db.session.add(worksheet_8)
+        db.session.add(worksheet_9)
+        db.session.add(worksheet_10)
+        db.session.add(worksheet_11)
+        db.session.add(worksheet_12)
+
+        db.session.commit()
+
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                r = c.get('/worksheets_page')
+                template, context = templates[0]
+                self.assertEqual(context['worksheets'], [worksheet])
+                self.assertEqual(context['categories'], [w_cat])
+                self.assertEqual(context['next_url'], None)
+                self.assertEqual(context['prev_url'], None)
+
+
+    def test_view_pages(self):
         # contact page
         response = self.client.get('/contact', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
@@ -524,6 +577,22 @@ class TestingWhileLoggedIn(TestCase):
                 self.assertEqual(context['categories'], [p_cat])
                 self.assertEqual(context['next_url'], None)
                 self.assertEqual(context['prev_url'], None)
+
+
+
+        #
+        # Testing the Admin Page
+        #
+        response = self.client.get('/admin', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                r = c.get('/admin')
+                template, context = templates[0]
+                self.assertEqual(context['post_categories'], [p_cat])
+                self.assertEqual(context['worksheet_categories'], [w_cat])
+
 
 
 class BasicTests(TestCase):
