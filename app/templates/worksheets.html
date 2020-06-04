@@ -36,7 +36,7 @@ following link very useful: https://www.w3docs.com/snippets/html/how-to-embed-pd
           <p>
           <a href="{{ url_for('static', filename=worksheet.pdf_url) }}">View</a>
           {% if session['logged_in'] %}
-            <!-- {# <a href="{{ url_for('worksheets.edit_worksheet', id=worksheet.id) }} #}">Edit</a> -->
+            <a href="{{ url_for('worksheets.edit_worksheet', id=worksheet.id) }}">Edit</a>
             <a href="{{ url_for('worksheets.delete_worksheet', id=worksheet.id) }}">Delete</a>
           {% endif %}
           </p>

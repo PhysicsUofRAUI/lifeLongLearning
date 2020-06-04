@@ -530,6 +530,7 @@ class TestingWhileLoggedIn(TestCase):
 
         db.session.commit()
 
+<<<<<<< HEAD
         #
         # Testing the first page of an author
         #
@@ -579,6 +580,16 @@ class TestingWhileLoggedIn(TestCase):
                 self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
                 self.assertEqual(context['next_url'], None)
                 self.assertEqual(context['prev_url'], url_for('worksheets.worksheets_page', category=2, author=None, page=0))
+=======
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                r = c.get('/worksheets_page')
+                template, context = templates[0]
+                self.assertEqual(context['worksheets'], [worksheet])
+                self.assertEqual(context['categories'], [w_cat])
+                self.assertEqual(context['next_url'], None)
+                self.assertEqual(context['prev_url'], None)
+>>>>>>> master
 
 
     def test_view_pages(self):
