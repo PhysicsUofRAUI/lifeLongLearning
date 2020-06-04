@@ -170,6 +170,9 @@ def delete_worksheet(id):
         return redirect(url_for('other.home'))
 
     worksheet = Worksheet.query.get(id)
+
+    os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], worksheet.filename).commit()
+    
     db.session.delete(worksheet)
     db.session.commit()
 
