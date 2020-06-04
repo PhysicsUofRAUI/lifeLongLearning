@@ -375,7 +375,7 @@ class TestingWhileLoggedIn(TestCase):
 
         self.assertEqual(worksheet.pdf_url, 'test_1.pdf')
 
-        self.assertEqual(True, os.path.exists('test.pdf'))
+        self.assertEqual(False, os.path.exists('test.pdf'))
 
 
 
@@ -393,6 +393,13 @@ class TestingWhileLoggedIn(TestCase):
         db.session.commit()
 
         worksheet = Worksheet(pdf_url='tudolsoos.pdf', name='tudoloods', author_id=1, author=auth_1, category_id=1, category=w_cat)
+
+        data['file'] = (io.BytesIO(b"abcdef"), 'test.pdf')
+
+        file = request.files[data['file']]
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], 'test.pdf'))
+
         db.session.add(worksheet)
 
         db.session.commit()
@@ -403,6 +410,8 @@ class TestingWhileLoggedIn(TestCase):
         w = Worksheet.query.filter_by(name='tudoloods').first()
 
         self.assertEqual(w, None)
+
+        self.assertEqual(False, os.path.exists('test.pdf'))
 
     def test_delete_worksheet_category_page_li(self):
         worksheet_cat = WorksheetCategory(name='jumbook')
