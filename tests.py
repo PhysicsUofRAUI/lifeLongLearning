@@ -507,7 +507,7 @@ class TestingWhileLoggedIn(TestCase):
         worksheet_2 = Worksheet(pdf_url='tudolsos.pdf', name='tudoldaghoods', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
         worksheet_3 = Worksheet(pdf_url='tudolos.pdf', name='tudol', author_id=3, author=auth_3, category_id=3, category=w_cat_2)
         worksheet_4 = Worksheet(pdf_url='tudsoos.pdf', name='tudolsagdgsshjoods', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
-        worksheet_5 = Worksheet(pdf_url='tolsoos.pdf', name='tudoldfag', author_id=, author=auth_1, category_id=1, category=w_cat)
+        worksheet_5 = Worksheet(pdf_url='tolsoos.pdf', name='tudoldfag', author_id=1, author=auth_1, category_id=1, category=w_cat)
         worksheet_6 = Worksheet(pdf_url='lsoos.pdf', name='tudosdag', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
         worksheet_7 = Worksheet(pdf_url='tch.pdf', name='tudosgsggs', author_id=3, author=auth_3, category_id=3, category=w_cat_2)
         worksheet_8 = Worksheet(pdf_url='tudsfgos.pdf', name='montreal', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
@@ -530,27 +530,26 @@ class TestingWhileLoggedIn(TestCase):
 
         db.session.commit()
 
-<<<<<<< HEAD
         #
         # Testing the first page of an author
         #
         with self.app.test_client() as c:
             with captured_templates(self.app) as templates:
-                r = c.get(url_for('worksheets.worksheets_page', author=2, worksheet=None, category=None, page=0))
+                r = c.get(url_for('worksheets.worksheets_page', author=2, category=None, page=0))
                 template, context = templates[0]
-                self.assertEqual(context['worksheets'], [worksheet_2, worksheet_4, worksheet_6, worksheet_8, worksheet_10, worksheet_12])
+                self.assertEqual(context['worksheets'], [worksheet_12, worksheet_10, worksheet_8, worksheet_6,  worksheet_4])
                 self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
-                self.assertEqual(context['next_url'], url_for('worksheets.worksheets_page', author=2, worksheet=None, category=None, page=1))
+                self.assertEqual(context['next_url'], url_for('worksheets.worksheets_page', author=2, category=None, page=1))
                 self.assertEqual(context['prev_url'], None)
 
         #
-        # Testing the first page of an category
+        # Testing the first page of a category
         #
         with self.app.test_client() as c:
             with captured_templates(self.app) as templates:
                 r = c.get(url_for('worksheets.worksheets_page', category=2, author=None, page=0))
                 template, context = templates[0]
-                self.assertEqual(context['worksheets'], [worksheet_2, worksheet_4, worksheet_6, worksheet_8, worksheet_10, worksheet_12])
+                self.assertEqual(context['worksheets'], [worksheet_12, worksheet_10, worksheet_8, worksheet_6,  worksheet_4])
                 self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
                 self.assertEqual(context['next_url'], url_for('worksheets.worksheets_page', category=2, author=None, page=1))
                 self.assertEqual(context['prev_url'], None)
@@ -561,39 +560,65 @@ class TestingWhileLoggedIn(TestCase):
         #
         with self.app.test_client() as c:
             with captured_templates(self.app) as templates:
-                r = c.get(url_for('worksheets.worksheets_page', author=2, worksheet=None, category=None, page=0))
+                r = c.get(url_for('worksheets.worksheets_page', author=2, category=None, page=1))
                 template, context = templates[0]
-                self.assertEqual(context['worksheets'], [worksheet_2, worksheet_4, worksheet_6, worksheet_8, worksheet_10, worksheet_12])
+                self.assertEqual(context['worksheets'], [worksheet_2])
                 self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
-                self.assertEqual(context['next_url'], url_for('worksheets.worksheets_page', author=2, worksheet=None, category=None, page=1))
-                self.assertEqual(context['prev_url'], None)
+                self.assertEqual(context['next_url'], None)
+                self.assertEqual(context['prev_url'], url_for('worksheets.worksheets_page', author=2, category=None, page=0))
 
 
         #
-        # Testing the second page of an category
+        # Testing the second page of a category
         #
         with self.app.test_client() as c:
             with captured_templates(self.app) as templates:
                 r = c.get(url_for('worksheets.worksheets_page', category=2, author=None, page=1))
                 template, context = templates[0]
-                self.assertEqual(context['worksheets'], [worksheet_2, worksheet_4, worksheet_6, worksheet_8, worksheet_10, worksheet_12])
+                self.assertEqual(context['worksheets'], [worksheet_2])
                 self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
                 self.assertEqual(context['next_url'], None)
                 self.assertEqual(context['prev_url'], url_for('worksheets.worksheets_page', category=2, author=None, page=0))
-=======
+
+
+        #
+        # Testing the worksheet page with many worksheets inputted
+        #
         with self.app.test_client() as c:
             with captured_templates(self.app) as templates:
-                r = c.get('/worksheets_page')
+                r = c.get(url_for('worksheets.worksheets_page', author=None, worksheet=None, category=None, page=1))
                 template, context = templates[0]
-                self.assertEqual(context['worksheets'], [worksheet])
-                self.assertEqual(context['categories'], [w_cat])
+                self.assertEqual(context['worksheets'], [worksheet_7, worksheet_6, worksheet_5, worksheet_4, worksheet_3])
+                self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
+                self.assertEqual(context['next_url'], url_for('worksheets.worksheets_page', author=None, category=None, page=2))
+                self.assertEqual(context['prev_url'], url_for('worksheets.worksheets_page', author=None, category=None, page=0))
+
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                r = c.get(url_for('worksheets.worksheets_page', author=None, worksheet=None, category=None, page=2))
+                template, context = templates[0]
+                self.assertEqual(context['worksheets'], [worksheet_2, worksheet_1, worksheet])
+                self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
                 self.assertEqual(context['next_url'], None)
+                self.assertEqual(context['prev_url'], url_for('worksheets.worksheets_page', author=None, category=None, page=1))
+
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                r = c.get(url_for('worksheets.worksheets_page', author=None, worksheet=None, category=None, page=0))
+                template, context = templates[0]
+                self.assertEqual(context['worksheets'], [worksheet_12, worksheet_11, worksheet_10, worksheet_9, worksheet_8])
+                self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
+                self.assertEqual(context['next_url'], url_for('worksheets.worksheets_page', author=None, category=None, page=1))
                 self.assertEqual(context['prev_url'], None)
->>>>>>> master
 
 
     def test_view_pages(self):
         # contact page
+        auth_1 = Author(name='Kidkaidf')
+        db.session.add(auth_1)
+
+        db.session.commit()
+
         response = self.client.get('/contact', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
@@ -635,6 +660,10 @@ class TestingWhileLoggedIn(TestCase):
         #
         # Testing the Admin Page
         #
+        w_cat = WorksheetCategory(name='dundk')
+        db.session.add(w_cat)
+        db.session.commit()
+
         response = self.client.get('/admin', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
