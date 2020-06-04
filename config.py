@@ -27,6 +27,8 @@ class TestConfiguration(BaseConfiguration):
     TESTING = True
     WTF_CSRF_ENABLED = False
 
+    UPLOAD_FOLDER = TOP_LEVEL_DIR
+
     SECRET_KEY = 'sajg4ewqokghd8934jhrskdl'
 
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(_basedir, 'testing.sqlite')
