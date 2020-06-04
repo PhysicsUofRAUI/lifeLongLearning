@@ -612,23 +612,7 @@ class TestingWhileLoggedIn(TestCase):
                 self.assertEqual(context['prev_url'], None)
 
 
-    def test_view_pages(self):
-        # contact page
-        auth_1 = Author(name='Kidkaidf')
-        db.session.add(auth_1)
-
-        db.session.commit()
-
-        response = self.client.get('/contact', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
-        auth_1 = Author.query.filter_by(name='Kidkaidf').first()
-        with self.app.test_client() as c:
-            with captured_templates(self.app) as templates:
-                r = c.get('/contact')
-                template, context = templates[0]
-                self.assertEqual(context['authors'], [auth_1])
-
+    def test_blog_view_page(self):
         # blog page
         response = self.client.get('/blog', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
@@ -655,6 +639,152 @@ class TestingWhileLoggedIn(TestCase):
                 self.assertEqual(context['next_url'], None)
                 self.assertEqual(context['prev_url'], None)
 
+        p_cat_1 = PostCategory(name='Tondits')
+        db.session.add(p_cat_1)
+
+        p_cat_2 = PostCategory(name='frootsLoops')
+        db.session.add(p_cat_2)
+
+        p_cat_3 = PostCategory(name='Roger')
+        db.session.add(p_cat_3)
+
+        db.session.commit()
+
+        post_1 = Post(name='Post 1', content='Stephen king is awesome', category_id=1, category=p_cat)
+        post_2 = Post(name='Hello 2', content='Shoe dog is a great book', category_id=2, category=p_cat_1)
+        post_3 = Post(name='Hello 3', content='Zappos was a great company', category_id=3, category=p_cat_2)
+        post_4 = Post(name='Hello 4', content='Gary bettman is crazy', category_id=4, category=p_cat_3)
+
+        post_5 = Post(name='Hello 5', content='Today will be a great day', category_id=1, category=p_cat)
+        post_6 = Post(name='Hello 6', content='Untested code is broken code', category_id=2, category=p_cat_1)
+        post_7 = Post(name='Hello 7', content='Seeding is over!', category_id=3, category=p_cat_2)
+        post_8 = Post(name='Hello 8', content='It is raining out', category_id=4, category=p_cat_3)
+
+        post_9 = Post(name='Hello 9', content='I get confused easily', category_id=1, category=p_cat)
+        post_10 = Post(name='Hello 10', content='I wonder if I should get water', category_id=2, category=p_cat_1)
+        post_11 = Post(name='Hello 11', content='Hopefully I figure out that one test soon', category_id=3, category=p_cat_2)
+        post_12 = Post(name='Hello 12', content='It is really frustrating me', category_id=4, category=p_cat_3)
+
+        post_13 = Post(name='Hello 91', content='I get confused easily what', category_id=1, category=p_cat)
+        post_14 = Post(name='Hello 101', content='I wonder if I should gewhatt water', category_id=2, category=p_cat_1)
+        post_15 = Post(name='Hello 111', content='Hopefully I figure out thawhet one test soon', category_id=3, category=p_cat_2)
+        post_16 = Post(name='Hello 121', content='It is really frustrating mewheat', category_id=4, category=p_cat_3)
+
+        post_17 = Post(name='Hello 916', content='I get confused easilddy', category_id=1, category=p_cat)
+        post_18 = Post(name='Hello 1031', content='I wonder if I shoulddsa get water', category_id=2, category=p_cat_1)
+        post_19 = Post(name='Hello1 11', content='Hopefully I figure out thellohat one test soon', category_id=3, category=p_cat_2)
+        post_20 = Post(name='Hello 112', content='It is really frustrating mdse', category_id=4, category=p_cat_3)
+
+        post_21 = Post(name='Hello 924', content='I get confused easily mais ou menos', category_id=1, category=p_cat)
+        post_22 = Post(name='Hello 102', content='I wonder if I should get water holy fuch', category_id=2, category=p_cat_1)
+        post_23 = Post(name='Hello 411', content='Hopefully I figure out that one test soosdgn', category_id=3, category=p_cat_2)
+        post_24 = Post(name='Hello 142', content='It is really frustrating me. It will be OK!', category_id=4, category=p_cat_3)
+
+        db.session.commit()
+
+        #
+        # Testing specifying a category
+        #
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                r = c.get(url_for('blogs.blog', category=3, post=None, page=0))
+                template, context = templates[0]
+                self.assertEqual(context['posts'], [post_23, post_19, post_15, post_11, post_7])
+                self.assertEqual(context['categories'], [p_cat, p_cat_1, p_cat_2, p_cat_3])
+                self.assertEqual(context['next_url'], url_for('blogs.blog', category=3, page=1, post=None))
+                self.assertEqual(context['prev_url'], None)
+
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                r = c.get(url_for('blogs.blog', category=3, post=None, page=1))
+                template, context = templates[0]
+                self.assertEqual(context['posts'], [post_3])
+                self.assertEqual(context['categories'], [p_cat, p_cat_1, p_cat_2, p_cat_3])
+                self.assertEqual(context['next_url'], None)
+                self.assertEqual(context['prev_url'], url_for('blogs.blog', category=3, page=0, post=None))
+
+        #
+        # Test specifying a post
+        #
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                r = c.get(url_for('blogs.blog', post=2, page=0, category=None))
+                template, context = templates[0]
+                self.assertEqual(context['posts'], [post_1])
+                self.assertEqual(context['categories'], [p_cat, p_cat_1, p_cat_2, p_cat_3])
+                self.assertEqual(context['next_url'], None)
+                self.assertEqual(context['prev_url'], None)
+
+
+        #
+        # Test not specifying anything
+        #
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                r = c.get(url_for('blogs.blog', category=None, post=None, page=0))
+                template, context = templates[0]
+                self.assertEqual(context['posts'], [post_24, post_23, post_22, post_21, post_20])
+                self.assertEqual(context['categories'], [p_cat, p_cat_1, p_cat_2, p_cat_3])
+                self.assertEqual(context['next_url'], url_for('blogs.blog', category=None, page=1, post=None))
+                self.assertEqual(context['prev_url'], None)
+
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                r = c.get(url_for('blogs.blog', category=None, post=None, page=1))
+                template, context = templates[0]
+                self.assertEqual(context['posts'], [post_19, post_18, post_17, post_16, post_15])
+                self.assertEqual(context['categories'], [p_cat, p_cat_1, p_cat_2, p_cat_3])
+                self.assertEqual(context['next_url'], url_for('blogs.blog', category=None, page=2, post=None))
+                self.assertEqual(context['prev_url'], url_for('blogs.blog', category=None, page=0, post=None))
+
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                r = c.get(url_for('blogs.blog', category=None, post=None, page=2))
+                template, context = templates[0]
+                self.assertEqual(context['posts'], [post_14, post_13, post_12, post_11, post_10])
+                self.assertEqual(context['categories'], [p_cat, p_cat_1, p_cat_2, p_cat_3])
+                self.assertEqual(context['next_url'], url_for('blogs.blog', category=None, page=3, post=None))
+                self.assertEqual(context['prev_url'], url_for('blogs.blog', category=None, page=1, post=None))
+
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                r = c.get(url_for('blogs.blog', category=None, post=None, page=3))
+                template, context = templates[0]
+                self.assertEqual(context['posts'], [post_9, post_8, post_7, post_6, post_5])
+                self.assertEqual(context['categories'], [p_cat, p_cat_1, p_cat_2, p_cat_3])
+                self.assertEqual(context['next_url'], url_for('blogs.blog', category=None, page=4, post=None))
+                self.assertEqual(context['prev_url'], url_for('blogs.blog', category=None, page=2, post=None))
+
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                r = c.get(url_for('blogs.blog', category=None, post=None, page=4))
+                template, context = templates[0]
+                self.assertEqual(context['posts'], [post_4, post_3, post_2, post_1, post])
+                self.assertEqual(context['categories'], [p_cat, p_cat_1, p_cat_2, p_cat_3])
+                self.assertEqual(context['next_url'], None)
+                self.assertEqual(context['prev_url'], url_for('blogs.blog', category=None, page=3, post=None))
+
+
+
+    def test_other_database_pages(self):
+        # contact page
+        auth_1 = Author(name='Kidkaidf')
+        db.session.add(auth_1)
+
+        db.session.commit()
+
+        response = self.client.get('/contact', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        auth_1 = Author.query.filter_by(name='Kidkaidf').first()
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                r = c.get('/contact')
+                template, context = templates[0]
+                self.assertEqual(context['authors'], [auth_1])
+
+
+
 
 
         #
@@ -662,6 +792,10 @@ class TestingWhileLoggedIn(TestCase):
         #
         w_cat = WorksheetCategory(name='dundk')
         db.session.add(w_cat)
+
+        p_cat = PostCategory(name='froots')
+
+        db.session.add(p_cat)
         db.session.commit()
 
         response = self.client.get('/admin', follow_redirects=True)
