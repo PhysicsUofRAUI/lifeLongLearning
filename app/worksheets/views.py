@@ -13,7 +13,6 @@ from .. import db
 # Note: will have to make a call to the database for each author so that the
 #   template can distinguish
 #
-@worksheets.route('/worksheets_page/<int:worksheet>/<int:page>', defaults={'category': None, 'author': None}, methods=['GET', 'POST'])
 @worksheets.route('/worksheets_page/<int:category>/<int:page>', defaults={'worksheet': None, 'author': None}, methods=['GET', 'POST'])
 @worksheets.route('/worksheets_page/<int:author>/<int:page>', defaults={'worksheet': None, 'category': None}, methods=['GET', 'POST'])
 @worksheets.route('/worksheets_page/<int:page>', defaults={'category': None, 'worksheet': None, 'author': None}, methods=['GET', 'POST'])
@@ -23,13 +22,7 @@ def worksheets_page(page, category, author, worksheet) :
     #
     categories = WorksheetCategory.query.all()
 
-    if not worksheet == None :
-        # if a specific post has been selected this if statement will be ran
-        worksheets = Worksheet.query.get(worksheet)
-
-        return render_template('worksheets.html', worksheets=worksheets, categories=categories, next_url=None, prev_url=None)
-
-    elif not author == None :
+    if not author == None :
         # get the worksheets done by a specific author
         worksheets = Worksheet.query.filter_by(author_id=author).order_by(Worksheet.id.desc()).offset(page * 5).limit(5).all()
 
