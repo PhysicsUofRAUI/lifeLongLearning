@@ -153,15 +153,9 @@ class TestingWhileLoggedIn(TestCase):
         response = self.client.get('/add_post', follow_redirects=False)
         self.assertEqual(response.status_code, 200)
 
-        data = dict(title='Hello', content='fagkjkjas', category=p_cat)
+        data = dict(title='Hello', content='fagkjkjas', category=p_cat.id)
 
-        form = PostForm(data=data)
-
-        self.assertEqual(form.validate(), True)
-
-        print(form.data)
-
-        response_1 = self.client.post('/add_post', follow_redirects=False, data=form.data, content_type='multipart/form-data')
+        response_1 = self.client.post('/add_post', follow_redirects=False, data=data, content_type='multipart/form-data')
 
         self.assertEqual(response_1.status_code, 302)
 
@@ -196,18 +190,19 @@ class TestingWhileLoggedIn(TestCase):
         response = self.client.get('/add_worksheet', follow_redirects=False)
         self.assertEqual(response.status_code, 200)
 
-        data = dict(title='trig', video_url='youtube.com', category=w_cat, author=auth)
+        data = dict(title='trig', video_url='youtube.com', category=w_cat.id, author=auth.id)
 
-        data['file'] = (io.BytesIO(b"abcdef"), 'test.pdf')
+        data['worksheet_pdf'] = (io.BytesIO(b"abcdef"), 'test.pdf')
 
-        with self.app.test_client() as c:
-            response_1 = c.post('/add_worksheet', follow_redirects=True, data=data, content_type='multipart/form-data')
+        response_1 = self.client.post('/add_worksheet', follow_redirects=True, data=data, content_type='multipart/form-data')
 
         worksheet = Worksheet.query.filter_by(name='trig').first()
 
         self.assertEqual(response_1.status_code, 200)
 
         self.assertNotEqual(worksheet, None)
+
+        os.remove('test.pdf')
 
 
 
@@ -248,13 +243,9 @@ class TestingWhileLoggedIn(TestCase):
         response = self.client.get('/edit_post/1', follow_redirects=False)
         self.assertEqual(response.status_code, 200)
 
-        form = PostForm(obj=post)
+        data = dict(title='Good Day', content='fagkjkjas whate', category=p_cat.id)
 
-        form.content.data = post.content
-        form.title.data = 'Good day'
-        form.category.data = post.category
-
-        response_1 = self.client.post('/edit_post/1', follow_redirects=True, data=form.data)
+        response_1 = self.client.post('/edit_post/1', follow_redirects=True, data=data)
 
         self.assertEqual(response_1.status_code, 200)
 
@@ -343,17 +334,11 @@ class TestingWhileLoggedIn(TestCase):
 
         db.session.commit()
 
-        worksheet = Worksheet(pdf_url='tudolsoos.pdf', name='tudoloods', author_id=1, author=auth_1, category_id=1, category=w_cat)
-        db.session.add(worksheet)
+        data = dict(title='trig', video_url='youtube.com', category=w_cat.id, author=auth_1.id)
 
-        db.session.commit()
+        data['worksheet_pdf'] = (io.BytesIO(b"abcdef"), 'test.pdf')
 
-        data = dict(title='trig', video_url='youtube.com', category=w_cat, author=auth_1)
-
-        data['file'] = (io.BytesIO(b"abcdef"), 'test.pdf')
-
-        with self.app.test_client() as c:
-            response = c.post('/add_worksheet', follow_redirects=True, data=data, content_type='multipart/form-data')
+        response = self.client.post('/add_worksheet', follow_redirects=True, data=data, content_type='multipart/form-data')
 
         self.assertEqual(True, os.path.exists('test.pdf'))
 
@@ -366,12 +351,11 @@ class TestingWhileLoggedIn(TestCase):
         #
         # Now make a new worksheet to add
         #
-        data = dict(title='Trigonometry', video_url='youtube.com', category=w_cat, author=auth_1)
+        data = dict(title='Trigonometry', video_url='youtube.com', category=w_cat.id, author=auth_1.id)
 
-        data['file'] = (io.BytesIO(b"abcd234ef"), 'test_1.pdf')
+        data['worksheet_pdf'] = (io.BytesIO(b"abcd234ef"), 'test_1.pdf')
 
-        with self.app.test_client() as c:
-            response_1 = c.post('/edit_worksheet/1', follow_redirects=True, data=data, content_type='multipart/form-data')
+        response_1 = self.client.post('/edit_worksheet/1', follow_redirects=True, data=data, content_type='multipart/form-data')
 
         worksheet_1 = Worksheet.query.filter_by(name='Trigonometry').first()
 
@@ -381,6 +365,8 @@ class TestingWhileLoggedIn(TestCase):
 
         self.assertEqual(False, os.path.exists('test.pdf'))
         self.assertEqual(True, os.path.exists('test_1.pdf'))
+
+        os.remove('test_1.pdf')
 
 
 
@@ -819,10 +805,13 @@ class TestingWhileLoggedIn(TestCase):
 
         with self.app.test_client() as c:
             with captured_templates(self.app) as templates:
-                r = c.get('/admin')
-                template, context = templates[0]
+                login(c, 'LLLRocks', 'h0ngk0ng')
+                r = c.get('/admin', follow_redirects=False)
+                self.assertEqual(r.status_code, 200)
+                template, context = templates[1]
                 self.assertEqual(context['post_categories'], [p_cat])
                 self.assertEqual(context['worksheet_categories'], [w_cat])
+                logout(c)
 
 
 
@@ -855,6 +844,13 @@ class BasicTests(TestCase):
     def test_main_page_home(self):
         response = self.client.get('/home', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
+
+    def test_admin_page(self):
+        response = self.client.get('/admin', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/admin', follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
 
 
 
