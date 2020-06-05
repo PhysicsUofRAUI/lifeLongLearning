@@ -109,6 +109,9 @@ ul:nth-child(1){
     <a href="{{ url_for('other.contact') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">Contact</a>
     <a href="{{ url_for('blogs.blog') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">Blog</a>
     <a href="{{ url_for('worksheets.worksheets_page') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">Worksheets</a>
+    {% if session['logged_in'] %}
+      <a href="{{ url_for('other.admin') }}" class="w3-bar-item w3-button w3-padding-large w3-hide-small">Admin</a>
+    {% endif %}
   </div>
 </div>
 
@@ -118,6 +121,9 @@ ul:nth-child(1){
   <a href="{{ url_for('other.contact') }}" class="w3-bar-item w3-button w3-padding-large" onclick="smallScreenToggle()">Contact</a>
   <a href="{{ url_for('blogs.blog') }}" class="w3-bar-item w3-button w3-padding-large" onclick="smallScreenToggle()">Blog</a>
   <a href="{{ url_for('worksheets.worksheets_page') }}" class="w3-bar-item w3-button w3-padding-large" onclick="smallScreenToggle()">Worksheets</a>
+  {% if session['logged_in'] %}
+    <a href="{{ url_for('other.admin') }}" class="w3-bar-item w3-button w3-padding-large" onclick="smallScreenToggle()">Admin</a>
+  {% endif %}
 </div>
 
 <br><br>
