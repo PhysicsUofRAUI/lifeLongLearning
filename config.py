@@ -1,7 +1,6 @@
 import os
 from os.path import abspath, dirname, join
-
-# _cwd = dirname(abspath(__file__))
+import secrets
 
 _basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -16,10 +15,10 @@ class BaseConfiguration(object):
 
 
 class ProductionConfiguration(BaseConfiguration):
-    SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://lllAdmin:$ingap0re@localhost/lll'
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE')
     SQLALCHEMY_POOL_PRE_PING = True
     SQLALCHEMY_ENGINE_OPTIONS = {'pool_recycle' : 3600}
-    SECRET_KEY = 'sajg4ewqokghd8934jhrskdl'
+    SECRET_KEY = secrets.token_urlsafe(16)
     UPLOAD_FOLDER = TOP_LEVEL_DIR + '/app/static'
 
 
@@ -27,8 +26,11 @@ class TestConfiguration(BaseConfiguration):
     TESTING = True
     WTF_CSRF_ENABLED = False
 
+    USERNAME=os.getenv('LOGIN_USERNAME')
+    PASSWORD=os.getenv('LOGIN_PASSWORD')
+
     UPLOAD_FOLDER = TOP_LEVEL_DIR
 
-    SECRET_KEY = 'sajg4ewqokghd8934jhrskdl'
+    SECRET_KEY = secrets.token_urlsafe(16)
 
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(_basedir, 'testing.sqlite')

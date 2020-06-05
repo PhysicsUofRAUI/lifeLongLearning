@@ -2,3 +2,4 @@ venv/
 *.pyc
 *.pdf
 testing.sqlite
+set_env_vars.sh

@@ -3,7 +3,7 @@ import io
 import unittest
 from flask_testing import TestCase
 from flask_sqlalchemy import SQLAlchemy
-from flask import session, url_for, template_rendered
+from flask import session, url_for, template_rendered, current_app
 from app.models import Worksheet, WorksheetCategory, Author, Post, PostCategory
 from werkzeug.datastructures import MultiDict
 from app.blogs.forms import PostForm
@@ -124,7 +124,7 @@ class TestingWhileLoggedIn(TestCase):
         self.app_context.push()
         db.create_all()
 
-        login(self.client, 'LLLRocks', 'h0ngk0ng')
+        login(self.client, os.getenv('LOGIN_USERNAME'), os.getenv('LOGIN_PASSWORD'))
 
     # executed after each test
     def tearDown(self):
@@ -805,7 +805,7 @@ class TestingWhileLoggedIn(TestCase):
 
         with self.app.test_client() as c:
             with captured_templates(self.app) as templates:
-                login(c, 'LLLRocks', 'h0ngk0ng')
+                login(c, os.getenv('LOGIN_USERNAME'), os.getenv('LOGIN_PASSWORD'))
                 r = c.get('/admin', follow_redirects=False)
                 self.assertEqual(r.status_code, 200)
                 template, context = templates[1]

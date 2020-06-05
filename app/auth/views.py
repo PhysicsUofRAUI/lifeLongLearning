@@ -13,7 +13,7 @@ from .forms import LoginForm
 # To add a new password it world have to be hashed and then that hash would be
 # added.
 #
-passwrd = 'pbkdf2:sha256:150000$mjEGmUba$cf852f8bc60105a7f5ab7deaacfca1baf8bfa787d57d8c4ccb2adec1cf90ab8f'
+passwrd = 'pbkdf2:sha256:150000$EZiwDuX9$966c28ea88991978ebfe524da2f5916cdb73a72f06f97300bb463b8dd862d3a1'
 #
 # Login
 # Purpose:
