@@ -5,6 +5,64 @@
 <!-- Page Container -->
 <div class="w3-content w3-margin-top" style="max-width:1400px;">
 
+  <!-- The Grid for the blog -->
+  <div class="w3-row-padding">
+    <!-- First Row (the post options) -->
+    <div class="w3-half">
+      <a href="{{ url_for('blogs.add_post') }}" class="w3-btn w3-round-xlarge w3-blue">Add Post</a>
+    </div>
+
+    <div class="w3-half">
+      <a href="{{ url_for('blogs.add_blog_category') }}" class="w3-btn w3-round-xlarge w3-blue">Add Post Category</a>
+    </div>
+  </div>
+
+  <!-- The worksheet Add stuff -->
+  <div class="w3-row-padding">
+    <div class="w3-third">
+      <a href="{{ url_for('worksheets.add_worksheet') }}" class="w3-btn w3-round-xlarge w3-orange">Add Worksheet</a>
+    </div>
+
+    <div class="w3-third">
+      <a href="{{ url_for('worksheets.add_worksheet_category') }}" class="w3-btn w3-round-xlarge w3-orange">Add Worksheet Category</a>
+    </div>
+
+    <div class="w3-third">
+      <a href="{{ url_for('worksheets.add_author') }}" class="w3-btn w3-round-xlarge w3-orange">Add Author</a>
+    </div>
+  </div>
+
+  <!-- Edit and delete views for categories -->
+  <div class="w3-row-padding">
+    <!-- Worksheet Category Options -->
+    <div class="w3-half">
+      <h3>Worksheet Categories</h3>
+      {% if worksheet_categories %}
+        {% for worksheet_category in worksheet_categories %}
+          <p>
+            <b>{{ worksheet_category.name }}</b> :
+            <a href="{{ url_for('worksheets.edit_worksheet_category', id=worksheet_category.id) }}" class="w3-btn w3-round-xlarge w3-indigo">Edit</a>
+            <a href="{{ url_for('worksheets.delete_worksheet_category', id=worksheet_category.id) }}" class="w3-btn w3-round-xlarge w3-indigo">Delete</a>
+          </p>
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    <!-- Post Category Options -->
+    <div class="w3-half">
+      <h2>Post Categories</h2>
+      {% if post_categories %}
+        {% for post_category in post_categories %}
+          <p>
+            <b>{{ post_category.name }}</b> :
+            <a href="{{ url_for('blogs.edit_blog_category', id=post_category.id) }}" class="w3-btn w3-round-xlarge w3-indigo">Edit</a>
+            <a href="{{ url_for('blogs.delete_blog_category', id=post_category.id) }}" class="w3-btn w3-round-xlarge w3-indigo">Delete</a>
+          </p>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+
 
 
 </div>

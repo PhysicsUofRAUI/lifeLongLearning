@@ -1,7 +1,7 @@
-from flask import render_template, current_app
+from flask import render_template, current_app, session, redirect, url_for
 from . import other
 from .. import db
-from ..models import Author, WorksheetCategory, PostCategory
+from ..models import Author, PostCategory, WorksheetCategory
 
 #
 # Home
@@ -28,15 +28,13 @@ def contact():
 
     return render_template("contact.html", authors=authors)
 
-
-#
-# Admin:
-#   renders a page to list all the not easily found webpages for admin functions
-#
-@other.route('/admin')
+@other.route('/admin', methods=['GET', 'POST'])
 def admin() :
-    worksheet_categories = WorksheetCategory.query.all()
+    if not session.get('logged_in'):
+        return redirect(url_for('other.home'))
 
-    post_categories = PostCategory.query.all()
+    worksheetCategories = WorksheetCategory.query.all()
 
-    return render_template("admin.html", worksheet_categories=worksheet_categories, post_categories=post_categories)
+    postCategories = PostCategory.query.all()
+
+    return render_template('admin.html', worksheet_categories=worksheetCategories, post_categories=postCategories)
