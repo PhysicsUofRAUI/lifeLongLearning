@@ -94,12 +94,9 @@ def add_post():
 
     form = PostForm()
 
-    print(form.data)
 
     if form.validate_on_submit():
         new_post = Post(name=form.title.data, content=form.content.data, category_id=form.category.data.id, category=form.category.data)
-
-        print('hello')
 
         try:
             db.session.add(new_post)

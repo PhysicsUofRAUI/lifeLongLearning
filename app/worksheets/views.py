@@ -92,6 +92,7 @@ def add_worksheet():
     # sent to the form.  This will cause WorksheetForm to not see the file data.
     # Flask-WTF handles passing form data to the form, so not parameters need to be included.
     form = WorksheetForm()
+
     if request.method == 'POST':
         if form.validate_on_submit():
             file = request.files['worksheet_pdf']
@@ -138,8 +139,8 @@ def edit_worksheet(id):
         worksheet.video_url = form.video_url.data
         worksheet.category_id = form.category.data.id
         worksheet.category = form.category.data
-        worksheet.category_id = form.author.data.id
-        worksheet.category = form.author.data
+        worksheet.author_id = form.author.data.id
+        worksheet.author = form.author.data
 
         db.session.commit()
 
