@@ -12,11 +12,10 @@ import os
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from app.database import db
-from config import ProductionConfiguration
 
 ALLOWED_EXTENSIONS = set(['pdf'])
 
-def create_app(config_class=ProductionConfiguration):
+def create_app(config_class):
     app = Flask(__name__)
 
     app.config.from_object(config_class)
@@ -37,7 +36,8 @@ def create_app(config_class=ProductionConfiguration):
     from .worksheets import worksheets as worksheets_blueprint
     app.register_blueprint(worksheets_blueprint)
 
-
+    with app.app_context():
+        db.create_all()
 
 
     @app.teardown_appcontext
