@@ -12,11 +12,11 @@ import os
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from app.database import db
-from config import Config
+from config import ProductionConfiguration
 
 ALLOWED_EXTENSIONS = set(['pdf'])
 
-def create_app(config_class=Config):
+def create_app(config_class=ProductionConfiguration):
     app = Flask(__name__)
 
     app.config.from_object(config_class)

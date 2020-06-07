@@ -7,9 +7,6 @@ _basedir = os.path.abspath(os.path.dirname(__file__))
 
 TOP_LEVEL_DIR = os.path.abspath(os.curdir)
 
-class Config(object) :
-    pass
-
 class BaseConfiguration(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
