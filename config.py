@@ -17,7 +17,7 @@ class BaseConfiguration(object):
 class ProductionConfiguration(BaseConfiguration):
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE')
     SQLALCHEMY_POOL_PRE_PING = True
-    SQLALCHEMY_ENGINE_OPTIONS = {'pool_recycle' : 3600}
+    SQLALCHEMY_ENGINE_OPTIONS = {'pool_size' : 100, 'pool_recycle' : 280}
     SECRET_KEY = secrets.token_urlsafe(16)
     UPLOAD_FOLDER = TOP_LEVEL_DIR + '/app/static'
 
