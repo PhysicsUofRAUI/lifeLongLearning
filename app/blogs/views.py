@@ -96,16 +96,14 @@ def add_post():
 
 
     if form.validate_on_submit():
-        new_post = Post(name=form.title.data, content=form.content.data, category_id=form.category.data.id, category=form.category.data)
-
         try:
+            new_post = Post(name=form.title.data, content=form.content.data, category_id=form.category.data.id, category=form.category.data)
             db.session.add(new_post)
             db.session.commit()
-        except:
-            # not the best behaviour and should change
             return redirect(url_for('other.home'))
-
-        return redirect(url_for('other.home'))
+        except:
+            db.session.rollback()
+            raise
 
     return render_template('add_post.html', form=form)
 
@@ -130,15 +128,19 @@ def edit_post(id):
     post = Post.query.get(id)
     form = PostForm(obj=post)
     if form.validate_on_submit():
-        post.name = form.title.data
-        post.content = form.content.data
-        post.category_id = form.category.data.id
-        post.category = form.category.data
+        try :
+            post.name = form.title.data
+            post.content = form.content.data
+            post.category_id = form.category.data.id
+            post.category = form.category.data
 
-        db.session.commit()
+            db.session.commit()
 
-        # redirect to the home page
-        return redirect(url_for('other.home'))
+            # redirect to the home page
+            return redirect(url_for('other.home'))
+        except :
+            db.session.rollback()
+            raise
 
     form.content.data = post.content
     form.title.data = post.name
@@ -160,12 +162,16 @@ def delete_post(id):
     if not session.get('logged_in'):
         return redirect(url_for('other.home'))
 
-    post = Post.query.get(id)
-    db.session.delete(post)
-    db.session.commit()
+    try :
+        post = Post.query.get(id)
+        db.session.delete(post)
+        db.session.commit()
 
-    # redirect to the home page
-    return redirect(url_for('other.home'))
+        # redirect to the home page
+        return redirect(url_for('other.home'))
+    except :
+        db.session.rollback()
+        raise
 
 #
 # Add PostCategory
@@ -184,15 +190,17 @@ def add_blog_category():
     form = PostCategoryForm()
 
     if form.validate_on_submit():
-        new_category = PostCategory(name=form.name.data)
-
         try:
+            new_category = PostCategory(name=form.name.data)
             db.session.add(new_category)
             db.session.commit()
-        except:
-            return redirect(url_for('other.home'))
 
-        return redirect(url_for('other.home'))
+            return redirect(url_for('other.home'))
+        except:
+            db.session.rollback()
+            raise
+
+
 
     return render_template('add_blog_category.html', form=form)
 
@@ -213,12 +221,16 @@ def edit_blog_category(id) :
     form = PostCategoryForm(obj=category)
 
     if form.validate_on_submit():
-        category.name = form.name.data
+        try :
+            category.name = form.name.data
 
-        db.session.commit()
+            db.session.commit()
 
-        # redirect to the home page
-        return redirect(url_for('other.home'))
+            # redirect to the home page
+            return redirect(url_for('other.home'))
+        except :
+            db.session.rollback()
+            raise
 
     form.name.data = category.name
 
@@ -237,9 +249,13 @@ def delete_blog_category(id):
     if not session.get('logged_in'):
         return redirect(url_for('other.home'))
 
-    category = PostCategory.query.get(id)
-    db.session.delete(category)
-    db.session.commit()
+    try :
+        category = PostCategory.query.get(id)
+        db.session.delete(category)
+        db.session.commit()
 
-    # redirect to the home page
-    return redirect(url_for('other.home'))
+        # redirect to the home page
+        return redirect(url_for('other.home'))
+    except :
+        db.session.rollback()
+        raise

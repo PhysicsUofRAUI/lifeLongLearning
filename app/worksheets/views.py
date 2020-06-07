@@ -95,17 +95,19 @@ def add_worksheet():
 
     if request.method == 'POST':
         if form.validate_on_submit():
-            file = request.files['worksheet_pdf']
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
-            new_worksheet = Worksheet(name=form.title.data, video_url=form.video_url.data,
-                pdf_url=filename, category_id=form.category.data.id, category=form.category.data,
-                author_id=form.author.data.id, author=form.author.data)
-
-            db.session.add(new_worksheet)
-            db.session.commit()
-
-            return redirect(url_for('other.home'))
+            try :
+                file = request.files['worksheet_pdf']
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+                new_worksheet = Worksheet(name=form.title.data, video_url=form.video_url.data,
+                    pdf_url=filename, category_id=form.category.data.id, category=form.category.data,
+                    author_id=form.author.data.id, author=form.author.data)
+                db.session.add(new_worksheet)
+                db.session.commit()
+                return redirect(url_for('other.home'))
+            except :
+                db.session.rollback()
+                raise
         else:
             return redirect(url_for('other.home'))
 
@@ -125,27 +127,31 @@ def edit_worksheet(id):
     form = EditWorksheetForm(obj=worksheet)
 
     if form.validate_on_submit():
-        # removing the old pdf
-        os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], worksheet.pdf_url))
+        try :
+            # removing the old pdf
+            os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], worksheet.pdf_url))
 
-        # adding the new pdf
-        file = request.files['worksheet_pdf']
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+            # adding the new pdf
+            file = request.files['worksheet_pdf']
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
 
-        # updating the database values
-        worksheet.pdf_url = filename
-        worksheet.name = form.title.data
-        worksheet.video_url = form.video_url.data
-        worksheet.category_id = form.category.data.id
-        worksheet.category = form.category.data
-        worksheet.author_id = form.author.data.id
-        worksheet.author = form.author.data
+            # updating the database values
+            worksheet.pdf_url = filename
+            worksheet.name = form.title.data
+            worksheet.video_url = form.video_url.data
+            worksheet.category_id = form.category.data.id
+            worksheet.category = form.category.data
+            worksheet.author_id = form.author.data.id
+            worksheet.author = form.author.data
 
-        db.session.commit()
+            db.session.commit()
 
-        # redirect to the home page
-        return redirect(url_for('other.home'))
+            # redirect to the home page
+            return redirect(url_for('other.home'))
+        except :
+            db.session.rollback()
+            raise
 
     form.title.data = worksheet.name
     form.video_url.data = worksheet.video_url
@@ -171,13 +177,17 @@ def delete_worksheet(id):
 
     worksheet = Worksheet.query.get(id)
 
-    os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], worksheet.pdf_url))
+    try :
+        os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], worksheet.pdf_url))
 
-    db.session.delete(worksheet)
-    db.session.commit()
+        db.session.delete(worksheet)
+        db.session.commit()
 
-    # redirect to the home page
-    return redirect(url_for('other.home'))
+        # redirect to the home page
+        return redirect(url_for('other.home'))
+    except :
+        db.session.rollback()
+        raise
 
 #
 # AddWorksheetCategory
@@ -194,15 +204,15 @@ def add_worksheet_category():
     form = WorksheetCategoryForm()
 
     if form.validate_on_submit():
-        new_category = WorksheetCategory(name=form.name.data)
-
-        try:
+        try :
+            new_category = WorksheetCategory(name=form.name.data)
             db.session.add(new_category)
             db.session.commit()
-        except:
-            return redirect(url_for('other.home'))
 
-        return redirect(url_for('other.home'))
+            return redirect(url_for('other.home'))
+        except:
+            db.session.rollback()
+            raise
 
     return render_template('add_worksheet_category.html', form=form)
 
@@ -223,12 +233,16 @@ def edit_worksheet_category(id) :
     form = WorksheetCategoryForm(obj=category)
 
     if form.validate_on_submit():
-        category.name = form.name.data
+        try :
+            category.name = form.name.data
 
-        db.session.commit()
+            db.session.commit()
 
-        # redirect to the home page
-        return redirect(url_for('other.home'))
+            # redirect to the home page
+            return redirect(url_for('other.home'))
+        except :
+            db.session.rollback()
+            raise
 
     form.name.data = category.name
 
@@ -247,13 +261,17 @@ def delete_worksheet_category(id):
     if not session.get('logged_in'):
         return redirect(url_for('other.home'))
 
-    category = WorksheetCategory.query.get(id)
-    db.session.delete(category)
-    db.session.commit()
+    try :
+        category = WorksheetCategory.query.get(id)
+        db.session.delete(category)
+        db.session.commit()
 
 
-    # redirect to the home page
-    return redirect(url_for('other.home'))
+        # redirect to the home page
+        return redirect(url_for('other.home'))
+    except :
+        db.session.rollback()
+        raise
 
 #
 # AddAuthor
@@ -270,16 +288,17 @@ def add_author():
     form = AuthorForm()
 
     if form.validate_on_submit():
-        new_author = Author(name=form.name.data, email=form.email.data, about=form.about.data)
-
         try:
+            new_author = Author(name=form.name.data, email=form.email.data, about=form.about.data)
             db.session.add(new_author)
             db.session.commit()
-
-        except:
             return redirect(url_for('other.home'))
 
-        return redirect(url_for('other.home'))
+        except:
+            db.session.rollback()
+            raise
+
+
 
     return render_template('add_author.html', form=form)
 
@@ -296,12 +315,16 @@ def delete_author(id):
     if not session.get('logged_in'):
         return redirect(url_for('other.home'))
 
-    author = Author.query.get(id)
-    db.session.delete(author)
-    db.session.commit()
+    try :
+        author = Author.query.get(id)
+        db.session.delete(author)
+        db.session.commit()
 
-    # redirect to the home page
-    return redirect(url_for('other.home'))
+        # redirect to the home page
+        return redirect(url_for('other.home'))
+    except :
+        db.session.rollback()
+        raise
 
 #
 # EditAuthor
@@ -320,14 +343,18 @@ def edit_author(id) :
     form = AuthorForm(obj=author)
 
     if form.validate_on_submit():
-        author.name = form.name.data
-        author.email = form.email.data
-        author.about = form.about.data
+        try :
+            author.name = form.name.data
+            author.email = form.email.data
+            author.about = form.about.data
 
-        db.session.commit()
+            db.session.commit()
 
-        # redirect to the home page
-        return redirect(url_for('other.home'))
+            # redirect to the home page
+            return redirect(url_for('other.home'))
+        except :
+            db.session.rollback()
+            raise
 
     form.name.data = author.name
     form.name.data = author.email
