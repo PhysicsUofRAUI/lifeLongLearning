@@ -41,6 +41,12 @@ def login():
             session['logged_in'] = True
 
             return redirect(url_for('other.home'))
+        elif not check_password_hash(passwrd, form.password.data) :
+            flash("password was incorrect")
+            return redirect(request.url)
+        elif not form.username.data == 'LLLRocks':
+            flash("username was incorrect")
+            return redirect(request.url)
 
     # load login template
     return render_template('login.html', form=form, title='Login')
