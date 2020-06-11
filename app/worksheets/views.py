@@ -16,17 +16,23 @@ from .. import db
 @worksheets.route('/worksheets_page/<int:page>', methods=['GET', 'POST'])
 @worksheets.route('/worksheets_page', defaults={'page': 0}, methods=['GET', 'POST'])
 def worksheets_page(page) :
-    # The pagination may cause an error with the None trying to be an int
-    #
-    categories = WorksheetCategory.query.all()
-    author = request.args.get('author')
-    category = request.args.get('category')
+    try :
+        categories = WorksheetCategory.query.all()
+        author = request.args.get('author')
+        category = request.args.get('category')
+    except:
+        db.session.rollback()
+        return redirect(url_for('other.home'))
 
     if not author == None :
-        # get the worksheets done by a specific author
-        worksheets = Worksheet.query.filter_by(author_id=author).order_by(Worksheet.id.desc()).offset(page * 5).limit(5).all()
+        try :
+            # get the worksheets done by a specific author
+            worksheets = Worksheet.query.filter_by(author_id=author).order_by(Worksheet.id.desc()).offset(page * 5).limit(5).all()
 
-        more = Worksheet.query.filter_by(author_id=author).offset((page + 1) * 5).first()
+            more = Worksheet.query.filter_by(author_id=author).offset((page + 1) * 5).first()
+        except:
+            db.session.rollback()
+            return redirect(url_for('other.home'))
 
         if page != 0 :
             prev_url = url_for('worksheets.worksheets_page', author=author, category=category, page=page - 1)
@@ -41,10 +47,14 @@ def worksheets_page(page) :
         return render_template('worksheets.html', worksheets=worksheets, categories=categories, next_url=next_url, prev_url=prev_url)
 
     elif not category == None:
-        # get the worksheets from a specific category
-        worksheets = Worksheet.query.filter_by(category_id=category).order_by(Worksheet.id.desc()).offset(page * 5).limit(5).all()
+        try :
+            # get the worksheets from a specific category
+            worksheets = Worksheet.query.filter_by(category_id=category).order_by(Worksheet.id.desc()).offset(page * 5).limit(5).all()
 
-        more = Worksheet.query.filter_by(category_id=category).offset((page + 1) * 5).first()
+            more = Worksheet.query.filter_by(category_id=category).offset((page + 1) * 5).first()
+        except:
+            db.session.rollback()
+            return redirect(url_for('other.home'))
 
         if page != 0 :
             prev_url = url_for('worksheets.worksheets_page', category=category, author=author, page=page - 1)
@@ -59,11 +69,15 @@ def worksheets_page(page) :
         return render_template('worksheets.html', worksheets=worksheets, categories=categories, next_url=next_url, prev_url=prev_url)
 
     else :
-        # get all the worksheets
-        # if a no specific photo or category has been selected this if statement will be ran
-        worksheets = Worksheet.query.order_by(Worksheet.id.desc()).offset(page * 5).limit(5).all()
+        try :
+            # get all the worksheets
+            # if a no specific worksheet or category has been selected this if statement will be ran
+            worksheets = Worksheet.query.order_by(Worksheet.id.desc()).offset(page * 5).limit(5).all()
 
-        more = Worksheet.query.offset((page + 1) * 5).first()
+            more = Worksheet.query.offset((page + 1) * 5).first()
+        except:
+            db.session.rollback()
+            return redirect(url_for('other.home'))
 
         if page != 0 :
             prev_url = url_for('worksheets.worksheets_page', category=category, author=author, page=page - 1)

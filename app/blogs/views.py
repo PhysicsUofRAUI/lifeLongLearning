@@ -26,23 +26,35 @@ from .. import db
 @blogs.route('/blog/<int:page>', methods=['GET', 'POST'])
 @blogs.route('/blog', defaults={'page' : 0}, methods=['GET', 'POST'])
 def blog(page) :
-    categories = PostCategory.query.all()
-    post = request.args.get('post')
-    category = request.args.get('category')
+    try :
+        categories = PostCategory.query.all()
+        post = request.args.get('post')
+        category = request.args.get('category')
+    except:
+        db.session.rollback()
+        return redirect(url_for('other.home'))
 
     if not post == None :
-        # if a specific post has been selected this if statement will be ran
-        blog = Post.query.get(post)
+        try :
+            # if a specific post has been selected this if statement will be ran
+            blog = Post.query.get(post)
 
-        posts = [blog]
+            posts = [blog]
+        except:
+            db.session.rollback()
+            return redirect(url_for('other.home'))
 
         return render_template('blog.html', posts=posts, categories=categories, next_url=None, prev_url=None)
 
     elif not category == None :
-        # if a specific category has been selected this if statement will be ran
-        posts = Post.query.filter_by(category_id=category).order_by(Post.id.desc()).offset(page * 5).limit(5).all()
+        try :
+            # if a specific category has been selected this if statement will be ran
+            posts = Post.query.filter_by(category_id=category).order_by(Post.id.desc()).offset(page * 5).limit(5).all()
 
-        more = Post.query.filter_by(category_id=category).offset((page + 1) * 5).first()
+            more = Post.query.filter_by(category_id=category).offset((page + 1) * 5).first()
+        except:
+            db.session.rollback()
+            return redirect(url_for('other.home'))
 
         if page != 0 :
             prev_url = url_for('blogs.blog', category=category, page=page - 1, post=None)
@@ -57,10 +69,14 @@ def blog(page) :
         return render_template('blog.html', posts=posts, categories=categories, next_url=next_url, prev_url=prev_url)
 
     else :
-        # if a no specific post or category has been selected this if statement will be ran
-        posts = Post.query.order_by(Post.id.desc()).offset(page * 5).limit(5).all()
+        try :
+            # if a no specific post or category has been selected this if statement will be ran
+            posts = Post.query.order_by(Post.id.desc()).offset(page * 5).limit(5).all()
 
-        more = Post.query.offset((page + 1) * 5).first()
+            more = Post.query.offset((page + 1) * 5).first()
+        except:
+            db.session.rollback()
+            return redirect(url_for('other.home'))
 
         if page != 0 :
             prev_url = url_for('blogs.blog', category=category, page=page - 1, post=None)

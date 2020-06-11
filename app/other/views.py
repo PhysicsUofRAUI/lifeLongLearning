@@ -24,7 +24,11 @@ def home():
 #
 @other.route('/contact')
 def contact():
-    authors = Author.query.all()
+    try :
+        authors = Author.query.all()
+    except:
+        db.session.rollback()
+        return redirect(url_for('other.home'))
 
     return render_template("contact.html", authors=authors)
 
@@ -33,8 +37,12 @@ def admin() :
     if not session.get('logged_in'):
         return redirect(url_for('other.home'))
 
-    worksheetCategories = WorksheetCategory.query.all()
+    try :
+        worksheetCategories = WorksheetCategory.query.all()
 
-    postCategories = PostCategory.query.all()
+        postCategories = PostCategory.query.all()
+    except:
+        db.session.rollback()
+        return redirect(url_for('other.home'))
 
     return render_template('admin.html', worksheet_categories=worksheetCategories, post_categories=postCategories)
