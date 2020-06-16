@@ -37,6 +37,9 @@ def create_app(config_class=ProductionConfiguration):
     from .worksheets import worksheets as worksheets_blueprint
     app.register_blueprint(worksheets_blueprint)
 
+    from .errors import errors as errors_blueprint
+    app.register_blueprint(errors_blueprint)
+
     with app.app_context():
         db.create_all()
 

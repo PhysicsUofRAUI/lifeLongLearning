@@ -1023,6 +1023,13 @@ class BasicTests(TestCase):
         response = self.client.get('/bloogs', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
+    def test_500_page(self):
+        # should through 500 errors because there is no database initialized
+        response = self.client.get('/worksheets_page', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/contact', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
 
 
 
