@@ -1003,6 +1003,26 @@ class BasicTests(TestCase):
         response = self.client.get('/logout', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
+    ##############################
+    ### Testing Error Views ######
+    ##############################
+
+    def test_404_page(self) :
+        response = self.client.get('/loop', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/dsagj/aghdsa/sadf', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/worksheets', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/posts', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/bloogs', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
 
 
 
