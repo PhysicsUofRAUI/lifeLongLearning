@@ -124,7 +124,7 @@ class WorksheetCategory(db.Model) :
 #
 class Author(db.Model) :
     """
-    Create Categories table For Worksheet Categories
+    Create Author table
     """
 
     __tablename__ = 'authors'
@@ -133,6 +133,8 @@ class Author(db.Model) :
     name = Column(String(64), index=True, unique=True)
     email = Column(String(64), default=None, nullable=True)
     about = Column(String(1200), default=None, nullable=True)
+    screenname = Column(String(64), default=None, nullable=True, unique=True)
+    password = Column(String(200))
 
     def __repr__(self):
         return '<Author %r>' % self.name

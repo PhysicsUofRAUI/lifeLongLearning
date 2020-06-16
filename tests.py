@@ -102,7 +102,7 @@ class DatabaseTests(TestCase):
         assert worksheet_cat in db.session
 
     def test_author_model(self) :
-        author = Author(name='KJsa')
+        author = Author(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod', about='What up?', password='pbkdf2:sha256:150000$CgCWVBC6$4090facdcd3e093c7b458362daddbaa7b53387c6042ad46b5970dc7b6d00183c')
         db.session.add(author)
         db.session.commit()
 
