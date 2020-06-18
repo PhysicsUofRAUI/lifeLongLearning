@@ -2,7 +2,8 @@
 # This will initialize everything
 #   register blueprints
 #   start the database
-#   many other things (see the personal website for more)
+#   many other things (see the personal website for more
+#   follow this webpage for changing the database: https://flask-migrate.readthedocs.io/en/latest/
 #
 # P.S. This is my most hated file
 #
