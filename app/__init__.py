@@ -13,6 +13,7 @@ from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from app.database import db
 from config import ProductionConfiguration
+from flask_migrate import Migrate
 
 ALLOWED_EXTENSIONS = set(['pdf'])
 
@@ -20,6 +21,8 @@ def create_app(config_class=ProductionConfiguration):
     app = Flask(__name__)
 
     app.config.from_object(config_class)
+
+    migrate = Migrate(app, db)
 
     db.init_app(app)
 
