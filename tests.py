@@ -852,6 +852,10 @@ class BasicTests(TestCase):
         response = self.client.get('/admin', follow_redirects=False)
         self.assertEqual(response.status_code, 302)
 
+    def test_building_page(self):
+        response = self.client.get('/building', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
 
 
     #######################

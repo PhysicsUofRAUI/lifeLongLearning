@@ -46,3 +46,7 @@ def admin() :
         return redirect(url_for('other.home'))
 
     return render_template('admin.html', worksheet_categories=worksheetCategories, post_categories=postCategories)
+
+@other.route('/building')
+def building():
+    return render_template("building.html")
