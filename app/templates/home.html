@@ -20,69 +20,7 @@ textarea {
 body {font-family: "Lato", sans-serif}
 .mySlides {display: none}
 
-#mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
-
-.timeline{
-  counter-reset: step 0;
-  position: relative;
-}
-
-.timeline li{
-  list-style: none;
-  float: left;
-  width: 33.3333%;
-  position: relative;
-  text-align: center;
-  font-family: 'Dosis', sans-serif;
-}
-
-ul:nth-child(1){
-  color: #4caf50;
-}
-
-.timeline li:before{
-  counter-increment: step;
-  content: counter(step);
-  width: 50px;
-  height: 50px;
-  border: 3px solid #4caf50;
-  border-radius: 50%;
-  display: block;
-  text-align: center;
-  line-height: 50px;
-  margin: 0 auto 10px auto;
-  background: #F1F1F1;
-  color: #000;
-  transition: all ease-in-out .3s;
-  cursor: pointer;
-}
-
-.timeline li:after{
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 1px;
-  background-color: grey;
-  top: 25px;
-  left: -50%;
-  z-index: -999;
-  transition: all ease-in-out .3s;
-}
-
-.timeline li:first-child:after{
-  content: none;
-}
-.timeline li.active{
-  color: #555555;
-}
-.timeline li.active:before{
-  background: #4caf50;
-  color: #F1F1F1;
-}
-
-.timeline li.active + li:after{
-  background: #4caf50;
-}
+#mc_embed_signup{background:#A9A9A9; clear:left; font:14px Helvetica,Arial,sans-serif; }
 </style>
 
 {% endblock %}
@@ -120,7 +58,7 @@ ul:nth-child(1){
   </div>
 
   <!-- The About me and Services -->
-  <div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px" id="band">
+  <div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px">
     <h2 class="w3-wide">What is this website?</h2>
     <p class="w3-opacity"><i>We love learning!</i></p>
     <p class="w3-justify">
@@ -145,38 +83,8 @@ ul:nth-child(1){
     </p>
   </div>
 
-  <!-- The Timeline Section
-  The code for this timeline was greatly inspired by the css example on this link: https://codepen.io/allisonching/pen/XeLjGd
--->
-  <div class="w3-black">
-    <div class="w3-container w3-content w3-padding-64" style="max-width:800px">
-      <ul class="timeline">
-        <li>
-          Create website to hold worksheets (Completed)
-        </li>
-        <li>
-          Set-up website to handle paid worksheets (In Progress)
-        </li>
-        <li>
-          Allow exclusive videos to be bundled into paid worksheets (In Progress)
-        </li>
-        <li>
-          Add interactive webpages to website (In Progress)
-        </li>
-        <li>
-          Allow learners and authors to set-up an account (In Progress)
-        </li>
-        <li>
-          Allow the creation of premium paid interactive webpages (In Progress)
-        </li>
-    </ul>
-
-    </div>
-  </div>
-
-
   <!-- The Contact Section -->
-  <div class="w3-container w3-content w3-padding-64" style="max-width:800px" id="contact">
+  <div class="w3-container w3-content w3-padding-64" id="contact">
     <!-- Begin Mailchimp Signup Form -->
     <div id="mc_embed_signup">
     <form action="https://gmail.us4.list-manage.com/subscribe/post?u=caf3d492a81497a7639a70164&amp;id=0709041ae5" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
