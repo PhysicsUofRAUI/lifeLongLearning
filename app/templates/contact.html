@@ -1,11 +1,24 @@
 {% extends "base.html" %}
 {% block title %}Worksheets{% endblock %}
+{% block head %}
+{{ super() }}
+<style>
+.authorDark {
+  background-color: black;
+  color: white;
+}
 
+.authorLight {
+  background-color: white;
+  color: black;
+}
+</style>
+{% endblock %}
 {% block body %}
 <!-- Page Container -->
 <div class="w3-content w3-margin-top" style="max-width:1400px;">
 
-<h1>Our Authors</h2>
+<h1>Our Authors</h1>
 {% if authors %}
 {% for author in authors %}
   {% if loop.index is divisibleby 2 %}
