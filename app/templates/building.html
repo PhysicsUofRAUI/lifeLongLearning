@@ -43,8 +43,13 @@
   color: white;
   transform: rotateY(180deg);
 }
+/* end of CSS code */
+
+.row-padding {
+  padding-top: 2em;
+}
 </style>
-<!-- end of CSS code -->
+
 {% endblock %}
 {% block body %}
 
@@ -52,16 +57,17 @@
 <!-- Page Container -->
 <div class="w3-content w3-margin-top" style="max-width:1400px;">
   <!-- The Grid -->
+  <!-- Row one -->
   <div class="w3-row">
     <div class="w3-third">
       <div class="flip-card">
-        <div class="flip-card-inner">
-          <div class="flip-card-front">
+        <div class="flip-card-inner w3-round-xlarge">
+          <div class="flip-card-front w3-round-xlarge">
             <h1>Marking</h1>
             <p>Status: <span class="w3-tag">Currently being planned</span></p>
             <p>Estimated Completion: <span class="w3-tag">End of July</span></p>
           </div>
-          <div class="flip-card-back">
+          <div class="flip-card-back w3-round-xlarge">
             <p>
               Will allow learners to pay authors to mark worksheets that authors have
               posted and are willing to mark.
@@ -78,26 +84,119 @@
     </div>
     <div class="w3-third">
       <div class="flip-card">
-        <div class="flip-card-inner">
-          <div class="flip-card-front">
-            <h1>User Accounts</h1>
+        <div class="flip-card-inner w3-round-xlarge">
+          <div class="flip-card-front w3-round-xlarge">
+            <h1>Learner Accounts</h1>
             <p>Status: <span class="w3-tag">In Product Backlog</span></p>
             <p>Estimated Completion: <span class="w3-tag">Mid July</span></p>
           </div>
-          <div class="flip-card-back">
-
+          <div class="flip-card-back w3-round-xlarge">
+            <p>
+              The ability to login and have an account will be added for those
+              who use to the platform to obtain learning material.
+            </p>
+            <p>
+              As of now the only benefit to having a learner account will be the
+              ability to favourite worksheets.
+            </p>
+            <p>
+              When marking is added learners will have to use their accounts to
+              be able to access the services of marking.
+            </p>
           </div>
         </div>
       </div>
     </div>
   	<div class="w3-third">
       <div class="flip-card">
-        <div class="flip-card-inner">
-          <div class="flip-card-front">
+        <div class="flip-card-inner w3-round-xlarge">
+          <div class="flip-card-front w3-round-xlarge">
             <h1>Geo-tagging</h1>
+            <p>Status: <span class="w3-tag">Initial Idea</span></p>
+            <p>Estimated Completion: <span class="w3-tag">August</span></p>
           </div>
-          <div class="flip-card-back">
+          <div class="flip-card-back w3-round-xlarge">
+            <p>
+              Authors will be given the option to add a tag that specifies that
+              a worksheet is relevant to a particular area or region.
+            </p>
+            <p>
+              Learners will then be able to search for worksheets that contain
+              relevant information or at least references about thier region.
+            </p>
+            <p>
+              It is thought that the consumers of the worksheets will appreciate
+              the ability to search for worksheets that contain references to their
+              region.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <!-- Row two -->
+  <div class="w3-row row-padding">
+    <div class="w3-third">
+      <div class="flip-card">
+        <div class="flip-card-inner w3-round-xlarge">
+          <div class="flip-card-front w3-round-xlarge">
+            <h1>Author Account</h1>
+            <p>Status: <span class="w3-tag">Currently Being Implemented</span></p>
+            <p>Estimated Completion: <span class="w3-tag">End of June</span></p>
+          </div>
+          <div class="flip-card-back w3-round-xlarge">
+            <p>
+              Authors who want to publish worksheets on the platform will be given
+              their own account. From that account they will be able to submit worksheets
+              under that author's name.
+            </p>
+            <p>
+              An author dashboard containing all possible options available to authors
+              will be included to allow them ease of use.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="w3-third">
+      <div class="flip-card">
+        <div class="flip-card-inner w3-round-xlarge">
+          <div class="flip-card-front w3-round-xlarge">
+            <h1>Download Count</h1>
+            <p>Status: <span class="w3-tag">Currently Being Implemented</span></p>
+            <p>Estimated Completion: <span class="w3-tag">End of June</span></p>
+          </div>
+          <div class="flip-card-back w3-round-xlarge">
+            <p>
+              Everytime a worksheet is viewed it will be counted. Under the worksheet
+              preview a total count will be visible.
+            </p>
+            <p>
+              It will tell learners and authors which worksheets are popular. Admin
+              will also have another way to see how well the site is doing.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  	<div class="w3-third">
+      <div class="flip-card">
+        <div class="flip-card-inner w3-round-xlarge">
+          <div class="flip-card-front w3-round-xlarge">
+            <h1>Worksheet Bounty</h1>
+            <p>Status: <span class="w3-tag">Initial Idea</span></p>
+            <p>Estimated Completion: <span class="w3-tag">No Estimation</span></p>
+          </div>
+          <div class="flip-card-back w3-round-xlarge">
+            <p>
+              If a learner has a worksheet that they want to see made they can
+              post a bounty encouraging authors to make that worksheet.
+            </p>
+            <p>
+              If a author creates the worksheet the bounty goes to the author as
+              an award/payment for making the worksheet.
+            </p>
           </div>
         </div>
       </div>
