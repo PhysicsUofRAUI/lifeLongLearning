@@ -13,6 +13,8 @@ from app import create_app as c_app
 from contextlib import contextmanager
 import pdfkit
 
+from werkzeug.security import generate_password_hash,
+
 def login(client, username, password):
     return client.post('/login', data=dict(
         username=username,
@@ -222,13 +224,38 @@ class TestingWhileLoggedIn(TestCase):
         response = self.client.get('/add_author', follow_redirects=False)
         self.assertEqual(response.status_code, 200)
 
-        response_1 = self.client.post('/add_author', follow_redirects=True, data=dict(name='Kody', email='kodyrogers21@gmail.com', about='I am a hacker'))
+        response_1 = self.client.post('/add_author', follow_redirects=True, data=dict(name='Kody', email='kodyrogers21@gmail.com',
+                    about='I am a hacker', screenname='blah', password='password'))
 
         auth = Author.query.filter_by(name='Kody').first()
 
         self.assertEqual(response_1.status_code, 200)
 
         self.assertNotEqual(auth, None)
+
+        self.assertEqual(auth.name='Kody')
+
+        self.assertEqual(auth.screenname=None)
+
+        self.assertEqual(auth.about=None)
+
+        self.assertEqual(auth.email='kodyrogers21@gmail.com')
+
+        self.assertEqual(auth.password=generate_password_hash('password'))
+
+        response_1 = self.client.post('/add_author', follow_redirects=True, data=dict(name='Kody', email='kodyrogers21@gmail.com', password='honkog'))
+
+        self.assertEqual(response_1.status_code, 200)
+
+        self.assertNotEqual(auth, None)
+
+        self.assertEqual(auth.name='Kody')
+
+        self.assertEqual(auth.screenname=None)
+
+        self.assertEqual(auth.about=None)
+
+        self.assertEqual(auth.password=generate_password_hash('honkog'))
 
     def test_edit_post_page_li(self):
         p_cat = PostCategory(name='froots')
@@ -308,20 +335,24 @@ class TestingWhileLoggedIn(TestCase):
         self.assertNotEqual(edited_post_category, None)
 
     def test_edit_author_page_li(self):
-        author = Author(name='KJsa')
+        author = Author(name='KJsa', password='password', email='kodya@hotmail.com')
         db.session.add(author)
         db.session.commit()
 
         response = self.client.get('/edit_author/1', follow_redirects=False)
         self.assertEqual(response.status_code, 200)
 
-        response_1 = self.client.post('/edit_author/1', follow_redirects=True, data=dict(name='yippe'))
+        response_1 = self.client.post('/edit_author/1', follow_redirects=True, data=dict(password='RockOn'))
 
         self.assertEqual(response_1.status_code, 200)
 
-        edited_author = Author.query.filter_by(name='yippe').first()
+        edited_author = Author.query.filter_by(name='KJsa').first()
 
         self.assertNotEqual(edited_author, None)
+
+        self.assertNotEqual(edited_author.password, generate_password_hash('RockOn'))
+
+        self.assertNotEqual(edited_author.email, 'kodya@hotmail.com')
 
     def test_edit_worksheet_page(self) :
         w_cat = WorksheetCategory(name='dundk')
