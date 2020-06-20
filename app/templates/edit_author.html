@@ -9,7 +9,7 @@
     <div class="middle">
       <div class="inner">
         <div class="center">
-          <form action="{{ url_for('worksheets.edit_author', id=author.id) }}" method="post" enctype="multipart/form-data">
+          <form action="{{ url_for('author.edit_author', id=author.id) }}" method="post" enctype="multipart/form-data">
             {{ form.csrf_token }}
             <dl>
               {{ render_field(form.name) }}
