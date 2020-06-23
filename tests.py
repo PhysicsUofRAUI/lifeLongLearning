@@ -1,5 +1,6 @@
 import os
 import io
+import flask
 import unittest
 from flask_testing import TestCase
 from flask_sqlalchemy import SQLAlchemy
@@ -13,7 +14,7 @@ from app import create_app as c_app
 from contextlib import contextmanager
 import pdfkit
 
-from werkzeug.security import generate_password_hash,
+from werkzeug.security import generate_password_hash, check_password_hash
 
 def login(client, username, password):
     return client.post('/login', data=dict(
@@ -36,6 +37,53 @@ def captured_templates(app):
         yield recorded
     finally:
         template_rendered.disconnect(record, app)
+
+
+class UserLoginLogout(TestCase):
+    ############################
+    #### setup and teardown ####
+    ############################
+
+    def create_app(self):
+        app = c_app(TestConfiguration)
+        return app
+
+    # executed prior to each test
+    def setUp(self):
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        db.create_all()
+
+    # executed after each test
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+        self.app_context.pop()
+
+
+    def test_author_login(self):
+        author = Author(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod', about='What up?',
+                        password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        db.session.add(author)
+        db.session.commit()
+
+
+
+        with self.app.test_client() as c:
+            response = c.post('/author_login', data=dict(
+                username='KJsa',
+                password='RockOn'
+            ), follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(flask.session['author_logged_in'], True)
+
+            response_1 = c.get('/author_logout', follow_redirects=True)
+            self.assertEqual(response_1.status_code, 200)
+            self.assertEqual(flask.session['author_logged_in'], False)
+
+
+
+
 
 
 class DatabaseTests(TestCase):
@@ -233,29 +281,31 @@ class TestingWhileLoggedIn(TestCase):
 
         self.assertNotEqual(auth, None)
 
-        self.assertEqual(auth.name='Kody')
+        self.assertEqual(auth.name, 'Kody')
 
-        self.assertEqual(auth.screenname=None)
+        self.assertEqual(auth.screenname, None)
 
-        self.assertEqual(auth.about=None)
+        self.assertEqual(auth.about, None)
 
-        self.assertEqual(auth.email='kodyrogers21@gmail.com')
+        self.assertEqual(auth.email, 'kodyrogers21@gmail.com')
 
-        self.assertEqual(auth.password=generate_password_hash('password'))
+        self.assertEqual(check_password_hash(auth.password, 'password'), True)
 
-        response_1 = self.client.post('/add_author', follow_redirects=True, data=dict(name='Kody', email='kodyrogers21@gmail.com', password='honkog'))
+        response_1 = self.client.post('/add_author', follow_redirects=True, data=dict(name='Kody1', email='kodyrogers@gmail.com', password='honkog'))
+
+        auth_1 = Author.query.filter_by(name='Kody1').first()
 
         self.assertEqual(response_1.status_code, 200)
 
-        self.assertNotEqual(auth, None)
+        self.assertNotEqual(auth_1, None)
 
-        self.assertEqual(auth.name='Kody')
+        self.assertEqual(auth_1.name, 'Kody1')
 
-        self.assertEqual(auth.screenname=None)
+        self.assertEqual(auth_1.screenname, None)
 
-        self.assertEqual(auth.about=None)
+        self.assertEqual(auth_1.about, None)
 
-        self.assertEqual(auth.password=generate_password_hash('honkog'))
+        self.assertEqual(check_password_hash(auth_1.password, 'honkog'), True)
 
     def test_edit_post_page_li(self):
         p_cat = PostCategory(name='froots')
@@ -352,7 +402,7 @@ class TestingWhileLoggedIn(TestCase):
 
         self.assertNotEqual(edited_author.password, generate_password_hash('RockOn'))
 
-        self.assertNotEqual(edited_author.email, 'kodya@hotmail.com')
+        self.assertEqual(edited_author.email, 'kodya@hotmail.com')
 
     def test_edit_worksheet_page(self) :
         w_cat = WorksheetCategory(name='dundk')

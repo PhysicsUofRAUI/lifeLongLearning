@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from wtforms import StringField, SubmitField, PasswordField
 from wtforms.validators import DataRequired
 from ..models import Author
 
@@ -9,12 +9,26 @@ from ..models import Author
 #   Email: A string field to hold an email address (optional)
 #   about: short description of the author (optional)
 #
-class AuthorForm(FlaskForm) :
+class CreateAuthorForm(FlaskForm) :
     """
-    Form used to submit new subcategories
+    Form used to submit new authors
     """
     name = StringField('Name', validators=[DataRequired()])
     email = StringField('Email')
     about = StringField('About')
+    screenname = StringField('Screen-name')
+    password = PasswordField('password')
 
     submit = SubmitField('Submit')
+
+
+#
+# AuthorLoginForm: Will be the form displayed when an author wants to login.
+#
+class AuthorLoginForm(FlaskForm):
+    """
+    Form used to login authors
+    """
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Login')
