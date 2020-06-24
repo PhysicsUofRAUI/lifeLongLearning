@@ -404,6 +404,23 @@ class TestingWhileLoggedIn(TestCase):
 
         self.assertEqual(edited_author.email, 'kodya@hotmail.com')
 
+        response_2 = self.client.post('/edit_author/1', follow_redirects=True, data=dict(password='RockOn', about='hey hey',
+                                        screenname='yoh', name='Kody', email='kody15@nhl.com'))
+
+        self.assertEqual(response_2.status_code, 200)
+
+        edited_author_1 = Author.query.filter_by(name='Kody').first()
+
+        self.assertNotEqual(edited_author_1, None)
+
+        self.assertNotEqual(edited_author_1.password, generate_password_hash('RockOn'))
+
+        self.assertEqual(edited_author_1.email, 'kody15@nhl.com')
+
+        self.assertEqual(edited_author_1.screenname, None)
+
+        self.assertEqual(edited_author_1.about, None)
+
     def test_edit_worksheet_page(self) :
         w_cat = WorksheetCategory(name='dundk')
         db.session.add(w_cat)

@@ -1,7 +1,7 @@
 from . import author
 from flask import render_template, session, redirect, url_for, request, current_app, flash
 from ..models import Author
-from .forms import CreateAuthorForm, AuthorLoginForm
+from .forms import AuthorForm, AuthorLoginForm
 from .. import db
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -17,7 +17,7 @@ def add_author():
     if not session.get('logged_in'):
         return redirect(url_for('other.home'))
 
-    form = CreateAuthorForm()
+    form = AuthorForm()
 
     if form.validate_on_submit():
         try:
@@ -71,13 +71,13 @@ def edit_author(id) :
         return redirect(url_for('other.home'))
 
     author = Author.query.get(id)
-    form = CreateAuthorForm(obj=author)
+    form = AuthorForm(obj=author)
 
     if form.validate_on_submit():
         try :
             author.name = form.name.data
             author.email = form.email.data
-            author.about = form.about.data
+            author.password = generate_password_hash(form.password.data)
 
             db.session.commit()
 

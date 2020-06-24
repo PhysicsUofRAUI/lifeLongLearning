@@ -9,11 +9,11 @@ from ..models import Author
 #   Email: A string field to hold an email address (optional)
 #   about: short description of the author (optional)
 #
-class CreateAuthorForm(FlaskForm) :
+class AuthorForm(FlaskForm) :
     """
     Form used to submit new authors
     """
-    name = StringField('Name', validators=[DataRequired()])
+    name = StringField('Name')
     email = StringField('Email')
     about = StringField('About')
     screenname = StringField('Screen-name')
