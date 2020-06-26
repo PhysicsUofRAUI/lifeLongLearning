@@ -145,7 +145,7 @@ def logout():
 def author_change_screenname(id):
     if not session.get('author_logged_in') :
         return redirect(url_for('other.home'))
-    
+
     author = Author.query.get(id)
 
     if not author.name == session.get('author_name') :
@@ -230,8 +230,7 @@ def author_change_password(id):
         except :
             db.session.rollback()
             raise
-
-    return render_template('author_change_email.html', form=form, author=author, title="Change Screenname")
+    return render_template('author_change_password.html', form=form, author=author, title="Change Password")
 
 
 
@@ -252,7 +251,7 @@ def author_dashboard(id):
     if not author.name == session.get('author_name'):
         return redirect(url_for('other.home'))
 
-    # Get the Worksheets
-    worksheets = Worksheet.query.filter_by(author_id=id).order_by(Worksheet.id.desc()).all()
+    worksheets = Worksheet.query.filter_by(author_id=author.id).order_by(Worksheet.id.desc()).all()
 
-    return render_template('author_dashboard.html', id=id, worksheets=worksheets)
+
+    return render_template('author_dashboard.html', id=author.id, worksheets=worksheets)

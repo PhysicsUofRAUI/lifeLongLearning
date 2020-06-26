@@ -125,7 +125,7 @@ class TestingWhileAuthorLoggedIn(TestCase):
 
         login_author(self.client, username='KJsa', password='RockOn')
 
-        response = self.client.post('/author_change_password', follow_redirects=False)
+        response = self.client.get(url_for('author.author_change_password', id=auth_1.id), follow_redirects=False)
 
         self.assertEqual(response.status_code, 200)
 
@@ -151,7 +151,7 @@ class TestingWhileAuthorLoggedIn(TestCase):
 
         login_author(self.client, username='KJsa', password='RockOn')
 
-        response = self.client.post('/author_change_screenname', follow_redirects=False)
+        response = self.client.get(url_for('author.author_change_screenname', id=auth_1.id), follow_redirects=False)
 
         self.assertEqual(response.status_code, 200)
 
@@ -180,7 +180,7 @@ class TestingWhileAuthorLoggedIn(TestCase):
 
         login_author(self.client, username='KJsa', password='RockOn')
 
-        response = self.client.post('/author_change_email', follow_redirects=False)
+        response = self.client.get(url_for('author.author_change_email', id=auth_1.id), follow_redirects=False)
 
         self.assertEqual(response.status_code, 200)
 
