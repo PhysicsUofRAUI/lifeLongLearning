@@ -134,7 +134,7 @@ class Author(db.Model) :
     email = Column(String(64), default=None, nullable=True)
     about = Column(String(1200), default=None, nullable=True)
     screenname = Column(String(64), default=None, nullable=True, unique=True)
-    password = Column(String(200))
+    password = Column(String(200), nullable=False)
 
     def __repr__(self):
         return '<Author %r>' % self.name

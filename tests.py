@@ -27,6 +27,16 @@ def logout(client):
     return client.get('/logout', follow_redirects=True)
 
 
+def login_author(client, username, password):
+    return client.post('/author_login', data=dict(
+        username=username,
+        password=password
+    ), follow_redirects=True)
+
+
+def logout_author(client):
+    return client.get('/author_logout', follow_redirects=True)
+
 @contextmanager
 def captured_templates(app):
     recorded = []
@@ -77,11 +87,198 @@ class UserLoginLogout(TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertEqual(flask.session['author_logged_in'], True)
 
+            self.assertEqual(flask.session['author_name'], 'KJsa')
+
             response_1 = c.get('/author_logout', follow_redirects=True)
             self.assertEqual(response_1.status_code, 200)
             self.assertEqual(flask.session['author_logged_in'], False)
 
 
+
+
+class TestingWhileAuthorLoggedIn(TestCase):
+    ############################
+    #### setup and teardown ####
+    ############################
+
+    def create_app(self):
+        app = c_app(TestConfiguration)
+        return app
+
+    # executed prior to each test
+    def setUp(self):
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        db.create_all()
+
+    # executed after each test
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+        self.app_context.pop()
+
+    def test_author_change_password(self) :
+        auth_1 = Author(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod', about='What up?',
+                        password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        db.session.add(auth_1)
+        db.session.commit()
+
+        login_author(self.client, username='KJsa', password='RockOn')
+
+        response = self.client.post('/author_change_password', follow_redirects=False)
+
+        self.assertEqual(response.status_code, 200)
+
+        response_1 = self.client.post('/author_change_password/1',
+                    data=dict(password='weeeehooo'), follow_redirects=True)
+
+        auth = Author.query.filter_by(name='KJsa').first()
+        self.assertEqual(response_1.status_code, 200)
+
+        self.assertEqual(response_1.status_code, 200)
+
+        self.assertEqual(auth.email, 'kodyrogers21@gmail.com')
+
+        self.assertEqual(check_password_hash(auth.password, 'weeeehooo'), True)
+
+        logout_author(self.client)
+
+    def test_author_change_screenname(self) :
+        auth_1 = Author(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod', about='What up?',
+                        password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        db.session.add(auth_1)
+        db.session.commit()
+
+        login_author(self.client, username='KJsa', password='RockOn')
+
+        response = self.client.post('/author_change_screenname', follow_redirects=False)
+
+        self.assertEqual(response.status_code, 200)
+
+        response_1 = self.client.post('/author_change_screenname/1',
+                        data=dict(screenname='logical'), follow_redirects=True)
+
+        auth = Author.query.filter_by(name='KJsa').first()
+        self.assertEqual(response_1.status_code, 200)
+
+        self.assertEqual(response_1.status_code, 200)
+
+        self.assertEqual(auth.email, 'kodyrogers21@gmail.com')
+
+        self.assertEqual(auth.password, 'pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+
+        self.assertEqual(auth.screenname, 'logical')
+
+        logout_author(self.client)
+
+
+    def test_author_change_email(self) :
+        auth_1 = Author(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod', about='What up?',
+                        password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        db.session.add(auth_1)
+        db.session.commit()
+
+        login_author(self.client, username='KJsa', password='RockOn')
+
+        response = self.client.post('/author_change_email', follow_redirects=False)
+
+        self.assertEqual(response.status_code, 200)
+
+        response_1 = self.client.post('/author_change_email/1',
+                    data=dict(email='kody15@hotmail.com'), follow_redirects=True)
+
+        auth = Author.query.filter_by(name='KJsa').first()
+        self.assertEqual(response_1.status_code, 200)
+
+        self.assertEqual(response_1.status_code, 200)
+
+        self.assertEqual(auth.email, 'kody15@hotmail.com')
+
+        self.assertEqual(auth.password, 'pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+
+        self.assertEqual(auth.screenname, 'kod')
+
+        logout_author(self.client)
+
+
+
+
+    def test_author_dashboard(self):
+        w_cat = WorksheetCategory(name='dundk')
+        db.session.add(w_cat)
+        auth_1 = Author(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod', about='What up?',
+                        password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        db.session.add(auth_1)
+        db.session.commit()
+
+        worksheet = Worksheet(pdf_url='tudolsoos.pdf', name='tudoloods', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        db.session.add(worksheet)
+
+        db.session.commit()
+
+        worksheet = Worksheet.query.filter_by(name='tudoloods').first()
+
+        w_cat = WorksheetCategory.query.filter_by(name='dundk').first()
+
+
+
+        w_cat_1 = WorksheetCategory(name='dund32k')
+        db.session.add(w_cat_1)
+
+        w_cat_2 = WorksheetCategory(name='dundfsdk')
+        db.session.add(w_cat_2)
+        db.session.commit()
+
+
+        auth_2 = Author(name='Kidkafdidf', password='pbkdf2:sha256:150000$JbvZOh4x$40097777eeefb55bc6987f4e6983d3401dca4d863a9a8971b36548d41af927dd')
+        db.session.add(auth_2)
+        auth_3 = Author(name='Kif', password='pbkdf2:sha256:150000$JbvZOh4x$40097777eeefb55bc6987f4e6983d3401dca4d863a9a8971b36548d41af927dd')
+        db.session.add(auth_3)
+
+        db.session.commit()
+
+        worksheet_1 = Worksheet(pdf_url='tudolsoo.pdf', name='tloods', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        worksheet_2 = Worksheet(pdf_url='tudolsos.pdf', name='tudoldaghoods', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_3 = Worksheet(pdf_url='tudolos.pdf', name='tudol', author_id=3, author=auth_3, category_id=3, category=w_cat_2)
+        worksheet_4 = Worksheet(pdf_url='tudsoos.pdf', name='tudolsagdgsshjoods', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_5 = Worksheet(pdf_url='tolsoos.pdf', name='tudoldfag', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        worksheet_6 = Worksheet(pdf_url='lsoos.pdf', name='tudosdag', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_7 = Worksheet(pdf_url='tch.pdf', name='tudosgsggs', author_id=3, author=auth_3, category_id=3, category=w_cat_2)
+        worksheet_8 = Worksheet(pdf_url='tudsfgos.pdf', name='montreal', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_9 = Worksheet(pdf_url='tersoos.pdf', name='toronto', author_id=3, author=auth_3, category_id=3, category=w_cat_2)
+        worksheet_10 = Worksheet(pdf_url='tudosgagos.pdf', name='ottowa', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_11 = Worksheet(pdf_url='tusgsgos.pdf', name='saskatoon', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        worksheet_12 = Worksheet(pdf_url='tusgsssoos.pdf', name='winnipeg', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        db.session.add(worksheet_1)
+        db.session.add(worksheet_2)
+        db.session.add(worksheet_3)
+        db.session.add(worksheet_4)
+        db.session.add(worksheet_5)
+        db.session.add(worksheet_6)
+        db.session.add(worksheet_7)
+        db.session.add(worksheet_8)
+        db.session.add(worksheet_9)
+        db.session.add(worksheet_10)
+        db.session.add(worksheet_11)
+        db.session.add(worksheet_12)
+
+        db.session.commit()
+
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                c.post('/author_login', data=dict(
+                    username='KJsa',
+                    password='RockOn'
+                ), follow_redirects=True)
+
+                r = c.get(url_for('author.author_dashboard', id=1))
+
+                self.assertEqual(r.status_code, 200)
+
+                template, context = templates[0]
+
+                self.assertEqual(context['worksheets'], [worksheet_11, worksheet_5, worksheet_1, worksheet])
+                c.get('/author_logout', follow_redirects=True)
 
 
 
@@ -134,7 +331,8 @@ class DatabaseTests(TestCase):
         db.session.commit()
 
 
-        auth_1 = Author(name='Kidkaid')
+        auth_1 = Author(name='Kidkaid',
+                        password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
         db.session.add(auth_1)
         db.session.commit()
 
@@ -152,7 +350,8 @@ class DatabaseTests(TestCase):
         assert worksheet_cat in db.session
 
     def test_author_model(self) :
-        author = Author(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod', about='What up?', password='pbkdf2:sha256:150000$CgCWVBC6$4090facdcd3e093c7b458362daddbaa7b53387c6042ad46b5970dc7b6d00183c')
+        author = Author(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod',
+                        about='What up?', password='pbkdf2:sha256:150000$CgCWVBC6$4090facdcd3e093c7b458362daddbaa7b53387c6042ad46b5970dc7b6d00183c')
         db.session.add(author)
         db.session.commit()
 
@@ -231,7 +430,7 @@ class TestingWhileLoggedIn(TestCase):
 
         db.session.add(w_cat)
 
-        auth = Author(name='kody', email='kodyrogers21@gmail.com', about='I am a hacker')
+        auth = Author(name='kody', email='kodyrogers21@gmail.com', about='I am a hacker', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
 
         db.session.add(auth)
 
@@ -427,7 +626,7 @@ class TestingWhileLoggedIn(TestCase):
         db.session.commit()
 
 
-        auth_1 = Author(name='Kidkaidf')
+        auth_1 = Author(name='Kidkaidf', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
         db.session.add(auth_1)
 
         db.session.commit()
@@ -476,7 +675,7 @@ class TestingWhileLoggedIn(TestCase):
         db.session.commit()
 
 
-        auth_1 = Author(name='Kidkaidf')
+        auth_1 = Author(name='Kidkaidf', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
         db.session.add(auth_1)
 
         db.session.commit()
@@ -528,7 +727,7 @@ class TestingWhileLoggedIn(TestCase):
         self.assertEqual(p_cat, None)
 
     def test_delete_author_page_li(self):
-        auth_1 = Author(name='Kidkaid')
+        auth_1 = Author(name='Kidkaid', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
         db.session.add(auth_1)
         db.session.commit()
 
@@ -549,7 +748,7 @@ class TestingWhileLoggedIn(TestCase):
         db.session.commit()
 
 
-        auth_1 = Author(name='Kidkaidf')
+        auth_1 = Author(name='Kidkaidf', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
         db.session.add(auth_1)
 
         db.session.commit()
@@ -580,9 +779,9 @@ class TestingWhileLoggedIn(TestCase):
         db.session.commit()
 
 
-        auth_2 = Author(name='Kidkafdidf')
+        auth_2 = Author(name='Kidkafdidf', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
         db.session.add(auth_2)
-        auth_3 = Author(name='Kif')
+        auth_3 = Author(name='Kif', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
         db.session.add(auth_3)
 
         db.session.commit()
@@ -868,7 +1067,7 @@ class TestingWhileLoggedIn(TestCase):
 
     def test_other_database_pages(self):
         # contact page
-        auth_1 = Author(name='Kidkaidf')
+        auth_1 = Author(name='Kidkaidf', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
         db.session.add(auth_1)
 
         db.session.commit()

@@ -32,7 +32,7 @@ passwrd = 'pbkdf2:sha256:150000$CgCWVBC6$4090facdcd3e093c7b458362daddbaa7b53387c
 #     else
 #         render the login page
 #
-@auth.route('/login', methods=['Get', 'POST'])
+@auth.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():

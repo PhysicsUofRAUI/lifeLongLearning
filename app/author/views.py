@@ -1,6 +1,6 @@
 from . import author
 from flask import render_template, session, redirect, url_for, request, current_app, flash
-from ..models import Author
+from ..models import Author, Worksheet
 from .forms import AuthorForm, AuthorLoginForm
 from .. import db
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -110,8 +110,9 @@ def author_login():
             return redirect(request.url)
         elif check_password_hash(author.password, form.password.data):
             session['author_logged_in'] = True
+            session['author_name'] = author.name
 
-            return redirect(url_for('other.home'))
+            return redirect(url_for('author.author_dashboard', id=author.id))
         elif not check_password_hash(author.password, form.password.data) :
             flash("password was incorrect")
             return redirect(request.url)
@@ -133,3 +134,108 @@ def logout():
 
     # redirect to the login page
     return redirect(url_for('other.home'))
+
+
+#
+# Author Change Screenname
+# Purpose: To give an author an easy way to change their screenname.
+#
+@author.route('/author_change_screenname/<int:id>', methods=['GET', 'POST'])
+def author_change_screenname(id):
+    author = Author.query.get(id)
+
+    if not (session.get('author_logged_in') and author.name == session.get('author_name')):
+        return redirect(url_for('other.home'))
+
+    form = AuthorForm(obj=author)
+
+    if form.validate_on_submit():
+        try :
+            author.screenname = form.screenname.data
+
+            db.session.commit()
+
+            # redirect to the home page
+            return redirect(url_for('author.author_dashboard', id=author.id))
+        except :
+            db.session.rollback()
+            raise
+
+    form.screenname.data = author.screenname
+
+    return render_template('author_change_screenname.html', form=form, author=author, title="Change Screenname")
+
+
+#
+# Author Change Email
+# Purpose: To give an author an easy way to change their email.
+#
+@author.route('/author_change_email/<int:id>', methods=['GET', 'POST'])
+def author_change_email(id):
+    author = Author.query.get(id)
+    if not (session.get('author_logged_in') and author.name == session.get('author_name')):
+        return redirect(url_for('other.home'))
+
+    form = AuthorForm(obj=author)
+
+    if form.validate_on_submit():
+        try :
+            author.email = form.email.data
+
+            db.session.commit()
+
+            # redirect to the author dashboard
+            return redirect(url_for('author.author_dashboard', id=author.id))
+        except :
+            db.session.rollback()
+            raise
+
+    form.screenname.data = author.screenname
+
+    return render_template('author_change_email.html', form=form, author=author, title="Change Email")
+
+
+
+#
+# Author Change Password
+# Purpose: To give an author an easy way to change their password.
+#
+@author.route('/author_change_password/<int:id>', methods=['GET', 'POST'])
+def author_change_password(id):
+    author = Author.query.get(id)
+    if not (session.get('author_logged_in') and author.name == session.get('author_name')):
+        return redirect(url_for('other.home'))
+
+    form = AuthorForm(obj=author)
+
+    if form.validate_on_submit():
+        try :
+            author.password = generate_password_hash(form.password.data)
+
+            db.session.commit()
+
+            # redirect to the author dashboard
+            return redirect(url_for('author.author_dashboard', id=author.id))
+        except :
+            db.session.rollback()
+            raise
+
+    return render_template('author_change_email.html', form=form, author=author, title="Change Screenname")
+
+
+
+#
+# Author Dashboard
+# Purpose: A place for an author to see all the different options with their account
+#
+@author.route('/author_dashboard/<int:id>', methods=['GET', 'POST'])
+def author_dashboard(id):
+    author = Author.query.get(id)
+
+    if not (session.get('author_logged_in') and author.name == session.get('author_name')):
+        return redirect(url_for('other.home'))
+
+    # Get the Worksheets
+    worksheets = Worksheet.query.filter_by(author_id=id).order_by(Worksheet.id.desc()).all()
+
+    return render_template('author_dashboard.html', id=id, worksheets=worksheets)
