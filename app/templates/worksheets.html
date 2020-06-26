@@ -25,7 +25,11 @@ following link very useful: https://www.w3docs.com/snippets/html/how-to-embed-pd
           </iframe>
           <p>
             <a href="{{ url_for('worksheets.worksheets_page', author=worksheet.author_id, category=None, page=0) }}">
-              More by the author: {{ worksheet.author.name }}.
+              {% if worksheet.author.screenname is none %}
+                More by the author: {{ worksheet.author.name }}
+              {% else %}
+                More by the author: {{ worksheet.author.screenname }}
+              {% endif %}
             </a>
           </p>
           <p>

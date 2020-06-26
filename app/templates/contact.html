@@ -24,7 +24,12 @@
   {% if loop.index is divisibleby 2 %}
     <div class="authorDark">
       <p>
-        Name: {{ author.name }}
+        Name:
+        {% if author.screenname is none %}
+          {{ author.name }}
+        {% else %}
+          {{ author.screenname }}
+        {% endif %}
       </p>
       <p>
         Email: {{ author.email }}
@@ -33,9 +38,19 @@
         About: {{ author.about }}
       </p>
       <p>
-        Worksheets by {{ author.name }}:
+        Worksheets by
+        {% if author.screenname is none %}
+          {{ author.name }}
+        {% else %}
+          {{ author.screenname }}
+        {% endif %}:
         <a href="{{ url_for('worksheets.worksheets_page', author=author.id, worksheet=None, category=None, page=0) }}">
-          {{ author.name }}'s Worksheets!
+          {% if author.screenname is none %}
+            {{ author.name }}
+          {% else %}
+            {{ author.screenname }}
+          {% endif %}
+          's Worksheets!
         </a>
       </p>
     </div>
@@ -48,7 +63,12 @@
   {% else %}
   <div class="authorLight">
     <p>
-      Name: {{ author.name }}
+      Name:
+      {% if author.screenname is none %}
+        {{ author.name }}
+      {% else %}
+        {{ author.screenname }}
+      {% endif %}
     </p>
     <p>
       Email: {{ author.email }}
@@ -57,9 +77,20 @@
       About: {{ author.about }}
     </p>
     <p>
-      Worksheets by {{ author.name }}:
+      Worksheets by
+      {% if author.screenname is none %}
+        {{ author.name }}
+      {% else %}
+        {{ author.screenname }}
+      {% endif %}
+      :
       <a href="{{ url_for('worksheets.worksheets_page', author=author.id, worksheet=None, category=None, page=0) }}">
-        {{ author.name }}'s Worksheets!
+        {% if author.screenname is none %}
+          {{ author.name }}
+        {% else %}
+          {{ author.screenname }}
+        {% endif %}
+        's Worksheets!
       </a>
     </p>
     {% if session['logged_in'] %}
