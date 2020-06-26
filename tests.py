@@ -280,6 +280,103 @@ class TestingWhileAuthorLoggedIn(TestCase):
                 self.assertEqual(context['worksheets'], [worksheet_11, worksheet_5, worksheet_1, worksheet])
                 c.get('/author_logout', follow_redirects=True)
 
+    def test_delete_worksheet_page_author(self):
+        w_cat = WorksheetCategory(name='dundk')
+        db.session.add(w_cat)
+        auth_1 = Author(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod', about='What up?',
+                        password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        db.session.add(auth_1)
+
+        auth_2 = Author(name='Kidkafdidf', password='pbkdf2:sha256:150000$JbvZOh4x$40097777eeefb55bc6987f4e6983d3401dca4d863a9a8971b36548d41af927dd')
+        db.session.add(auth_2)
+
+        auth_3 = Author(name='Kif', password='pbkdf2:sha256:150000$JbvZOh4x$40097777eeefb55bc6987f4e6983d3401dca4d863a9a8971b36548d41af927dd')
+        db.session.add(auth_3)
+
+        db.session.commit()
+
+        worksheet = Worksheet(pdf_url='tudolsoos.pdf', name='tudoloods', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        db.session.add(worksheet)
+
+        db.session.commit()
+
+        worksheet = Worksheet.query.filter_by(name='tudoloods').first()
+
+        w_cat = WorksheetCategory.query.filter_by(name='dundk').first()
+
+
+
+        w_cat_1 = WorksheetCategory(name='dund32k')
+        db.session.add(w_cat_1)
+
+        w_cat_2 = WorksheetCategory(name='dundfsdk')
+        db.session.add(w_cat_2)
+        db.session.commit()
+
+        options = { 'quiet': '' }
+        pdfkit.from_string('MicroPyramid', 'tudolsoo.pdf', options=options)
+        self.assertEqual(True, os.path.exists('tudolsoo.pdf'))
+
+        options = { 'quiet': '' }
+        pdfkit.from_string('MicroPyramid hey yall', 'tudolsoos.pdf', options=options)
+        self.assertEqual(True, os.path.exists('tudolsoos.pdf'))
+
+        options = { 'quiet': '' }
+        pdfkit.from_string('MicroPyramid woopie', 'tudolsos.pdf', options=options)
+        self.assertEqual(True, os.path.exists('tudolsos.pdf'))
+
+        options = { 'quiet': '' }
+        pdfkit.from_string('MicroPyramid groovy', 'tudolos.pdf', options=options)
+        self.assertEqual(True, os.path.exists('tudolos.pdf'))
+
+        options = { 'quiet': '' }
+        pdfkit.from_string('MicroPyramid is awesome', 'tudsoos.pdf', options=options)
+        self.assertEqual(True, os.path.exists('tudsoos.pdf'))
+
+        worksheet_1 = Worksheet(pdf_url='tudolsoo.pdf', name='tloods', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        worksheet_2 = Worksheet(pdf_url='tudolsos.pdf', name='tudoldaghoods', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_3 = Worksheet(pdf_url='tudolos.pdf', name='tudol', author_id=3, author=auth_3, category_id=3, category=w_cat_2)
+        worksheet_4 = Worksheet(pdf_url='tudsoos.pdf', name='tudolsagdgsshjoods', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_5 = Worksheet(pdf_url='tolsoos.pdf', name='tudoldfag', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        worksheet_6 = Worksheet(pdf_url='lsoos.pdf', name='tudosdag', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_7 = Worksheet(pdf_url='tch.pdf', name='tudosgsggs', author_id=3, author=auth_3, category_id=3, category=w_cat_2)
+        worksheet_8 = Worksheet(pdf_url='tudsfgos.pdf', name='montreal', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_9 = Worksheet(pdf_url='tersoos.pdf', name='toronto', author_id=3, author=auth_3, category_id=3, category=w_cat_2)
+        worksheet_10 = Worksheet(pdf_url='tudosgagos.pdf', name='ottowa', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_11 = Worksheet(pdf_url='tusgsgos.pdf', name='saskatoon', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        worksheet_12 = Worksheet(pdf_url='tusgsssoos.pdf', name='winnipeg', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        db.session.add(worksheet_1)
+        db.session.add(worksheet_2)
+        db.session.add(worksheet_3)
+        db.session.add(worksheet_4)
+        db.session.add(worksheet_5)
+        db.session.add(worksheet_6)
+        db.session.add(worksheet_7)
+        db.session.add(worksheet_8)
+        db.session.add(worksheet_9)
+        db.session.add(worksheet_10)
+        db.session.add(worksheet_11)
+        db.session.add(worksheet_12)
+
+        db.session.commit()
+
+        login_author(self.client, username='KJsa', password='RockOn')
+
+        response = self.client.get('/delete_worksheet/1', follow_redirects=False)
+
+        w = Worksheet.query.filter_by(name='tudoloods').first()
+
+        self.assertEqual(w, None)
+
+
+        response_1 = self.client.get('/delete_worksheet/3', follow_redirects=False)
+
+        w_1 = Worksheet.query.filter_by(name='tudoldaghoods').first()
+
+        self.assertEqual(w_1, worksheet_2)
+
+        logout_author(self.client)
+
 
 
 
@@ -697,9 +794,9 @@ class TestingWhileLoggedIn(TestCase):
 
         w = Worksheet.query.filter_by(name='tudoloods').first()
 
-        self.assertEqual(w, None)
+        self.assertEqual(w, worksheet)
 
-        self.assertEqual(False, os.path.exists('test.pdf'))
+        self.assertEqual(True, os.path.exists('test.pdf'))
 
     def test_delete_worksheet_category_page_li(self):
         worksheet_cat = WorksheetCategory(name='jumbook')

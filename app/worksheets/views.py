@@ -1,6 +1,6 @@
 from . import worksheets
 from flask import render_template, session, redirect, url_for, request, current_app
-from ..models import WorksheetCategory, Worksheet
+from ..models import WorksheetCategory, Worksheet, Author
 from .forms import WorksheetForm, WorksheetCategoryForm, EditWorksheetForm
 from werkzeug.utils import secure_filename
 import os
@@ -185,11 +185,14 @@ def delete_worksheet(id):
     """
     Delete a post from the database
     """
-    # check if user is logged in
-    if not session.get('logged_in'):
+    if not session.get('author_logged_in') :
         return redirect(url_for('other.home'))
-
     worksheet = Worksheet.query.get(id)
+    author = Author.query.get(worksheet.author_id)
+    
+    # check if user is logged in
+    if not author.name == session.get('author_name') :
+        return redirect(url_for('other.home'))
 
     try :
         os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], worksheet.pdf_url))
