@@ -131,6 +131,7 @@ def author_login():
 def logout():
     if session.get('author_logged_in'):
         session['author_logged_in'] = False
+        session['author_name'] = None
 
     # redirect to the login page
     return redirect(url_for('other.home'))

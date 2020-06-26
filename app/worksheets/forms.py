@@ -36,28 +36,12 @@ class WorksheetForm(FlaskForm):
 
     title = StringField('Title', validators=[DataRequired()])
     category = QuerySelectField('Category', validators=[DataRequired()], query_factory=category_choices)
-    author = QuerySelectField('Author', validators=[DataRequired()], query_factory=author_choices)
     video_url = StringField('Video URL (optional)')
     worksheet_pdf = FileField('PDF File', validators=[FileRequired()])
 
     submit = SubmitField('Submit')
 
 
-
-#
-# EditWorksheetForm
-#
-class EditWorksheetForm(FlaskForm):
-    """
-    Form that lets the user add a new post
-    """
-
-    title = StringField('Title', validators=[DataRequired()])
-    category = QuerySelectField('Category', validators=[DataRequired()], query_factory=category_choices)
-    author = QuerySelectField('Author', validators=[DataRequired()], query_factory=author_choices)
-    video_url = StringField('Video URL (optional)')
-
-    submit = SubmitField('Submit')
 
 
 

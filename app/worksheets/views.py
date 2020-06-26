@@ -1,7 +1,7 @@
 from . import worksheets
 from flask import render_template, session, redirect, url_for, request, current_app
 from ..models import WorksheetCategory, Worksheet, Author
-from .forms import WorksheetForm, WorksheetCategoryForm, EditWorksheetForm
+from .forms import WorksheetForm, WorksheetCategoryForm
 from werkzeug.utils import secure_filename
 import os
 from .. import db
@@ -99,7 +99,7 @@ def worksheets_page(page) :
 @worksheets.route('/add_worksheet', methods=['GET', 'POST'])
 def add_worksheet():
     # check if user is logged in
-    if not session.get('logged_in'):
+    if not session.get('author_logged_in') :
         return redirect(url_for('other.home'))
 
     # Cannot pass in 'request.form' to WorksheetForm constructor, as this will cause 'request.files' to not be
@@ -110,12 +110,14 @@ def add_worksheet():
     if request.method == 'POST':
         if form.validate_on_submit():
             try :
+                author = Author.query.filter_by(name=session.get('author_name')).first()
+
                 file = request.files['worksheet_pdf']
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
                 new_worksheet = Worksheet(name=form.title.data, video_url=form.video_url.data,
                     pdf_url=filename, category_id=form.category.data.id, category=form.category.data,
-                    author_id=form.author.data.id, author=form.author.data)
+                    author_id=author, author=author)
                 db.session.add(new_worksheet)
                 db.session.commit()
                 return redirect(url_for('other.home'))
@@ -134,11 +136,17 @@ def add_worksheet():
 @worksheets.route('/edit_worksheet/<int:id>', methods=['GET', 'POST'])
 def edit_worksheet(id):
     # check if user is logged in
-    if not session.get('logged_in'):
+    if not session.get('author_logged_in') :
         return redirect(url_for('other.home'))
 
     worksheet = Worksheet.query.get(id)
-    form = EditWorksheetForm(obj=worksheet)
+    author = Author.query.get(worksheet.author_id)
+
+    # check if user is logged in
+    if not author.name == session.get('author_name') :
+        return redirect(url_for('other.home'))
+
+    form = WorksheetForm(obj=worksheet)
 
     if form.validate_on_submit():
         try :
@@ -156,8 +164,6 @@ def edit_worksheet(id):
             worksheet.video_url = form.video_url.data
             worksheet.category_id = form.category.data.id
             worksheet.category = form.category.data
-            worksheet.author_id = form.author.data.id
-            worksheet.author = form.author.data
 
             db.session.commit()
 
@@ -169,7 +175,6 @@ def edit_worksheet(id):
 
     form.title.data = worksheet.name
     form.video_url.data = worksheet.video_url
-    form.author.data = worksheet.author
     form.category.data = worksheet.category
 
     return render_template('edit_worksheet.html', form=form, worksheet=worksheet, title="Edit Worksheet Category")
@@ -189,7 +194,7 @@ def delete_worksheet(id):
         return redirect(url_for('other.home'))
     worksheet = Worksheet.query.get(id)
     author = Author.query.get(worksheet.author_id)
-    
+
     # check if user is logged in
     if not author.name == session.get('author_name') :
         return redirect(url_for('other.home'))
