@@ -143,9 +143,12 @@ def logout():
 #
 @author.route('/author_change_screenname/<int:id>', methods=['GET', 'POST'])
 def author_change_screenname(id):
+    if not session.get('author_logged_in') :
+        return redirect(url_for('other.home'))
+    
     author = Author.query.get(id)
 
-    if not (session.get('author_logged_in') and author.name == session.get('author_name')):
+    if not author.name == session.get('author_name') :
         return redirect(url_for('other.home'))
 
     form = AuthorForm(obj=author)
@@ -173,8 +176,12 @@ def author_change_screenname(id):
 #
 @author.route('/author_change_email/<int:id>', methods=['GET', 'POST'])
 def author_change_email(id):
+    if not session.get('author_logged_in') :
+        return redirect(url_for('other.home'))
+
     author = Author.query.get(id)
-    if not (session.get('author_logged_in') and author.name == session.get('author_name')):
+
+    if not author.name == session.get('author_name') :
         return redirect(url_for('other.home'))
 
     form = AuthorForm(obj=author)
@@ -203,8 +210,11 @@ def author_change_email(id):
 #
 @author.route('/author_change_password/<int:id>', methods=['GET', 'POST'])
 def author_change_password(id):
+    if not session.get('author_logged_in') :
+        return redirect(url_for('other.home'))
+
     author = Author.query.get(id)
-    if not (session.get('author_logged_in') and author.name == session.get('author_name')):
+    if not author.name == session.get('author_name') :
         return redirect(url_for('other.home'))
 
     form = AuthorForm(obj=author)
@@ -230,10 +240,16 @@ def author_change_password(id):
 # Purpose: A place for an author to see all the different options with their account
 #
 @author.route('/author_dashboard/<int:id>', methods=['GET', 'POST'])
+@author.route('/author_dashboard', defaults={'id': 0}, methods=['GET', 'POST'])
 def author_dashboard(id):
-    author = Author.query.get(id)
+    if not session.get('author_logged_in') :
+        return redirect(url_for('other.home'))
+    if not id == 0:
+        author = Author.query.get(id)
+    else :
+        author = Author.query.filter_by(name=session.get('author_name')).first()
 
-    if not (session.get('author_logged_in') and author.name == session.get('author_name')):
+    if not author.name == session.get('author_name'):
         return redirect(url_for('other.home'))
 
     # Get the Worksheets

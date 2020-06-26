@@ -1299,6 +1299,38 @@ class BasicTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
+    ##############################
+    #### testing author pages ####
+    ##############################
+
+    def test_author_change_email_nl(self):
+        response = self.client.get('/author_change_email/1', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/author_change_email/1', follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+
+    def test_author_change_password_nl(self):
+        response = self.client.get('/author_change_password/1', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/author_change_password/1', follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+
+    def test_author_change_screenname_nl(self):
+        response = self.client.get('/author_change_screenname/1', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/author_change_screenname/1', follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+
+    def test_author_dashboard_nl(self):
+        response = self.client.get('/author_dashboard', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/author_dashboard', follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+
 
     #######################
     #### testing Blogs ####

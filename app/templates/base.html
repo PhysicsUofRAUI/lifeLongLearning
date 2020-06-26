@@ -25,6 +25,11 @@
     {% if session['logged_in'] %}
       <a href="{{ url_for('other.admin') }}" class="isolate w3-bar-item w3-button w3-padding-large w3-hide-small">Admin</a>
     {% endif %}
+    {% if session['author_logged_in'] %}
+      <a href="{{ url_for('author.author_dashboard') }}" class="isolate w3-bar-item w3-button w3-padding-large w3-hide-small">Dashboard</a>
+    {% else %}
+      <a href="{{ url_for('author.author_login') }}" class="isolate w3-bar-item w3-button w3-padding-large w3-hide-small">Author Login</a>
+    {% endif %}
   </div>
 </div>
 
@@ -37,6 +42,11 @@
   <a href="{{ url_for('worksheets.worksheets_page') }}" class="w3-bar-item w3-button w3-padding-large" onclick="smallScreenToggle()">Worksheets</a>
   {% if session['logged_in'] %}
     <a href="{{ url_for('other.admin') }}" class="w3-bar-item w3-button w3-padding-large" onclick="smallScreenToggle()">Admin</a>
+  {% endif %}
+  {% if session['author_logged_in'] %}
+    <a href="{{ url_for('author.author_dashboard') }}" class="w3-bar-item w3-button w3-padding-large" onclick="smallScreenToggle()">Dashboard</a>
+  {% else %}
+    <a href="{{ url_for('author.author_login') }}" class="w3-bar-item w3-button w3-padding-large" onclick="smallScreenToggle()">Author Login</a>
   {% endif %}
 </div>
 
