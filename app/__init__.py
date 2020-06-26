@@ -18,14 +18,15 @@ from flask_migrate import Migrate
 
 ALLOWED_EXTENSIONS = set(['pdf'])
 
+migrate = Migrate()
+
 def create_app(config_class=ProductionConfiguration):
     app = Flask(__name__)
 
     app.config.from_object(config_class)
 
-    migrate = Migrate(app, db)
-
     db.init_app(app)
+    migrate.init_app(app, db)
 
     from app import models
 
