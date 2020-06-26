@@ -844,6 +844,8 @@ class TestingWhileLoggedIn(TestCase):
 
         self.assertEqual(True, os.path.exists('test.pdf'))
 
+        os.remove('test.pdf')
+
     def test_delete_worksheet_category_page_li(self):
         worksheet_cat = WorksheetCategory(name='jumbook')
         db.session.add(worksheet_cat)
