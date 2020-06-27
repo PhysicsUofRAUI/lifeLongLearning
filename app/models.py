@@ -25,7 +25,7 @@ class Post(db.Model) :
 
     id = Column(Integer, primary_key=True)
     name = Column(String(64), index=True, unique=True)
-    content = Column(String(12000))
+    content = Column(String(25000))
 
     # relation to category
     category_id = Column(Integer, ForeignKey('post_categories.id'), nullable=False)
