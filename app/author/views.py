@@ -128,7 +128,7 @@ def author_login():
 # Purpose: To unset a the 'author_logged_in'
 #
 @author.route('/author_logout')
-def logout():
+def author_logout():
     if session.get('author_logged_in'):
         session['author_logged_in'] = False
         session['author_name'] = None
