@@ -198,9 +198,42 @@ def author_change_email(id):
             db.session.rollback()
             raise
 
-    form.screenname.data = author.screenname
+    form.email.data = author.email
 
     return render_template('author_change_email.html', form=form, author=author, title="Change Email")
+
+
+#
+# Author Change About
+# Purpose: To give an author an easy way to change their about section.
+#
+@author.route('/author_change_about/<int:id>', methods=['GET', 'POST'])
+def author_change_about(id):
+    if not session.get('author_logged_in') :
+        return redirect(url_for('other.home'))
+
+    author = Author.query.get(id)
+
+    if not author.name == session.get('author_name') :
+        return redirect(url_for('other.home'))
+
+    form = AuthorForm(obj=author)
+
+    if form.validate_on_submit():
+        try :
+            author.about = form.about.data
+
+            db.session.commit()
+
+            # redirect to the author dashboard
+            return redirect(url_for('author.author_dashboard', id=author.id))
+        except :
+            db.session.rollback()
+            raise
+
+    form.about.data = author.about
+
+    return render_template('author_change_about.html', form=form, author=author, title="Change Email")
 
 
 

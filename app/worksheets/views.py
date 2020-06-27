@@ -1,10 +1,12 @@
 from . import worksheets
 from flask import render_template, session, redirect, url_for, request, current_app
 from ..models import WorksheetCategory, Worksheet, Author
-from .forms import WorksheetForm, WorksheetCategoryForm
+from .forms import WorksheetForm, WorksheetCategoryForm, EditWorksheetForm
 from werkzeug.utils import secure_filename
 import os
 from .. import db
+from PyPDF2 import PdfFileReader
+import io
 
 #
 # Worksheets
@@ -146,20 +148,24 @@ def edit_worksheet(id):
     if not author.name == session.get('author_name') :
         return redirect(url_for('other.home'))
 
-    form = WorksheetForm(obj=worksheet)
+    form = EditWorksheetForm(obj=worksheet)
 
     if form.validate_on_submit():
         try :
-            # removing the old pdf
-            os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], worksheet.pdf_url))
+            if 'worksheet_pdf' in request.files:
+                if not request.files['worksheet_pdf'].filename == '':
+                    # removing the old pdf
+                    os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], worksheet.pdf_url))
 
-            # adding the new pdf
-            file = request.files['worksheet_pdf']
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+                    # adding the new pdf
+                    file = request.files['worksheet_pdf']
+                    filename = secure_filename(file.filename)
+                    file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
 
-            # updating the database values
-            worksheet.pdf_url = filename
+                    # updating the database values
+                    worksheet.pdf_url = filename
+
+
             worksheet.name = form.title.data
             worksheet.video_url = form.video_url.data
             worksheet.category_id = form.category.data.id

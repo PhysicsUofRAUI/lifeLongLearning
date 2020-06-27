@@ -117,6 +117,34 @@ class TestingWhileAuthorLoggedIn(TestCase):
         db.drop_all()
         self.app_context.pop()
 
+
+    def test_author_change_about(self) :
+        auth_1 = Author(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod', about='What up?',
+                        password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        db.session.add(auth_1)
+        db.session.commit()
+
+        login_author(self.client, username='KJsa', password='RockOn')
+
+        response = self.client.get(url_for('author.author_change_about', id=auth_1.id), follow_redirects=False)
+
+        self.assertEqual(response.status_code, 200)
+
+        response_1 = self.client.post('/author_change_about/1',
+                    data=dict(about='I love rock music'), follow_redirects=True)
+
+        auth = Author.query.filter_by(name='KJsa').first()
+        self.assertEqual(response_1.status_code, 200)
+
+        self.assertEqual(response_1.status_code, 200)
+
+        self.assertEqual(auth.email, 'kodyrogers21@gmail.com')
+
+        self.assertEqual(auth.about, 'I love rock music')
+
+        logout_author(self.client)
+
+
     def test_author_change_password(self) :
         auth_1 = Author(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod', about='What up?',
                         password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
@@ -457,6 +485,20 @@ class TestingWhileAuthorLoggedIn(TestCase):
         self.assertEqual(worksheet_2, None)
 
         self.assertEqual(False, os.path.exists('test.pdf'))
+        self.assertEqual(True, os.path.exists('test_1.pdf'))
+
+        #
+        # Now not editing the pdf itself
+        #
+        data = dict(title='Trigonometry_1', video_url='youtube.com', category=w_cat.id)
+        response_2 = self.client.post('/edit_worksheet/1', follow_redirects=True, data=data, content_type='multipart/form-data')
+
+        self.assertEqual(response_2.status_code, 200)
+
+        worksheet_2 = Worksheet.query.filter_by(name='Trigonometry_1').first()
+
+        self.assertNotEqual(worksheet_2, None)
+
         self.assertEqual(True, os.path.exists('test_1.pdf'))
 
         logout_author(self.client)
@@ -1308,6 +1350,14 @@ class BasicTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
         response = self.client.get('/author_change_email/1', follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+
+
+    def test_author_change_about_nl(self):
+        response = self.client.get('/author_change_about/1', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/author_change_about/1', follow_redirects=False)
         self.assertEqual(response.status_code, 302)
 
     def test_author_change_password_nl(self):
