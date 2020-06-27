@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Text
 from sqlalchemy.orm import relationship, backref
 from app.database import db
 
@@ -25,7 +25,7 @@ class Post(db.Model) :
 
     id = Column(Integer, primary_key=True)
     name = Column(String(64), index=True, unique=True)
-    content = Column(String(25000))
+    content = Column(Text())
 
     # relation to category
     category_id = Column(Integer, ForeignKey('post_categories.id'), nullable=False)

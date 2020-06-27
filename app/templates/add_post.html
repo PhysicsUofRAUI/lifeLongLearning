@@ -3,6 +3,18 @@
 {% block title %}
         {{ Title }}
 {% endblock %}
+{% block head %}
+{{ super() }}
+<style>
+
+textarea {
+  width: 80%;
+  height: 500px;
+}
+
+</style>
+
+{% endblock %}
 {% block body %}
 <div class="content-section">
  <div class="outer">

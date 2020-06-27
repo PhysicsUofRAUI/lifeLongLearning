@@ -1,5 +1,16 @@
 {% extends "base.html" %}
-{% block title %}Projects{% endblock %}
+{% block title %}Blog{% endblock %}
+{% block head %}
+{{ super() }}
+<style>
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+</style>
+
+{% endblock %}
 {% block body %}
 
 <!-- Page Container -->
