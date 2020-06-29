@@ -70,7 +70,12 @@ def edit_author(id) :
     if not session.get('logged_in'):
         return redirect(url_for('other.home'))
 
-    author = Author.query.get(id)
+    try :
+        author = Author.query.get(id)
+    except :
+        db.session.rollback()
+        raise
+
     form = AuthorForm(obj=author)
 
     if form.validate_on_submit():
@@ -103,19 +108,22 @@ def edit_author(id) :
 def author_login():
     form = AuthorLoginForm()
     if form.validate_on_submit():
-        author = Author.query.filter_by(email=form.email.data).first()
-        if author == None :
-            flash("Email does not exist")
+        try :
+            author = Author.query.filter_by(email=form.email.data).first()
+            if author == None :
+                flash("Email does not exist")
 
-            return redirect(request.url)
-        elif check_password_hash(author.password, form.password.data):
-            session['author_logged_in'] = True
-            session['author_name'] = author.name
+                return redirect(request.url)
+            elif check_password_hash(author.password, form.password.data):
+                session['author_logged_in'] = True
+                session['author_name'] = author.name
 
-            return redirect(url_for('author.author_dashboard', id=author.id))
-        elif not check_password_hash(author.password, form.password.data) :
-            flash("password was incorrect")
-            return redirect(request.url)
+                return redirect(url_for('author.author_dashboard', id=author.id))
+            elif not check_password_hash(author.password, form.password.data) :
+                flash("password was incorrect")
+                return redirect(request.url)
+        except :
+            db.session.rollback()
 
     # load login template
     return render_template('author_login.html', form=form, title='Author Login')
@@ -146,7 +154,11 @@ def author_change_screenname(id):
     if not session.get('author_logged_in') :
         return redirect(url_for('other.home'))
 
-    author = Author.query.get(id)
+    try :
+        author = Author.query.get(id)
+    except :
+        db.session.rollback()
+        raise
 
     if not author.name == session.get('author_name') :
         return redirect(url_for('other.home'))
@@ -179,7 +191,11 @@ def author_change_email(id):
     if not session.get('author_logged_in') :
         return redirect(url_for('other.home'))
 
-    author = Author.query.get(id)
+    try :
+        author = Author.query.get(id)
+    except :
+        db.session.rollback()
+        raise
 
     if not author.name == session.get('author_name') :
         return redirect(url_for('other.home'))
@@ -212,7 +228,11 @@ def author_change_about(id):
     if not session.get('author_logged_in') :
         return redirect(url_for('other.home'))
 
-    author = Author.query.get(id)
+    try :
+        author = Author.query.get(id)
+    except :
+        db.session.rollback()
+        raise
 
     if not author.name == session.get('author_name') :
         return redirect(url_for('other.home'))
@@ -246,7 +266,12 @@ def author_change_password(id):
     if not session.get('author_logged_in') :
         return redirect(url_for('other.home'))
 
-    author = Author.query.get(id)
+    try :
+        author = Author.query.get(id)
+    except :
+        db.session.rollback()
+        raise
+
     if not author.name == session.get('author_name') :
         return redirect(url_for('other.home'))
 
@@ -274,17 +299,21 @@ def author_change_password(id):
 @author.route('/author_dashboard/<int:id>', methods=['GET', 'POST'])
 @author.route('/author_dashboard', defaults={'id': 0}, methods=['GET', 'POST'])
 def author_dashboard(id):
-    if not session.get('author_logged_in') :
-        return redirect(url_for('other.home'))
-    if not id == 0:
-        author = Author.query.get(id)
-    else :
-        author = Author.query.filter_by(name=session.get('author_name')).first()
+    try :
+        if not session.get('author_logged_in') :
+            return redirect(url_for('other.home'))
+        if not id == 0:
+            author = Author.query.get(id)
+        else :
+            author = Author.query.filter_by(name=session.get('author_name')).first()
 
-    if not author.name == session.get('author_name'):
-        return redirect(url_for('other.home'))
+        if not author.name == session.get('author_name'):
+            return redirect(url_for('other.home'))
 
-    worksheets = Worksheet.query.filter_by(author_id=author.id).order_by(Worksheet.id.desc()).all()
+        worksheets = Worksheet.query.filter_by(author_id=author.id).order_by(Worksheet.id.desc()).all()
+    except :
+        db.session.rollback()
+        raise
 
 
     return render_template('author_dashboard.html', id=author.id, worksheets=worksheets)
