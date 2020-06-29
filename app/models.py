@@ -76,6 +76,7 @@ class Worksheet(db.Model) :
     name = Column(String(64), index=True, unique=True)
     pdf_url = Column(String(300), default=None, nullable=True)
     video_url = Column(String(300), default=None, nullable=True)
+    count = Column(Integer, default=0, nullable=False)
 
     # relation to category
     category_id = Column(Integer, ForeignKey('worksheet_categories.id'), nullable=False)

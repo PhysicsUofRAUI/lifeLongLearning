@@ -33,12 +33,15 @@ following link very useful: https://www.w3docs.com/snippets/html/how-to-embed-pd
             </a>
           </p>
           <p>
+            Viewed or Downloaded {{ worksheet.count }} times
+          </p>
+          <p>
             {% if not worksheet.video_url == '' %}
               <a href="{{ worksheet.video_url }}">Video Tutorial</a>
             {% endif %}
           </p>
           <p>
-          <a href="{{ url_for('static', filename=worksheet.pdf_url) }}">View</a>
+          <a href="{{ url_for('worksheets.worksheets_count', id=worksheet.id) }}">View</a>
           {% if session['logged_in'] %}
             <a href="{{ url_for('worksheets.edit_worksheet', id=worksheet.id) }}">Edit</a>
             <a href="{{ url_for('worksheets.delete_worksheet', id=worksheet.id) }}">Delete</a>

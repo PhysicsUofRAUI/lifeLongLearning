@@ -6,8 +6,7 @@ from flask_testing import TestCase
 from flask_sqlalchemy import SQLAlchemy
 from flask import session, url_for, template_rendered, current_app
 from app.models import Worksheet, WorksheetCategory, Author, Post, PostCategory
-from werkzeug.datastructures import MultiDict
-from app.blogs.forms import PostForm
+from werkzeug.utils import secure_filename
 from app.database import db
 from config import TestConfiguration
 from app import create_app as c_app
@@ -1098,6 +1097,42 @@ class TestingWhileLoggedIn(TestCase):
                 self.assertEqual(context['prev_url'], None)
 
 
+    def test_worksheet_count_page(self):
+        w_cat = WorksheetCategory(name='dundk')
+        db.session.add(w_cat)
+        db.session.commit()
+
+
+        auth_1 = Author(name='Kidkaidf', email='kodyrogers21@gmail.com',
+                        password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        db.session.add(auth_1)
+
+        db.session.commit()
+
+        options = { 'quiet': '' }
+        pdfkit.from_string('MicroPyramid groovy', 'test.pdf', options=options)
+        self.assertEqual(True, os.path.exists('test.pdf'))
+
+        worksheet_1 = Worksheet(pdf_url='test.pdf', name='trig', author_id=1, author=auth_1, category_id=1, category=w_cat)
+
+        db.session.commit()
+
+        # worksheet page
+        response = self.client.get('/worksheets_count/1', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        worksheet = Worksheet.query.filter_by(name='trig').first()
+
+        self.assertEqual(worksheet.count, 1)
+
+        response = self.client.get('/worksheets_count/1', follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+
+        worksheet = Worksheet.query.filter_by(name='trig').first()
+
+        self.assertEqual(worksheet.count, 2)
+
+
     def test_blog_view_page(self):
         # blog page
         response = self.client.get('/blog', follow_redirects=True)
@@ -1339,7 +1374,6 @@ class BasicTests(TestCase):
     def test_building_page(self):
         response = self.client.get('/building', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
-
 
     ##############################
     #### testing author pages ####

@@ -5,8 +5,6 @@ from .forms import WorksheetForm, WorksheetCategoryForm, EditWorksheetForm
 from werkzeug.utils import secure_filename
 import os
 from .. import db
-from PyPDF2 import PdfFileReader
-import io
 
 #
 # Worksheets
@@ -24,7 +22,7 @@ def worksheets_page(page) :
         category = request.args.get('category')
     except:
         db.session.rollback()
-        return redirect(url_for('other.home'))
+        raise
 
     if not author == None :
         try :
@@ -56,7 +54,7 @@ def worksheets_page(page) :
             more = Worksheet.query.filter_by(category_id=category).offset((page + 1) * 5).first()
         except:
             db.session.rollback()
-            return redirect(url_for('other.home'))
+            raise
 
         if page != 0 :
             prev_url = url_for('worksheets.worksheets_page', category=category, author=author, page=page - 1)
@@ -79,7 +77,7 @@ def worksheets_page(page) :
             more = Worksheet.query.offset((page + 1) * 5).first()
         except:
             db.session.rollback()
-            return redirect(url_for('other.home'))
+            raise
 
         if page != 0 :
             prev_url = url_for('worksheets.worksheets_page', category=category, author=author, page=page - 1)
@@ -92,6 +90,28 @@ def worksheets_page(page) :
             next_url = None
 
         return render_template('worksheets.html', worksheets=worksheets, categories=categories, next_url=next_url, prev_url=prev_url)
+
+
+
+#
+# Worksheet Count
+#   Will increment the download count of a worksheet when one requests to view it.
+#
+@worksheets.route('/worksheets_count/<int:id>', methods=['GET', 'POST'])
+def worksheets_count(id):
+    try :
+        worksheet = Worksheet.query.get(id)
+        worksheet.count = worksheet.count + 1
+
+        db.session.commit()
+
+        return redirect(url_for('static', filename=worksheet.pdf_url))
+    except :
+        db.session.rollback()
+        raise
+
+
+
 
 #
 # AddWorksheet
