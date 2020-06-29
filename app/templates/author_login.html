@@ -17,7 +17,7 @@
     <form action="{{ url_for('author.author_login') }}" method="post" enctype="multipart/form-data">
       {{ form.csrf_token }}
       <dl>
-        {{ render_field(form.username) }}
+        {{ render_field(form.email) }}
         {{ render_field(form.password) }}
         {{ render_field(form.submit) }}
       </dl>

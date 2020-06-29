@@ -103,9 +103,9 @@ def edit_author(id) :
 def author_login():
     form = AuthorLoginForm()
     if form.validate_on_submit():
-        author = Author.query.filter_by(name=form.username.data).first()
+        author = Author.query.filter_by(email=form.email.data).first()
         if author == None :
-            flash("Username does not exist")
+            flash("Email does not exist")
 
             return redirect(request.url)
         elif check_password_hash(author.password, form.password.data):

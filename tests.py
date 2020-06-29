@@ -27,9 +27,9 @@ def logout(client):
     return client.get('/logout', follow_redirects=True)
 
 
-def login_author(client, username, password):
+def login_author(client, email, password):
     return client.post('/author_login', data=dict(
-        username=username,
+        email=email,
         password=password
     ), follow_redirects=True)
 
@@ -81,7 +81,7 @@ class UserLoginLogout(TestCase):
 
         with self.app.test_client() as c:
             response = c.post('/author_login', data=dict(
-                username='KJsa',
+                email='kodyrogers21@gmail.com',
                 password='RockOn'
             ), follow_redirects=True)
             self.assertEqual(response.status_code, 200)
@@ -124,7 +124,7 @@ class TestingWhileAuthorLoggedIn(TestCase):
         db.session.add(auth_1)
         db.session.commit()
 
-        login_author(self.client, username='KJsa', password='RockOn')
+        login_author(self.client, email='kodyrogers21@gmail.com', password='RockOn')
 
         response = self.client.get(url_for('author.author_change_about', id=auth_1.id), follow_redirects=False)
 
@@ -151,7 +151,7 @@ class TestingWhileAuthorLoggedIn(TestCase):
         db.session.add(auth_1)
         db.session.commit()
 
-        login_author(self.client, username='KJsa', password='RockOn')
+        login_author(self.client, email='kodyrogers21@gmail.com', password='RockOn')
 
         response = self.client.get(url_for('author.author_change_password', id=auth_1.id), follow_redirects=False)
 
@@ -177,7 +177,7 @@ class TestingWhileAuthorLoggedIn(TestCase):
         db.session.add(auth_1)
         db.session.commit()
 
-        login_author(self.client, username='KJsa', password='RockOn')
+        login_author(self.client, email='kodyrogers21@gmail.com', password='RockOn')
 
         response = self.client.get(url_for('author.author_change_screenname', id=auth_1.id), follow_redirects=False)
 
@@ -206,7 +206,7 @@ class TestingWhileAuthorLoggedIn(TestCase):
         db.session.add(auth_1)
         db.session.commit()
 
-        login_author(self.client, username='KJsa', password='RockOn')
+        login_author(self.client, email='kodyrogers21@gmail.com', password='RockOn')
 
         response = self.client.get(url_for('author.author_change_email', id=auth_1.id), follow_redirects=False)
 
@@ -258,9 +258,9 @@ class TestingWhileAuthorLoggedIn(TestCase):
         db.session.commit()
 
 
-        auth_2 = Author(name='Kidkafdidf', password='pbkdf2:sha256:150000$JbvZOh4x$40097777eeefb55bc6987f4e6983d3401dca4d863a9a8971b36548d41af927dd')
+        auth_2 = Author(name='Kidkafdidf', email='kodyrogers29@gmail.com', password='pbkdf2:sha256:150000$JbvZOh4x$40097777eeefb55bc6987f4e6983d3401dca4d863a9a8971b36548d41af927dd')
         db.session.add(auth_2)
-        auth_3 = Author(name='Kif', password='pbkdf2:sha256:150000$JbvZOh4x$40097777eeefb55bc6987f4e6983d3401dca4d863a9a8971b36548d41af927dd')
+        auth_3 = Author(name='Kif', email='kodyrogers22@gmail.com', password='pbkdf2:sha256:150000$JbvZOh4x$40097777eeefb55bc6987f4e6983d3401dca4d863a9a8971b36548d41af927dd')
         db.session.add(auth_3)
 
         db.session.commit()
@@ -295,7 +295,7 @@ class TestingWhileAuthorLoggedIn(TestCase):
         with self.app.test_client() as c:
             with captured_templates(self.app) as templates:
                 c.post('/author_login', data=dict(
-                    username='KJsa',
+                    email='kodyrogers21@gmail.com',
                     password='RockOn'
                 ), follow_redirects=True)
 
@@ -315,10 +315,10 @@ class TestingWhileAuthorLoggedIn(TestCase):
                         password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
         db.session.add(auth_1)
 
-        auth_2 = Author(name='Kidkafdidf', password='pbkdf2:sha256:150000$JbvZOh4x$40097777eeefb55bc6987f4e6983d3401dca4d863a9a8971b36548d41af927dd')
+        auth_2 = Author(name='Kidkafdidf', email='kodyrogers24@gmail.com', password='pbkdf2:sha256:150000$JbvZOh4x$40097777eeefb55bc6987f4e6983d3401dca4d863a9a8971b36548d41af927dd')
         db.session.add(auth_2)
 
-        auth_3 = Author(name='Kif', password='pbkdf2:sha256:150000$JbvZOh4x$40097777eeefb55bc6987f4e6983d3401dca4d863a9a8971b36548d41af927dd')
+        auth_3 = Author(name='Kif', email='kodyrogers25@gmail.com', password='pbkdf2:sha256:150000$JbvZOh4x$40097777eeefb55bc6987f4e6983d3401dca4d863a9a8971b36548d41af927dd')
         db.session.add(auth_3)
 
         db.session.commit()
@@ -388,7 +388,7 @@ class TestingWhileAuthorLoggedIn(TestCase):
 
         db.session.commit()
 
-        login_author(self.client, username='KJsa', password='RockOn')
+        login_author(self.client, email='kodyrogers21@gmail.com', password='RockOn')
 
         response = self.client.get('/delete_worksheet/1', follow_redirects=False)
 
@@ -417,7 +417,7 @@ class TestingWhileAuthorLoggedIn(TestCase):
         db.session.commit()
 
 
-        auth_1 = Author(name='Kidkaidf', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        auth_1 = Author(name='Kidkaidf', email='kodyrogers21@gmail.com', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
         db.session.add(auth_1)
 
         db.session.commit()
@@ -426,7 +426,7 @@ class TestingWhileAuthorLoggedIn(TestCase):
 
         data['worksheet_pdf'] = (io.BytesIO(b"abcdef"), 'test.pdf')
 
-        login_author(self.client, username='Kidkaidf', password='RockOn')
+        login_author(self.client, email='kodyrogers21@gmail.com', password='RockOn')
 
         response = self.client.post('/add_worksheet', follow_redirects=True, data=data, content_type='multipart/form-data')
 
@@ -463,7 +463,7 @@ class TestingWhileAuthorLoggedIn(TestCase):
         #
         # Now with user logged in
         #
-        login_author(self.client, username='Kidkaidf', password='RockOn')
+        login_author(self.client, email='kodyrogers21@gmail.com', password='RockOn')
 
         response_2 = self.client.post('/edit_worksheet/1', follow_redirects=False, content_type='multipart/form-data')
 
@@ -517,7 +517,7 @@ class TestingWhileAuthorLoggedIn(TestCase):
 
         db.session.commit()
 
-        login_author(self.client, username='kody', password='RockOn')
+        login_author(self.client, email='kodyrogers21@gmail.com', password='RockOn')
         response = self.client.get('/add_worksheet', follow_redirects=False)
         self.assertEqual(response.status_code, 200)
 
@@ -588,7 +588,7 @@ class DatabaseTests(TestCase):
         db.session.commit()
 
 
-        auth_1 = Author(name='Kidkaid',
+        auth_1 = Author(name='Kidkaid', email='kodyrogers21@gmail.com',
                         password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
         db.session.add(auth_1)
         db.session.commit()
@@ -860,7 +860,7 @@ class TestingWhileLoggedIn(TestCase):
         db.session.commit()
 
 
-        auth_1 = Author(name='Kidkaidf', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        auth_1 = Author(name='Kidkaidf', email='kodyrogers21@gmail.com', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
         db.session.add(auth_1)
 
         db.session.commit()
@@ -914,7 +914,7 @@ class TestingWhileLoggedIn(TestCase):
         self.assertEqual(p_cat, None)
 
     def test_delete_author_page_li(self):
-        auth_1 = Author(name='Kidkaid', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        auth_1 = Author(name='Kidkaid', email='kodyrogers21@gmail.com', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
         db.session.add(auth_1)
         db.session.commit()
 
@@ -935,7 +935,7 @@ class TestingWhileLoggedIn(TestCase):
         db.session.commit()
 
 
-        auth_1 = Author(name='Kidkaidf', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        auth_1 = Author(name='Kidkaidf', email='kodyrogers21@gmail.com', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
         db.session.add(auth_1)
 
         db.session.commit()
@@ -966,9 +966,9 @@ class TestingWhileLoggedIn(TestCase):
         db.session.commit()
 
 
-        auth_2 = Author(name='Kidkafdidf', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        auth_2 = Author(name='Kidkafdidf', email='kodyrogers24@gmail.com', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
         db.session.add(auth_2)
-        auth_3 = Author(name='Kif', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        auth_3 = Author(name='Kif', email='kodyrogers25@gmail.com', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
         db.session.add(auth_3)
 
         db.session.commit()
@@ -1254,7 +1254,7 @@ class TestingWhileLoggedIn(TestCase):
 
     def test_other_database_pages(self):
         # contact page
-        auth_1 = Author(name='Kidkaidf', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        auth_1 = Author(name='Kidkaidf', email='kodyrogers21@gmail.com', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
         db.session.add(auth_1)
 
         db.session.commit()

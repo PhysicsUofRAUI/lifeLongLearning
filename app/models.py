@@ -130,8 +130,8 @@ class Author(db.Model) :
     __tablename__ = 'authors'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(64), index=True, unique=True)
-    email = Column(String(64), default=None, nullable=True)
+    name = Column(String(64), unique=True, nullable=True)
+    email = Column(String(64), index=True ,nullable=False, unique=True)
     about = Column(String(1200), default=None, nullable=True)
     screenname = Column(String(64), default=None, nullable=True, unique=True)
     password = Column(String(200), nullable=False)
