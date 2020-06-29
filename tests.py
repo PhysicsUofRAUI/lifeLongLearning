@@ -1132,6 +1132,8 @@ class TestingWhileLoggedIn(TestCase):
 
         self.assertEqual(worksheet.count, 2)
 
+        os.remove('test.pdf')
+
 
     def test_blog_view_page(self):
         # blog page
