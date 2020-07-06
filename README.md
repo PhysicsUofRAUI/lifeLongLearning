@@ -3,13 +3,7 @@ The website that is located at lifelonglearning.rocks is created from this code.
 
 ## Current work
 ### Adding an Author Account
-Give authors an account that is separate from admin. For the moment only those with the admin password will be allowed to create new author accounts. The reason for restricting the ability of people being able to create an account is quality control. After a new account is created it will be expected that the new author will change the password, and possibly the screen name.
-
-Authors will only be able to attribute worksheets to themseleves (so only thier account). They will be able to see all of their worksheets from the author dashboard, and will be able to make a new worksheet from their too. A login option will be placed on the navigation bar so that an author can easily see where to login.
-
-It might be smart to only let authors create worksheets (aka take that ability away from the admin).
-
-If there is no screen name set the actual name will be displayed.
+An author account has been added!
 
 ### Adding a Learner Account
 A learner account will be similar to an author account but for learners. Learners will not have to be approved by the admin, so they will be able to sign themselves up. Until marking is made there will not be much benefit to having a user account. Possibly adding the ability for users to favourite worksheets could be implemented easily and that could be added to the user dashboard as a start.
