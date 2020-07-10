@@ -45,6 +45,9 @@ def create_app(config_class=ProductionConfiguration):
     from .author import author as author_blueprint
     app.register_blueprint(author_blueprint)
 
+    from .learner import learner as learner_blueprint
+    app.register_blueprint(learner_blueprint)
+
     from .errors import errors as errors_blueprint
     app.register_blueprint(errors_blueprint)
 

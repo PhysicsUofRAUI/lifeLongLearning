@@ -177,7 +177,7 @@ class TestingWhileLearnerLoggedIn(TestCase):
         db.session.commit()
 
         learner = Learner(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod'
-                        , password='pbkdf2:sha256:150000$CgCWVBC6$4090facdcd3e093c7b458362daddbaa7b53387c6042ad46b5970dc7b6d00183c')
+                        , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
 
         learner.favourites.append(worksheet)
         learner.favourites.append(worksheet_1)
@@ -195,7 +195,7 @@ class TestingWhileLearnerLoggedIn(TestCase):
 
             self.assertEqual(flask.session['learner_name'], 'KJsa')
 
-            r = c.get(url_for('author.author_dashboard', id=1))
+            r = c.get(url_for('learner.learner_dashboard', id=1))
 
             self.assertEqual(r.status_code, 200)
 
@@ -1555,6 +1555,17 @@ class BasicTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
         response = self.client.get('/author_dashboard', follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+
+
+    ###############################
+    #### testing learner pages ####
+    ###############################
+    def test_learner_dashboard_nl(self):
+        response = self.client.get('/learner_dashboard', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/learner_dashboard', follow_redirects=False)
         self.assertEqual(response.status_code, 302)
 
 
