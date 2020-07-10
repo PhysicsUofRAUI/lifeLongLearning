@@ -5,7 +5,7 @@ import unittest
 from flask_testing import TestCase
 from flask_sqlalchemy import SQLAlchemy
 from flask import session, url_for, template_rendered, current_app
-from app.models import Worksheet, WorksheetCategory, Author, Post, PostCategory
+from app.models import Worksheet, WorksheetCategory, Author, Post, PostCategory, Learner
 from werkzeug.utils import secure_filename
 from app.database import db
 from config import TestConfiguration
@@ -92,6 +92,116 @@ class UserLoginLogout(TestCase):
             self.assertEqual(response_1.status_code, 200)
             self.assertEqual(flask.session['author_logged_in'], False)
 
+        def test_learner_login(self):
+            w_cat = WorksheetCategory(name='dunk')
+            db.session.add(w_cat)
+            db.session.commit()
+
+
+            auth_1 = Author(name='Kidkaid', email='kodyrogers21@gmail.com',
+                            password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+            db.session.add(auth_1)
+            db.session.commit()
+
+            worksheet = Worksheet(pdf_url='tudoloos.pdf', name='tudoloos', author_id=1, author=auth_1, category_id=1, category=w_cat)
+            db.session.add(worksheet)
+            db.session.commit()
+
+            worksheet_1 = Worksheet(pdf_url='tudol.pdf', name='tudol', author_id=1, author=auth_1, category_id=1, category=w_cat)
+            db.session.add(worksheet_1)
+            db.session.commit()
+
+            learner = Learner(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod'
+                            , password='pbkdf2:sha256:150000$CgCWVBC6$4090facdcd3e093c7b458362daddbaa7b53387c6042ad46b5970dc7b6d00183c')
+
+            learner.favourites.append(worksheet)
+            learner.favourites.append(worksheet_1)
+
+            db.session.add(learner)
+            db.session.commit()
+
+            with self.app.test_client() as c:
+                response = c.post('/learner_login', data=dict(
+                    email='kodyrogers21@gmail.com',
+                    password='RockOn'
+                ), follow_redirects=True)
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(flask.session['learner_logged_in'], True)
+
+                self.assertEqual(flask.session['learner_name'], 'KJsa')
+
+                response_1 = c.get('/learner_logout', follow_redirects=True)
+                self.assertEqual(response_1.status_code, 200)
+                self.assertEqual(flask.session['learner_logged_in'], False)
+
+
+
+class TestingWhileLearnerLoggedIn(TestCase):
+    ############################
+    #### setup and teardown ####
+    ############################
+
+    def create_app(self):
+        app = c_app(TestConfiguration)
+        return app
+
+    # executed prior to each test
+    def setUp(self):
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        db.create_all()
+
+    # executed after each test
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+        self.app_context.pop()
+
+    def test_author_dashboard(self):
+        w_cat = WorksheetCategory(name='dunk')
+        db.session.add(w_cat)
+        db.session.commit()
+
+
+        auth_1 = Author(name='Kidkaid', email='kodyrogers21@gmail.com',
+                        password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        db.session.add(auth_1)
+        db.session.commit()
+
+        worksheet = Worksheet(pdf_url='tudoloos.pdf', name='tudoloos', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        db.session.add(worksheet)
+        db.session.commit()
+
+        worksheet_1 = Worksheet(pdf_url='tudol.pdf', name='tudol', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        db.session.add(worksheet_1)
+        db.session.commit()
+
+        learner = Learner(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod'
+                        , password='pbkdf2:sha256:150000$CgCWVBC6$4090facdcd3e093c7b458362daddbaa7b53387c6042ad46b5970dc7b6d00183c')
+
+        learner.favourites.append(worksheet)
+        learner.favourites.append(worksheet_1)
+
+        db.session.add(learner)
+        db.session.commit()
+
+        with self.app.test_client() as c:
+            response = c.post('/learner_login', data=dict(
+                email='kodyrogers21@gmail.com',
+                password='RockOn'
+            ), follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(flask.session['learner_logged_in'], True)
+
+            self.assertEqual(flask.session['learner_name'], 'KJsa')
+
+            r = c.get(url_for('author.author_dashboard', id=1))
+
+            self.assertEqual(r.status_code, 200)
+
+            response_1 = c.get('/learner_logout', follow_redirects=True)
+            self.assertEqual(response_1.status_code, 200)
+            self.assertEqual(flask.session['learner_logged_in'], False)
 
 
 
@@ -560,6 +670,36 @@ class DatabaseTests(TestCase):
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
+
+    def test_learner_model(self) :
+        w_cat = WorksheetCategory(name='dunk')
+        db.session.add(w_cat)
+        db.session.commit()
+
+
+        auth_1 = Author(name='Kidkaid', email='kodyrogers21@gmail.com',
+                        password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        db.session.add(auth_1)
+        db.session.commit()
+
+        worksheet = Worksheet(pdf_url='tudoloos.pdf', name='tudoloos', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        db.session.add(worksheet)
+        db.session.commit()
+
+        worksheet_1 = Worksheet(pdf_url='tudol.pdf', name='tudol', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        db.session.add(worksheet_1)
+        db.session.commit()
+
+        learner = Learner(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod'
+                        , password='pbkdf2:sha256:150000$CgCWVBC6$4090facdcd3e093c7b458362daddbaa7b53387c6042ad46b5970dc7b6d00183c')
+
+        learner.favourites.append(worksheet)
+        learner.favourites.append(worksheet_1)
+
+        db.session.add(learner)
+        db.session.commit()
+
+        assert learner in db.session
 
     def test_Post_model(self) :
 

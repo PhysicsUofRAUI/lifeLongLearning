@@ -139,3 +139,39 @@ class Author(db.Model) :
 
     def __repr__(self):
         return '<Author %r>' % self.name
+
+#
+# Helper Table for the favourites
+#   Will allow me to make a many to many relationship with learners and worksheets
+#
+worksheets_identifier = db.Table('worksheets_identifier',
+    db.Column('worksheet_id', db.Integer, db.ForeignKey('worksheets.id'), primary_key=True),
+    db.Column('learner_id', db.Integer, db.ForeignKey('learners.id'), primary_key=True)
+)
+
+#
+# Learner
+#   name: the name of the learner
+#   screenname: a name that is displayed on the platform
+#   email: The learners email
+#   password: the learners password
+#   favourites: A list of worksheets that a learner likes
+#
+class Learner(db.Model):
+    """
+    Create Learner table
+    """
+
+    __tablename__ = 'learners'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = Column(String(64), unique=True, nullable=True)
+    email = Column(String(64), index=True ,nullable=False, unique=True)
+    screenname = Column(String(64), default=None, nullable=True, unique=True)
+    password = Column(String(200), nullable=False)
+
+    favourites = db.relationship('Worksheet', secondary=worksheets_identifier, lazy='subquery',
+        backref=db.backref('learners', lazy=True))
+
+    def __repr__(self):
+        return '<Learner %r>' % self.name
