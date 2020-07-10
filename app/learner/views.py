@@ -35,6 +35,39 @@ def learner_login():
     return render_template('learner_login.html', form=form, title='Learner Login')
 
 
+#
+# Learner Change Password
+# Purpose: To give a learner an easy way to change their password.
+#
+@learner.route('/learner_change_password/<int:id>', methods=['GET', 'POST'])
+def learner_change_password(id):
+    if not session.get('learner_logged_in') :
+        return redirect(url_for('other.home'))
+
+    try :
+        learner = Learner.query.get(id)
+    except :
+        db.session.rollback()
+        raise
+
+    if not learner.name == session.get('learner_name') :
+        return redirect(url_for('other.home'))
+
+    form = LearnerForm(obj=learner)
+
+    if form.validate_on_submit():
+        try :
+            learner.password = generate_password_hash(form.password.data)
+
+            db.session.commit()
+
+            # redirect to the author dashboard
+            return redirect(url_for('learner.learner_dashboard', id=learner.id))
+        except :
+            db.session.rollback()
+            raise
+    return render_template('learner_change_password.html', form=form, learner=learner, title="Change Password")
+
 
 
 #

@@ -36,6 +36,16 @@ def login_author(client, email, password):
 def logout_author(client):
     return client.get('/author_logout', follow_redirects=True)
 
+def login_learner(client, email, password):
+    return client.post('/learner_login', data=dict(
+        email=email,
+        password=password
+    ), follow_redirects=True)
+
+
+def logout_learner(client):
+    return client.get('/learner_logout', follow_redirects=True)
+
 @contextmanager
 def captured_templates(app):
     recorded = []
@@ -202,6 +212,31 @@ class TestingWhileLearnerLoggedIn(TestCase):
             response_1 = c.get('/learner_logout', follow_redirects=True)
             self.assertEqual(response_1.status_code, 200)
             self.assertEqual(flask.session['learner_logged_in'], False)
+
+    def test_author_change_password(self) :
+        learner = Learner(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod'
+                        , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+
+        db.session.add(learner)
+        db.session.commit()
+
+        login_learner(self.client, email='kodyrogers21@gmail.com', password='RockOn')
+
+        response = self.client.get(url_for('learner.learner_change_password', id=learner.id), follow_redirects=False)
+
+        self.assertEqual(response.status_code, 200)
+
+        response_1 = self.client.post('/learner_change_password/1',
+                    data=dict(password='weeeehooo'), follow_redirects=True)
+
+        learner = Learner.query.filter_by(name='KJsa').first()
+        self.assertEqual(response_1.status_code, 200)
+
+        self.assertEqual(learner.email, 'kodyrogers21@gmail.com')
+
+        self.assertEqual(check_password_hash(learner.password, 'weeeehooo'), True)
+
+        logout_learner(self.client)
 
 
 
@@ -1566,6 +1601,13 @@ class BasicTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
         response = self.client.get('/learner_dashboard', follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+
+    def test_learner_change_password_nl(self):
+        response = self.client.get('/learner_change_password/1', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/learner_change_password/1', follow_redirects=False)
         self.assertEqual(response.status_code, 302)
 
 
