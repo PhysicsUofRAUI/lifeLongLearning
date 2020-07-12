@@ -213,7 +213,7 @@ class TestingWhileLearnerLoggedIn(TestCase):
             self.assertEqual(response_1.status_code, 200)
             self.assertEqual(flask.session['learner_logged_in'], False)
 
-    def test_author_change_password(self) :
+    def test_learner_change_password(self) :
         learner = Learner(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod'
                         , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
 
@@ -235,6 +235,63 @@ class TestingWhileLearnerLoggedIn(TestCase):
         self.assertEqual(learner.email, 'kodyrogers21@gmail.com')
 
         self.assertEqual(check_password_hash(learner.password, 'weeeehooo'), True)
+
+        logout_learner(self.client)
+
+    def test_learner_change_email(self):
+        learner_1 = Learner(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod',
+                        password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        db.session.add(learner_1)
+        db.session.commit()
+
+        login_learner(self.client, email='kodyrogers21@gmail.com', password='RockOn')
+
+        response = self.client.get(url_for('learner.learner_change_email', id=learner_1.id), follow_redirects=False)
+
+        self.assertEqual(response.status_code, 200)
+
+        response_1 = self.client.post('/learner_change_email/1',
+                    data=dict(email='kody15@hotmail.com'), follow_redirects=True)
+
+        learner = Learner.query.filter_by(name='KJsa').first()
+        self.assertEqual(response_1.status_code, 200)
+
+        self.assertEqual(response_1.status_code, 200)
+
+        self.assertEqual(learner.email, 'kody15@hotmail.com')
+
+        self.assertEqual(learner.password, 'pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+
+        self.assertEqual(learner.screenname, 'kod')
+
+        logout_learner(self.client)
+
+
+    def test_learner_change_screenname(self) :
+        learner_1 = Learner(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod',
+                        password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        db.session.add(learner_1)
+        db.session.commit()
+
+        login_learner(self.client, email='kodyrogers21@gmail.com', password='RockOn')
+
+        response = self.client.get(url_for('learner.learner_change_screenname', id=learner_1.id), follow_redirects=False)
+
+        self.assertEqual(response.status_code, 200)
+
+        response_1 = self.client.post('/learner_change_screenname/1',
+                        data=dict(screenname='logical'), follow_redirects=True)
+
+        learner = Learner.query.filter_by(name='KJsa').first()
+        self.assertEqual(response_1.status_code, 200)
+
+        self.assertEqual(response_1.status_code, 200)
+
+        self.assertEqual(learner.email, 'kodyrogers21@gmail.com')
+
+        self.assertEqual(learner.password, 'pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+
+        self.assertEqual(learner.screenname, 'logical')
 
         logout_learner(self.client)
 
@@ -1608,6 +1665,20 @@ class BasicTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
         response = self.client.get('/learner_change_password/1', follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+
+    def test_learner_change_email_nl(self):
+        response = self.client.get('/learner_change_email/1', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/learner_change_email/1', follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+
+    def test_learner_change_screenname_nl(self):
+        response = self.client.get('/learner_change_screenname/1', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/learner_change_screenname/1', follow_redirects=False)
         self.assertEqual(response.status_code, 302)
 
 

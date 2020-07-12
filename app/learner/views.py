@@ -68,6 +68,78 @@ def learner_change_password(id):
             raise
     return render_template('learner_change_password.html', form=form, learner=learner, title="Change Password")
 
+#
+# Learner Change Email
+# Purpose: To give an learner an easy way to change their email.
+#
+@learner.route('/learner_change_email/<int:id>', methods=['GET', 'POST'])
+def learner_change_email(id):
+    if not session.get('learner_logged_in') :
+        return redirect(url_for('other.home'))
+
+    try :
+        learner = Learner.query.get(id)
+    except :
+        db.session.rollback()
+        raise
+
+    if not learner.name == session.get('learner_name') :
+        return redirect(url_for('other.home'))
+
+    form = LearnerForm(obj=learner)
+
+    if form.validate_on_submit():
+        try :
+            learner.email = form.email.data
+
+            db.session.commit()
+
+            # redirect to the author dashboard
+            return redirect(url_for('learner.learner_dashboard', id=learner.id))
+        except :
+            db.session.rollback()
+            raise
+
+    form.email.data = learner.email
+
+    return render_template('learner_change_email.html', form=form, learner=learner, title="Change Email")
+
+
+#
+# Learner Change Screenname
+# Purpose: To give an learner an easy way to change their screenname.
+#
+@learner.route('/learner_change_screenname/<int:id>', methods=['GET', 'POST'])
+def learner_change_screenname(id):
+    if not session.get('learner_logged_in') :
+        return redirect(url_for('other.home'))
+
+    try :
+        learner = Learner.query.get(id)
+    except :
+        db.session.rollback()
+        raise
+
+    if not learner.name == session.get('learner_name') :
+        return redirect(url_for('other.home'))
+
+    form = LearnerForm(obj=learner)
+
+    if form.validate_on_submit():
+        try :
+            learner.screenname = form.screenname.data
+
+            db.session.commit()
+
+            # redirect to the home page
+            return redirect(url_for('learner.learner_dashboard', id=learner.id))
+        except :
+            db.session.rollback()
+            raise
+
+    form.screenname.data = learner.screenname
+
+    return render_template('learner_change_screenname.html', form=form, learner=learner, title="Change Screenname")
 
 
 #
