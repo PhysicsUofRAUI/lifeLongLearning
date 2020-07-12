@@ -166,4 +166,13 @@ def learner_dashboard(id):
     if not session.get('learner_logged_in') :
         return redirect(url_for('other.home'))
 
-    return render_template('learner_dashboard.html', id=id, favourites=None)
+    try :
+        learner = Learner.query.get(id)
+    except :
+        db.session.rollback()
+        raise
+
+    if not learner.name == session.get('learner_name') :
+        return redirect(url_for('other.home'))
+
+    return render_template('learner_dashboard.html', id=learner.id, favourites=None)

@@ -167,7 +167,7 @@ class TestingWhileLearnerLoggedIn(TestCase):
         db.drop_all()
         self.app_context.pop()
 
-    def test_author_dashboard(self):
+    def test_learner_dashboard(self):
         w_cat = WorksheetCategory(name='dunk')
         db.session.add(w_cat)
         db.session.commit()
