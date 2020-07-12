@@ -30,6 +30,11 @@
     {% else %}
       <a href="{{ url_for('author.author_login') }}" class="isolate w3-bar-item w3-button w3-padding-large w3-hide-small">Author Login</a>
     {% endif %}
+    {% if session['learner_logged_in'] %}
+      <a href="{{ url_for('learner.learner_dashboard') }}" class="isolate w3-bar-item w3-button w3-padding-large w3-hide-small">Dashboard</a>
+    {% else %}
+      <a href="{{ url_for('learner.learner_signup_login_choice') }}" class="isolate w3-bar-item w3-button w3-padding-large w3-hide-small">Learner Login/Signup</a>
+    {% endif %}
   </div>
 </div>
 
@@ -47,6 +52,11 @@
     <a href="{{ url_for('author.author_dashboard') }}" class="w3-bar-item w3-button w3-padding-large" onclick="smallScreenToggle()">Dashboard</a>
   {% else %}
     <a href="{{ url_for('author.author_login') }}" class="w3-bar-item w3-button w3-padding-large" onclick="smallScreenToggle()">Author Login</a>
+  {% endif %}
+  {% if session['learner_logged_in'] %}
+    <a href="{{ url_for('learner.learner_dashboard') }}" class="w3-bar-item w3-button w3-padding-large" onclick="smallScreenToggle()">Dashboard</a>
+  {% else %}
+    <a href="{{ url_for('learner.learner_signup_login_choice') }}" class="w3-bar-item w3-button w3-padding-large" onclick="smallScreenToggle()">Author Login</a>
   {% endif %}
 </div>
 

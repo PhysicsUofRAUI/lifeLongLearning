@@ -1704,6 +1704,13 @@ class BasicTests(TestCase):
         response = self.client.get('/learner_signup', follow_redirects=False)
         self.assertEqual(response.status_code, 200)
 
+    def test_learner_login_signup_choice_page_nl(self) :
+        response = self.client.get('/learner_signup_login_choice', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/learner_signup_login_choice', follow_redirects=False)
+        self.assertEqual(response.status_code, 200)
+
 
     #######################
     #### testing Blogs ####

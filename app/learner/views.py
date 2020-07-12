@@ -175,8 +175,16 @@ def learner_dashboard(id):
     if not learner.name == session.get('learner_name') :
         return redirect(url_for('other.home'))
 
-    return render_template('learner_dashboard.html', id=learner.id, favourites=None)
+    return render_template('learner_dashboard.html', id=learner.id, favourites=[])
 
+
+#
+# Learner Login Signup Choice Page
+# Purpose: A page allowing a learner to either signup or login
+#
+@learner.route('/learner_signup_login_choice', methods=['GET', 'POST'])
+def learner_signup_login_choice():
+    return render_template('learner_signup_login_choice.html')
 
 #
 # Learner Signup
