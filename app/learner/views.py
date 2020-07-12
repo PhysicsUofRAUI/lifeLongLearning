@@ -176,3 +176,26 @@ def learner_dashboard(id):
         return redirect(url_for('other.home'))
 
     return render_template('learner_dashboard.html', id=learner.id, favourites=None)
+
+
+#
+# Learner Signup
+# Purpose: A page for learners to sign themselves up
+#
+@learner.route('/learner_signup', methods=['GET', 'POST'])
+def learner_signup():
+    form = LearnerForm()
+
+    if form.validate_on_submit():
+        try:
+            new_learner = Learner(name=form.name.data, email=form.email.data,
+                            screenname=form.screenname.data, password=generate_password_hash(form.password.data))
+            db.session.add(new_learner)
+            db.session.commit()
+            return redirect(url_for('learner.learner_login'))
+
+        except:
+            db.session.rollback()
+            raise
+
+    return render_template('learner_signup.html', form=form)

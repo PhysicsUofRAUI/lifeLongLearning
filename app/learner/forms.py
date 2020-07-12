@@ -15,7 +15,6 @@ class LearnerForm(FlaskForm) :
     """
     name = StringField('Name')
     email = StringField('Email')
-    about = StringField('About')
     screenname = StringField('Screen-name')
     password = PasswordField('password')
 

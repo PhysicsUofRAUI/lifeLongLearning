@@ -167,6 +167,22 @@ class TestingWhileLearnerLoggedIn(TestCase):
         db.drop_all()
         self.app_context.pop()
 
+    def test_learner_signup(self):
+        response = self.client.post('/learner_signup',
+                    data=dict(name='Kody', screenname='kodster', email='kodyrogers21@gmail.com', password='weeeehooo'), follow_redirects=True)
+
+        self.assertEqual(response.status_code, 200)
+
+        learner = Learner.query.filter_by(name='Kody').first()
+
+        self.assertEqual(learner.name, 'Kody')
+
+        self.assertEqual(learner.screenname, 'kodster')
+
+        self.assertEqual(learner.email, 'kodyrogers21@gmail.com')
+
+        self.assertEqual(check_password_hash(learner.password, 'weeeehooo'), True)
+
     def test_learner_dashboard(self):
         w_cat = WorksheetCategory(name='dunk')
         db.session.add(w_cat)
@@ -1680,6 +1696,13 @@ class BasicTests(TestCase):
 
         response = self.client.get('/learner_change_screenname/1', follow_redirects=False)
         self.assertEqual(response.status_code, 302)
+
+    def test_learner_signup_nl(self) :
+        response = self.client.get('/learner_signup', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/learner_signup', follow_redirects=False)
+        self.assertEqual(response.status_code, 200)
 
 
     #######################
