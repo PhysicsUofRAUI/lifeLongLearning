@@ -12,7 +12,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 @author.route('/add_author', methods=['GET', 'POST'])
 def add_author():
     """
-    Add a category for worksheets
+    Add an author
     """
     if not session.get('logged_in'):
         return redirect(url_for('other.home'))
