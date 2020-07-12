@@ -24,7 +24,7 @@ def learner_login():
                 session['learner_logged_in'] = True
                 session['learner_name'] = learner.name
 
-                return redirect(url_for('learner.learner_dashboard', id=author.id))
+                return redirect(url_for('learner.learner_dashboard', id=learner.id))
             elif not check_password_hash(learner.password, form.password.data) :
                 flash("password was incorrect")
                 return redirect(request.url)
@@ -33,6 +33,19 @@ def learner_login():
 
     # load login template
     return render_template('learner_login.html', form=form, title='Learner Login')
+
+#
+# Learner Logout
+# Purpose: To unset a the 'learner_logged_in'
+#
+@learner.route('/learner_logout')
+def learner_logout():
+    if session.get('learner_logged_in'):
+        session['learner_logged_in'] = False
+        session['learner_name'] = None
+
+    # redirect to the login page
+    return redirect(url_for('other.home'))
 
 
 #
@@ -142,18 +155,7 @@ def learner_change_screenname(id):
     return render_template('learner_change_screenname.html', form=form, learner=learner, title="Change Screenname")
 
 
-#
-# Learner Logout
-# Purpose: To unset a the 'learner_logged_in'
-#
-@learner.route('/learner_logout')
-def learner_logout():
-    if session.get('learner_logged_in'):
-        session['learner_logged_in'] = False
-        session['learner_name'] = None
 
-    # redirect to the login page
-    return redirect(url_for('other.home'))
 
 
 #
