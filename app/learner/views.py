@@ -177,7 +177,9 @@ def learner_dashboard(id):
     if not learner.name == session.get('learner_name') :
         return redirect(url_for('other.home'))
 
-    return render_template('learner_dashboard.html', id=learner.id, favourites=[])
+    favourites = learner.favourites
+
+    return render_template('learner_dashboard.html', id=learner.id, favourites=favourites)
 
 
 #

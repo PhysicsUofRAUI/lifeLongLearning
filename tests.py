@@ -211,23 +211,47 @@ class TestingWhileLearnerLoggedIn(TestCase):
         db.session.add(learner)
         db.session.commit()
 
+        learner_1 = Learner(name='Kody', email='kodyrogers24@gmail.com', screenname='hack'
+                        , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+
+        worksheet_2 = Worksheet(pdf_url='tuol.pdf', name='tuol', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        db.session.add(worksheet_1)
+        db.session.commit()
+
+        worksheet_3 = Worksheet(pdf_url='tdol.pdf', name='tdol', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        db.session.add(worksheet_1)
+        db.session.commit()
+
+        learner.favourites.append(worksheet_2)
+        learner.favourites.append(worksheet_3)
+
+        db.session.add(learner_1)
+        db.session.commit()
+
         with self.app.test_client() as c:
-            response = c.post('/learner_login', data=dict(
-                email='kodyrogers21@gmail.com',
-                password='RockOn'
-            ), follow_redirects=True)
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(flask.session['learner_logged_in'], True)
+            with captured_templates(self.app) as templates:
+                response = c.post('/learner_login', data=dict(
+                    email='kodyrogers21@gmail.com',
+                    password='RockOn'
+                ), follow_redirects=True)
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(flask.session['learner_logged_in'], True)
 
-            self.assertEqual(flask.session['learner_name'], 'KJsa')
+                self.assertEqual(flask.session['learner_name'], 'KJsa')
 
-            r = c.get(url_for('learner.learner_dashboard', id=1))
+                r = c.get(url_for('learner.learner_dashboard', id=1))
 
-            self.assertEqual(r.status_code, 200)
+                learner = Learner.query.filter_by(email='kodyrogers21@gmail.com').first()
 
-            response_1 = c.get('/learner_logout', follow_redirects=True)
-            self.assertEqual(response_1.status_code, 200)
-            self.assertEqual(flask.session['learner_logged_in'], False)
+                self.assertEqual(r.status_code, 200)
+
+                template, context = templates[0]
+
+                self.assertEqual(context['favourites'], learner.favourites)
+
+                response_1 = c.get('/learner_logout', follow_redirects=True)
+                self.assertEqual(response_1.status_code, 200)
+                self.assertEqual(flask.session['learner_logged_in'], False)
 
     def test_learner_change_password(self) :
         learner = Learner(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod'
