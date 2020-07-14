@@ -1,6 +1,6 @@
 from . import worksheets
 from flask import render_template, session, redirect, url_for, request, current_app
-from ..models import WorksheetCategory, Worksheet, Author
+from ..models import WorksheetCategory, Worksheet, Author, Learner
 from .forms import WorksheetForm, WorksheetCategoryForm, EditWorksheetForm
 from werkzeug.utils import secure_filename
 import os
@@ -24,6 +24,18 @@ def worksheets_page(page) :
         db.session.rollback()
         raise
 
+    if session.get('learner_logged_in') :
+        try :
+            learner = Learner.query.filter_by(name=session.get('learner_name')).first()
+            favourites = learner.favourites
+            learner_id = learner.id
+        except :
+            db.session.rollback()
+            raise
+    else :
+        favourites = []
+        learner_id = None
+
     if not author == None :
         try :
             # get the worksheets done by a specific author
@@ -43,8 +55,8 @@ def worksheets_page(page) :
             next_url = url_for('worksheets.worksheets_page', author=author, category=category, page=page + 1)
         else :
             next_url = None
-
-        return render_template('worksheets.html', worksheets=worksheets, categories=categories, next_url=next_url, prev_url=prev_url)
+            
+        return render_template('worksheets.html', worksheets=worksheets, categories=categories, favourites=favourites, learner_id=learner_id, next_url=next_url, prev_url=prev_url)
 
     elif not category == None:
         try :
@@ -66,7 +78,7 @@ def worksheets_page(page) :
         else :
             next_url = None
 
-        return render_template('worksheets.html', worksheets=worksheets, categories=categories, next_url=next_url, prev_url=prev_url)
+        return render_template('worksheets.html', worksheets=worksheets, categories=categories, favourites=favourites, learner_id=learner_id, next_url=next_url, prev_url=prev_url)
 
     else :
         try :
@@ -89,7 +101,7 @@ def worksheets_page(page) :
         else :
             next_url = None
 
-        return render_template('worksheets.html', worksheets=worksheets, categories=categories, next_url=next_url, prev_url=prev_url)
+        return render_template('worksheets.html', worksheets=worksheets, categories=categories, favourites=favourites, learner_id=learner_id, next_url=next_url, prev_url=prev_url)
 
 
 

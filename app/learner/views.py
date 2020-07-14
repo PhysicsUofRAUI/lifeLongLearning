@@ -1,6 +1,6 @@
 from . import learner
 from flask import render_template, session, redirect, url_for, request, current_app, flash
-from ..models import Learner
+from ..models import Learner, Worksheet
 from .forms import LearnerForm, LearnerLoginForm
 from .. import db
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -155,6 +155,35 @@ def learner_change_screenname(id):
     return render_template('learner_change_screenname.html', form=form, learner=learner, title="Change Screenname")
 
 
+#
+# Learner Dashboard
+# Purpose: A place for an learner to see all the different options with their account
+#
+@learner.route('/add_favourite/<int:learner_id>/<int:worksheet_id>', methods=['GET', 'POST'])
+def add_favourite(learner_id, worksheet_id):
+    if not session.get('learner_logged_in') :
+        return redirect(url_for('other.home'))
+
+    try :
+        learner = Learner.query.get(learner_id)
+    except :
+        db.session.rollback()
+        raise
+
+    if not learner.name == session.get('learner_name') :
+        return redirect(url_for('other.home'))
+
+    try :
+        worksheet = Worksheet.query.get(worksheet_id)
+
+        learner.favourites.append(worksheet)
+
+        db.session.commit()
+    except :
+        db.session.rollback()
+        raise
+
+    return redirect(url_for('worksheets.worksheets_page', author=worksheet.author_id, category=None, page=0))
 
 
 
@@ -169,13 +198,10 @@ def learner_dashboard(id):
         return redirect(url_for('other.home'))
 
     try :
-        learner = Learner.query.get(id)
+        learner = Learner.query.filter_by(name=session.get('learner_name')).first()
     except :
         db.session.rollback()
         raise
-
-    if not learner.name == session.get('learner_name') :
-        return redirect(url_for('other.home'))
 
     favourites = learner.favourites
 

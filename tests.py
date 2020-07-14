@@ -253,6 +253,49 @@ class TestingWhileLearnerLoggedIn(TestCase):
                 self.assertEqual(response_1.status_code, 200)
                 self.assertEqual(flask.session['learner_logged_in'], False)
 
+    def test_learner_add_favourite(self):
+        w_cat = WorksheetCategory(name='dunk')
+        db.session.add(w_cat)
+        db.session.commit()
+
+
+        auth_1 = Author(name='Kidkaid', email='kodyrogers21@gmail.com',
+                        password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        db.session.add(auth_1)
+        db.session.commit()
+
+        worksheet = Worksheet(pdf_url='tudoloos.pdf', name='tudoloos', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        db.session.add(worksheet)
+        db.session.commit()
+
+        worksheet_1 = Worksheet(pdf_url='tudol.pdf', name='tudol', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        db.session.add(worksheet_1)
+        db.session.commit()
+
+        learner = Learner(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod'
+                        , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+
+        learner.favourites.append(worksheet)
+        learner.favourites.append(worksheet_1)
+
+        db.session.add(learner)
+        db.session.commit()
+
+        worksheet_2 = Worksheet(pdf_url='tuol.pdf', name='tuol', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        db.session.add(worksheet_1)
+        db.session.commit()
+
+        login_learner(self.client, email='kodyrogers21@gmail.com', password='RockOn')
+
+        response = self.client.get(url_for('learner.add_favourite', learner_id=learner.id, worksheet_id=worksheet_2.id), follow_redirects=True)
+
+        self.assertEqual(response.status_code, 200)
+
+        learner_1 = Learner.query.filter_by(email='kodyrogers21@gmail.com').first()
+        self.assertEqual(learner_1.favourites, [worksheet, worksheet_1, worksheet_2])
+
+        logout_learner(self.client)
+
     def test_learner_change_password(self) :
         learner = Learner(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod'
                         , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
@@ -1368,6 +1411,221 @@ class TestingWhileLoggedIn(TestCase):
                 self.assertEqual(context['next_url'], None)
                 self.assertEqual(context['prev_url'], None)
 
+    def test_worksheet_page_learner_logged_in(self) :
+        # worksheet page
+        response = self.client.get('/worksheets_page', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        w_cat = WorksheetCategory(name='dundk')
+        db.session.add(w_cat)
+        db.session.commit()
+
+
+        auth_1 = Author(name='Kidkaidf', email='kodyrogers21@gmail.com', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        db.session.add(auth_1)
+
+        db.session.commit()
+
+        worksheet = Worksheet(pdf_url='tudolsoos.pdf', name='tudoloods', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        db.session.add(worksheet)
+
+        learner = Learner(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod'
+                        , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+
+        db.session.commit()
+
+        worksheet = Worksheet.query.filter_by(name='tudoloods').first()
+
+        w_cat = WorksheetCategory.query.filter_by(name='dundk').first()
+
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                login_learner(c, email='kodyrogers21@gmail.com', password='RockOn')
+
+                r = c.get('/worksheets_page', follow_redirects=False)
+                template, context = templates[1]
+                self.assertEqual(context['favourites'], [])
+                self.assertEqual(context['worksheets'], [worksheet])
+                self.assertEqual(context['categories'], [w_cat])
+                self.assertEqual(context['next_url'], None)
+                self.assertEqual(context['prev_url'], None)
+
+                logout_learner(c)
+
+        w_cat_1 = WorksheetCategory(name='dund32k')
+        db.session.add(w_cat_1)
+
+        w_cat_2 = WorksheetCategory(name='dundfsdk')
+        db.session.add(w_cat_2)
+        db.session.commit()
+
+
+        auth_2 = Author(name='Kidkafdidf', email='kodyrogers24@gmail.com', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        db.session.add(auth_2)
+        auth_3 = Author(name='Kif', email='kodyrogers25@gmail.com', password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+        db.session.add(auth_3)
+
+        db.session.commit()
+
+        worksheet_1 = Worksheet(pdf_url='tudolsoo.pdf', name='tloods', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        worksheet_2 = Worksheet(pdf_url='tudolsos.pdf', name='tudoldaghoods', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_3 = Worksheet(pdf_url='tudolos.pdf', name='tudol', author_id=3, author=auth_3, category_id=3, category=w_cat_2)
+        worksheet_4 = Worksheet(pdf_url='tudsoos.pdf', name='tudolsagdgsshjoods', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_5 = Worksheet(pdf_url='tolsoos.pdf', name='tudoldfag', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        worksheet_6 = Worksheet(pdf_url='lsoos.pdf', name='tudosdag', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_7 = Worksheet(pdf_url='tch.pdf', name='tudosgsggs', author_id=3, author=auth_3, category_id=3, category=w_cat_2)
+        worksheet_8 = Worksheet(pdf_url='tudsfgos.pdf', name='montreal', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_9 = Worksheet(pdf_url='tersoos.pdf', name='toronto', author_id=3, author=auth_3, category_id=3, category=w_cat_2)
+        worksheet_10 = Worksheet(pdf_url='tudosgagos.pdf', name='ottowa', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_11 = Worksheet(pdf_url='tusgsgos.pdf', name='saskatoon', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        worksheet_12 = Worksheet(pdf_url='tusgsssoos.pdf', name='winnipeg', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        db.session.add(worksheet_1)
+        db.session.add(worksheet_2)
+        db.session.add(worksheet_3)
+        db.session.add(worksheet_4)
+        db.session.add(worksheet_5)
+        db.session.add(worksheet_6)
+        db.session.add(worksheet_7)
+        db.session.add(worksheet_8)
+        db.session.add(worksheet_9)
+        db.session.add(worksheet_10)
+        db.session.add(worksheet_11)
+        db.session.add(worksheet_12)
+
+        db.session.commit()
+
+        learner.favourites.append(worksheet)
+        learner.favourites.append(worksheet_1)
+        learner.favourites.append(worksheet_3)
+        learner.favourites.append(worksheet_2)
+
+        db.session.commit()
+
+        #
+        # Testing the first page of an author
+        #
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                login_learner(c, email='kodyrogers21@gmail.com', password='RockOn')
+                r = c.get(url_for('worksheets.worksheets_page', author=2, category=None, page=0))
+                template, context = templates[1]
+                self.assertEqual(context['worksheets'], [worksheet_12, worksheet_10, worksheet_8, worksheet_6,  worksheet_4])
+                self.assertEqual(context['favourites'], [worksheet, worksheet_1, worksheet_3, worksheet_2])
+                self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
+                self.assertEqual(context['next_url'], url_for('worksheets.worksheets_page', author=2, category=None, page=1))
+                self.assertEqual(context['prev_url'], None)
+                logout_learner(c)
+
+        #
+        # Testing the first page of a category
+        #
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                login_learner(c, email='kodyrogers21@gmail.com', password='RockOn')
+                r = c.get(url_for('worksheets.worksheets_page', category=2, author=None, page=0))
+                template, context = templates[1]
+                self.assertEqual(context['worksheets'], [worksheet_12, worksheet_10, worksheet_8, worksheet_6,  worksheet_4])
+                self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
+                self.assertEqual(context['favourites'], [worksheet, worksheet_1, worksheet_3, worksheet_2])
+                self.assertEqual(context['next_url'], url_for('worksheets.worksheets_page', category=2, author=None, page=1))
+                self.assertEqual(context['prev_url'], None)
+                logout_learner(c)
+
+
+        #
+        # Testing the second page of an author
+        #
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                login_learner(c, email='kodyrogers21@gmail.com', password='RockOn')
+                r = c.get(url_for('worksheets.worksheets_page', author=2, category=None, page=1))
+                template, context = templates[1]
+                self.assertEqual(context['worksheets'], [worksheet_2])
+                self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
+                self.assertEqual(context['favourites'], [worksheet, worksheet_1, worksheet_3, worksheet_2])
+                self.assertEqual(context['next_url'], None)
+                self.assertEqual(context['prev_url'], url_for('worksheets.worksheets_page', author=2, category=None, page=0))
+                logout_learner(c)
+
+
+        #
+        # Testing the second page of a category
+        #
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                login_learner(c, email='kodyrogers21@gmail.com', password='RockOn')
+                r = c.get(url_for('worksheets.worksheets_page', category=2, author=None, page=1))
+                template, context = templates[1]
+                self.assertEqual(context['worksheets'], [worksheet_2])
+                self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
+                self.assertEqual(context['favourites'], [worksheet, worksheet_1, worksheet_3, worksheet_2])
+                self.assertEqual(context['next_url'], None)
+                self.assertEqual(context['prev_url'], url_for('worksheets.worksheets_page', category=2, author=None, page=0))
+                logout_learner(c)
+
+
+
+        #
+        # Testing the worksheet page with many worksheets inputted
+        #
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                login_learner(c, email='kodyrogers21@gmail.com', password='RockOn')
+                r = c.get(url_for('worksheets.worksheets_page', author=None, worksheet=None, category=None, page=1))
+                template, context = templates[1]
+                self.assertEqual(context['worksheets'], [worksheet_7, worksheet_6, worksheet_5, worksheet_4, worksheet_3])
+                self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
+                self.assertEqual(context['favourites'], [worksheet, worksheet_1, worksheet_3, worksheet_2])
+                self.assertEqual(context['next_url'], url_for('worksheets.worksheets_page', author=None, category=None, page=2))
+                self.assertEqual(context['prev_url'], url_for('worksheets.worksheets_page', author=None, category=None, page=0))
+                logout_learner(c)
+
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                login_learner(c, email='kodyrogers21@gmail.com', password='RockOn')
+                r = c.get(url_for('worksheets.worksheets_page', author=None, worksheet=None, category=None, page=2))
+                template, context = templates[1]
+                self.assertEqual(context['worksheets'], [worksheet_2, worksheet_1, worksheet])
+                self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
+                self.assertEqual(context['next_url'], None)
+                self.assertEqual(context['favourites'], [worksheet, worksheet_1, worksheet_3, worksheet_2])
+                self.assertEqual(context['prev_url'], url_for('worksheets.worksheets_page', author=None, category=None, page=1))
+                logout_learner(c)
+
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                login_learner(c, email='kodyrogers21@gmail.com', password='RockOn')
+                r = c.get(url_for('worksheets.worksheets_page', author=None, worksheet=None, category=None, page=0))
+                template, context = templates[1]
+                self.assertEqual(context['worksheets'], [worksheet_12, worksheet_11, worksheet_10, worksheet_9, worksheet_8])
+                self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
+                self.assertEqual(context['favourites'], [worksheet, worksheet_1, worksheet_3, worksheet_2])
+                self.assertEqual(context['next_url'], url_for('worksheets.worksheets_page', author=None, category=None, page=1))
+                self.assertEqual(context['prev_url'], None)
+                logout_learner(c)
+
+        #
+        # Checking if author overwrites the category
+        #
+        worksheet_13 = Worksheet(pdf_url='tudosgadgos.pdf', name='ottowa sens', author_id=1, author=auth_1, category_id=3, category=w_cat_2)
+        worksheet_14 = Worksheet(pdf_url='tusgsghjgos.pdf', name='saskatoon hobbo', author_id=1, author=auth_1, category_id=2, category=w_cat_1)
+        worksheet_15 = Worksheet(pdf_url='tusdasgsssoos.pdf', name='winnipeg jets', author_id=1, author=auth_1, category_id=2, category=w_cat_1)
+
+        learner.favourites.append(worksheet_14)
+
+        db.session.commit()
+
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                login_learner(c, email='kodyrogers21@gmail.com', password='RockOn')
+                r = c.get(url_for('worksheets.worksheets_page', category=1, author=None, page=0))
+                template, context = templates[1]
+                self.assertEqual(context['worksheets'], [worksheet_11, worksheet_5, worksheet_1, worksheet])
+                self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
+                self.assertEqual(context['favourites'], [worksheet, worksheet_1, worksheet_3, worksheet_2, worksheet_14])
+                self.assertEqual(context['next_url'], None)
+                self.assertEqual(context['prev_url'], None)
+                logout_learner(c)
 
     def test_worksheet_count_page(self):
         w_cat = WorksheetCategory(name='dundk')
@@ -1734,6 +1992,14 @@ class BasicTests(TestCase):
 
         response = self.client.get('/learner_signup_login_choice', follow_redirects=False)
         self.assertEqual(response.status_code, 200)
+
+    def test_learner_add_favourite_nl(self) :
+        response = self.client.get('/add_favourite/1/1', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/add_favourite/1/1', follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+
 
 
     #######################

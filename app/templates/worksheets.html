@@ -32,6 +32,15 @@ following link very useful: https://www.w3docs.com/snippets/html/how-to-embed-pd
               {% endif %}
             </a>
           </p>
+          {% if session['learner_logged_in'] %}
+          <p>
+            {% if worksheet in favourites %}
+            &#128151;
+            {% else %}
+            <a href="{{ url_for('learner.add_favourite', worksheet_id=worksheet.id, learner_id=learner_id) }}">&#128159;</a>
+            {% endif %}
+          </p>
+          {% endif %}
           <p>
             Viewed or Downloaded {{ worksheet.count }} times
           </p>
@@ -42,10 +51,6 @@ following link very useful: https://www.w3docs.com/snippets/html/how-to-embed-pd
           </p>
           <p>
           <a href="{{ url_for('worksheets.worksheets_count', id=worksheet.id) }}">View</a>
-          {% if session['logged_in'] %}
-            <a href="{{ url_for('worksheets.edit_worksheet', id=worksheet.id) }}">Edit</a>
-            <a href="{{ url_for('worksheets.delete_worksheet', id=worksheet.id) }}">Delete</a>
-          {% endif %}
           </p>
         {% endfor %}
       {% endif %}
