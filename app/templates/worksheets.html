@@ -72,10 +72,10 @@ following link very useful: https://www.w3docs.com/snippets/html/how-to-embed-pd
       <h1>Categories</h1>
 
       <div style="overflow-y: scroll; height:400px;">
-        <ul style="list-style-type:none">
+        <ul class="w3-ul w3-hoverable">
       {% for category in categories %}
       <li>
-        <a href="{{ url_for('worksheets.worksheets_page', category=category.id, author=None, page=0) }}">{{ category.name }}</a>
+        <a href="{{ url_for('worksheets.worksheets_page', category=category.id, author=None, page=0) }}" class="w3-btn">{{ category.name }}</a>
       </li>
       {% endfor %}
         </ul>
