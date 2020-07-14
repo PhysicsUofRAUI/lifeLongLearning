@@ -35,7 +35,7 @@
   <!-- Edit and delete views for categories -->
   <div class="w3-row-padding">
     <!-- Worksheet Category Options -->
-    <div class="w3-half">
+    <div class="w3-third">
       <h3>Worksheet Categories</h3>
       {% if worksheet_categories %}
         {% for worksheet_category in worksheet_categories %}
@@ -49,7 +49,7 @@
     </div>
 
     <!-- Post Category Options -->
-    <div class="w3-half">
+    <div class="w3-third">
       <h2>Post Categories</h2>
       {% if post_categories %}
         {% for post_category in post_categories %}
@@ -57,6 +57,20 @@
             <b>{{ post_category.name }}</b> :
             <a href="{{ url_for('blogs.edit_blog_category', id=post_category.id) }}" class="w3-btn w3-round-xlarge w3-indigo">Edit</a>
             <a href="{{ url_for('blogs.delete_blog_category', id=post_category.id) }}" class="w3-btn w3-round-xlarge w3-indigo">Delete</a>
+          </p>
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    <!-- Learners -->
+    <div class="w3-third">
+      <h2>Learners</h2>
+      {% if learners %}
+        {% for learner in learners %}
+          <p>
+            <b>{{ learner.name }}</b> :
+            <a href="{{ url_for('learner.edit_learner', id=learner.id) }}" class="w3-btn w3-round-xlarge w3-indigo">Edit</a>
+            <a href="{{ url_for('learner.delete_learner', id=learner.id) }}" class="w3-btn w3-round-xlarge w3-indigo">Delete</a>
           </p>
         {% endfor %}
       {% endif %}

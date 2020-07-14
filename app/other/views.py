@@ -1,7 +1,7 @@
 from flask import render_template, current_app, session, redirect, url_for
 from . import other
 from .. import db
-from ..models import Author, PostCategory, WorksheetCategory
+from ..models import Author, PostCategory, WorksheetCategory, Learner
 
 #
 # Home
@@ -38,6 +38,8 @@ def admin() :
         return redirect(url_for('other.home'))
 
     try :
+        learners = Learner.query.all()
+
         worksheetCategories = WorksheetCategory.query.all()
 
         postCategories = PostCategory.query.all()
@@ -45,7 +47,7 @@ def admin() :
         db.session.rollback()
         return redirect(url_for('other.home'))
 
-    return render_template('admin.html', worksheet_categories=worksheetCategories, post_categories=postCategories)
+    return render_template('admin.html', worksheet_categories=worksheetCategories, post_categories=postCategories, learners=learners)
 
 @other.route('/building')
 def building():

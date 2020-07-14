@@ -47,6 +47,65 @@ def learner_logout():
     # redirect to the login page
     return redirect(url_for('other.home'))
 
+#
+# Edit Learner
+#   Will edit an author
+#
+@learner.route('/edit_learner/<int:id>', methods=['GET', 'POST'])
+def edit_learner(id) :
+    """
+    Edit an Author
+    """
+
+    if not session.get('logged_in'):
+        return redirect(url_for('other.home'))
+
+    try :
+        learner = Learner.query.get(id)
+    except :
+        db.session.rollback()
+        raise
+
+    form = LearnerForm(obj=learner)
+
+    if form.validate_on_submit():
+        try :
+            learner.password = generate_password_hash(form.password.data)
+
+            db.session.commit()
+
+            # redirect to the home page
+            return redirect(url_for('other.home'))
+        except :
+            db.session.rollback()
+            raise
+
+    return render_template('edit_learner.html', form=form, learner=learner, title="Edit Learner")
+
+#
+# DeleteAuthor
+#   Will delete an author
+#
+@learner.route('/delete_learner/<int:id>', methods=['GET', 'POST'])
+def delete_learner(id):
+    """
+    Delete a post from the database
+    """
+    # check if user is logged in
+    if not session.get('logged_in'):
+        return redirect(url_for('other.home'))
+
+    try :
+        learner = Learner.query.get(id)
+        db.session.delete(learner)
+        db.session.commit()
+
+        # redirect to the home page
+        return redirect(url_for('other.home'))
+    except :
+        db.session.rollback()
+        raise
+
 
 #
 # Learner Change Password
