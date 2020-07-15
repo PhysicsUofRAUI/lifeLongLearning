@@ -53,7 +53,7 @@ class PostCategory(db.Model) :
     name = Column(String(64), index=True, unique=True)
 
     def __repr__(self):
-        return '<PostCategory %r>' % self.name
+        return self.name
 
 
 #
@@ -110,7 +110,7 @@ class WorksheetCategory(db.Model) :
     name = Column(String(64), index=True, unique=True)
 
     def __repr__(self):
-        return '<WorksheetCategory %r>' % self.name
+        return self.name
 
 
 #
