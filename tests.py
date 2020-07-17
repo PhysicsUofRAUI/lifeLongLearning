@@ -1411,6 +1411,51 @@ class TestingWhileLoggedIn(TestCase):
                 self.assertEqual(context['next_url'], None)
                 self.assertEqual(context['prev_url'], None)
 
+
+        worksheet_16 = Worksheet(pdf_url='tudoloo.pdf', name='tloos', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        worksheet_17 = Worksheet(pdf_url='tudosos.pdf', name='tudldaghoods', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_18 = Worksheet(pdf_url='tudlos.pdf', name='tudl', author_id=3, author=auth_3, category_id=3, category=w_cat_2)
+        worksheet_19 = Worksheet(pdf_url='tusoos.pdf', name='tuolsagdgsshjoods', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_20 = Worksheet(pdf_url='tlsoos.pdf', name='tdoldfag', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        worksheet_21 = Worksheet(pdf_url='soos.pdf', name='tuosdag', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_22 = Worksheet(pdf_url='tc.pdf', name='tudsgsggs', author_id=3, author=auth_3, category_id=3, category=w_cat_2)
+        worksheet_23 = Worksheet(pdf_url='tdsfgos.pdf', name='montreal_1', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_24 = Worksheet(pdf_url='ersoos.pdf', name='toronto_2', author_id=3, author=auth_3, category_id=3, category=w_cat_2)
+        worksheet_25 = Worksheet(pdf_url='tudosagos.pdf', name='ottowa_1', author_id=2, author=auth_2, category_id=2, category=w_cat_1)
+        worksheet_26 = Worksheet(pdf_url='tusggos.pdf', name='saskatoon_1', author_id=1, author=auth_1, category_id=1, category=w_cat)
+
+        #
+        # Testing the worksheet page with even more worksheets inputted
+        #
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                r = c.get(url_for('worksheets.worksheets_page', author=None, worksheet=None, category=None, page=0))
+                template, context = templates[0]
+                self.assertEqual(context['worksheets'], [worksheet_26, worksheet_25, worksheet_24, worksheet_23, worksheet_22, worksheet_21, worksheet_20, worksheet_19, worksheet_18])
+                self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
+                self.assertEqual(context['next_url'],  url_for('worksheets.worksheets_page', author=None, category=None, page=1))
+                self.assertEqual(context['prev_url'], None)
+
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                r = c.get(url_for('worksheets.worksheets_page', author=None, worksheet=None, category=None, page=1))
+                template, context = templates[0]
+                self.assertEqual(context['worksheets'], [worksheet_17, worksheet_16, worksheet_15, worksheet_14, worksheet_13, worksheet_12, worksheet_11, worksheet_10, worksheet_9])
+                self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
+                self.assertEqual(context['next_url'], url_for('worksheets.worksheets_page', author=None, worksheet=None, category=None, page=2))
+                self.assertEqual(context['prev_url'], url_for('worksheets.worksheets_page', author=None, worksheet=None, category=None, page=0))
+
+        with self.app.test_client() as c:
+            with captured_templates(self.app) as templates:
+                r = c.get(url_for('worksheets.worksheets_page', author=None, worksheet=None, category=None, page=2))
+                template, context = templates[0]
+                self.assertEqual(context['worksheets'], [worksheet_8, worksheet_7, worksheet_6, worksheet_5, worksheet_4, worksheet_3, worksheet_2, worksheet_1, worksheet])
+                self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
+                self.assertEqual(context['next_url'], None)
+                self.assertEqual(context['prev_url'], url_for('worksheets.worksheets_page', author=None, worksheet=None, category=None, page=1))
+
+
+
     def test_worksheet_page_learner_logged_in(self) :
         # worksheet page
         response = self.client.get('/worksheets_page', follow_redirects=True)
