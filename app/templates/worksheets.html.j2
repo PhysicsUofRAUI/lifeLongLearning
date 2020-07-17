@@ -1,0 +1,206 @@
+<!--
+Will need to use some sort of pdf preview to make the delivery of the pdfs pretty
+
+Can use the w3grid to divide up the different authors (only two right now)
+
+following link very useful: https://www.w3docs.com/snippets/html/how-to-embed-pdf-in-html.html
+-->
+{% extends "base.html" %}
+{% block title %}Worksheets{% endblock %}
+{% block head %}
+{{ super() }}
+<style>
+.container-iframe {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding-top: 100%; /* 16:9 Aspect Ratio (divide 9 by 16 = 0.5625) */
+}
+
+/* Then style the iframe to fit in the container div with full height and width */
+.responsive-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 80%;
+  height: 100%;
+}
+</style>
+{% endblock %}
+{% block body %}
+
+<!-- Page Container -->
+<div class="w3-content w3-margin-top" style="max-width:1400px;">
+
+  <!-- The Grid -->
+  <div class="w3-row-padding">
+
+    <!-- Left Column -->
+    <div class="w3-twothird">
+      {% if worksheets %}
+        <!-- Row one -->
+        <div class="w3-row">
+          {% for index in range(3) %}
+            {% if worksheets|length > index %}
+              <div class="w3-third">
+                <h2> {{ worksheets[index].name }} </h2>
+                <div class="container-iframe">
+                  <iframe src="{{ url_for('static', filename=worksheets[index].pdf_url) }}" class="responsive-iframe"></iframe>
+                </div>
+                <p>
+                  <a href="{{ url_for('worksheets.worksheets_page', author=worksheets[index].author_id, category=None, page=0) }}">
+                    {% if worksheets[index].author.screenname is none %}
+                      More by the author: {{ worksheets[index].author.name }}
+                    {% else %}
+                      More by the author: {{ worksheets[index].author.screenname }}
+                    {% endif %}
+                  </a>
+                </p>
+                {% if session['learner_logged_in'] %}
+                <p>
+                  {% if worksheets[index] in favourites %}
+                  &#128151;
+                  {% else %}
+                  <a href="{{ url_for('learner.add_favourite', worksheet_id=worksheets[index].id, learner_id=learner_id) }}">&#128159;</a>
+                  {% endif %}
+                </p>
+                {% endif %}
+                <p>
+                  Viewed or Downloaded {{ worksheets[index].count }} times
+                </p>
+                <p>
+                  {% if not worksheets[index].video_url == '' %}
+                    <a href="{{ worksheets[index].video_url }}">Video Tutorial</a>
+                  {% endif %}
+                </p>
+                <p>
+                <a href="{{ url_for('worksheets.worksheets_count', id=worksheets[index].id) }}">View</a>
+                </p>
+              </div>
+            {% endif %} {# checking if there is another worksheet #}
+          {% endfor %} {# first three worksheets #}
+        </div>
+        <!-- Row Two -->
+        <div class="w3-row">
+          {% for index in range(3,6) %}
+            {% if worksheets|length > index %}
+              <div class="w3-third">
+                <h2> {{ worksheets[index].name }} </h2>
+                <div class="container-iframe">
+                  <iframe src="{{ url_for('static', filename=worksheets[index].pdf_url) }}" class="responsive-iframe"></iframe>
+                </div>
+                <p>
+                  <a href="{{ url_for('worksheets.worksheets_page', author=worksheets[index].author_id, category=None, page=0) }}">
+                    {% if worksheets[index].author.screenname is none %}
+                      More by the author: {{ worksheets[index].author.name }}
+                    {% else %}
+                      More by the author: {{ worksheets[index].author.screenname }}
+                    {% endif %}
+                  </a>
+                </p>
+                {% if session['learner_logged_in'] %}
+                <p>
+                  {% if worksheets[index] in favourites %}
+                  &#128151;
+                  {% else %}
+                  <a href="{{ url_for('learner.add_favourite', worksheet_id=worksheets[index].id, learner_id=learner_id) }}">&#128159;</a>
+                  {% endif %}
+                </p>
+                {% endif %}
+                <p>
+                  Viewed or Downloaded {{ worksheets[index].count }} times
+                </p>
+                <p>
+                  {% if not worksheets[index].video_url == '' %}
+                    <a href="{{ worksheets[index].video_url }}">Video Tutorial</a>
+                  {% endif %}
+                </p>
+                <p>
+                <a href="{{ url_for('worksheets.worksheets_count', id=worksheets[index].id) }}">View</a>
+                </p>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+        <!-- Row Three -->
+        <div class="w3-row">
+          {% for index in range(6,9) %}
+            {% if worksheets|length > index %}
+              <div class="w3-third">
+                <h2> {{ worksheets[index].name }} </h2>
+                <div class="container-iframe">
+                  <iframe src="{{ url_for('static', filename=worksheets[index].pdf_url) }}" class="responsive-iframe"></iframe>
+                </div>
+                <p>
+                  <a href="{{ url_for('worksheets.worksheets_page', author=worksheets[index].author_id, category=None, page=0) }}">
+                    {% if worksheets[index].author.screenname is none %}
+                      More by the author: {{ worksheets[index].author.name }}
+                    {% else %}
+                      More by the author: {{ worksheets[index].author.screenname }}
+                    {% endif %}
+                  </a>
+                </p>
+                {% if session['learner_logged_in'] %}
+                <p>
+                  {% if worksheets[index] in favourites %}
+                  &#128151;
+                  {% else %}
+                  <a href="{{ url_for('learner.add_favourite', worksheet_id=worksheets[index].id, learner_id=learner_id) }}">&#128159;</a>
+                  {% endif %}
+                </p>
+                {% endif %}
+                <p>
+                  Viewed or Downloaded {{ worksheets[index].count }} times
+                </p>
+                <p>
+                  {% if not worksheets[index].video_url == '' %}
+                    <a href="{{ worksheets[index].video_url }}">Video Tutorial</a>
+                  {% endif %}
+                </p>
+                <p>
+                <a href="{{ url_for('worksheets.worksheets_count', id=worksheets[index].id) }}">View</a>
+                </p>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <p>
+        {% if prev_url %}
+          <a href="{{ prev_url }}">Newer Worksheets</a>
+        {% endif %}
+        {% if next_url %}
+          <a href="{{ next_url }}">Older Worksheets</a>
+        {% endif %}
+      </p>
+
+    <!-- End Left Column -->
+    </div>
+
+    <!-- Right Column -->
+    <div class="w3-third">
+      <h1>Categories</h1>
+
+      <div style="overflow-y: scroll; height:400px;">
+        <ul class="w3-ul w3-hoverable">
+      {% for category in categories %}
+      <li>
+        <a href="{{ url_for('worksheets.worksheets_page', category=category.id, author=None, page=0) }}" class="w3-btn">{{ category.name }}</a>
+      </li>
+      {% endfor %}
+        </ul>
+      </div>
+
+    <!-- End Right Column -->
+    </div>
+
+  <!-- End Grid -->
+  </div>
+
+  <!-- End Page Container -->
+</div>
+
+{% endblock %}

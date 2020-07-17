@@ -1321,9 +1321,9 @@ class TestingWhileLoggedIn(TestCase):
             with captured_templates(self.app) as templates:
                 r = c.get(url_for('worksheets.worksheets_page', author=2, category=None, page=0))
                 template, context = templates[0]
-                self.assertEqual(context['worksheets'], [worksheet_12, worksheet_10, worksheet_8, worksheet_6,  worksheet_4])
+                self.assertEqual(context['worksheets'], [worksheet_12, worksheet_10, worksheet_8, worksheet_6,  worksheet_4, worksheet_2])
                 self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
-                self.assertEqual(context['next_url'], url_for('worksheets.worksheets_page', author=2, category=None, page=1))
+                self.assertEqual(context['next_url'], None)
                 self.assertEqual(context['prev_url'], None)
 
         #
@@ -1333,9 +1333,9 @@ class TestingWhileLoggedIn(TestCase):
             with captured_templates(self.app) as templates:
                 r = c.get(url_for('worksheets.worksheets_page', category=2, author=None, page=0))
                 template, context = templates[0]
-                self.assertEqual(context['worksheets'], [worksheet_12, worksheet_10, worksheet_8, worksheet_6,  worksheet_4])
+                self.assertEqual(context['worksheets'], [worksheet_12, worksheet_10, worksheet_8, worksheet_6,  worksheet_4, worksheet_2])
                 self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
-                self.assertEqual(context['next_url'], url_for('worksheets.worksheets_page', category=2, author=None, page=1))
+                self.assertEqual(context['next_url'], None)
                 self.assertEqual(context['prev_url'], None)
 
 
@@ -1346,7 +1346,7 @@ class TestingWhileLoggedIn(TestCase):
             with captured_templates(self.app) as templates:
                 r = c.get(url_for('worksheets.worksheets_page', author=2, category=None, page=1))
                 template, context = templates[0]
-                self.assertEqual(context['worksheets'], [worksheet_2])
+                self.assertEqual(context['worksheets'], [])
                 self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
                 self.assertEqual(context['next_url'], None)
                 self.assertEqual(context['prev_url'], url_for('worksheets.worksheets_page', author=2, category=None, page=0))
@@ -1359,7 +1359,7 @@ class TestingWhileLoggedIn(TestCase):
             with captured_templates(self.app) as templates:
                 r = c.get(url_for('worksheets.worksheets_page', category=2, author=None, page=1))
                 template, context = templates[0]
-                self.assertEqual(context['worksheets'], [worksheet_2])
+                self.assertEqual(context['worksheets'], [])
                 self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
                 self.assertEqual(context['next_url'], None)
                 self.assertEqual(context['prev_url'], url_for('worksheets.worksheets_page', category=2, author=None, page=0))
@@ -1373,25 +1373,25 @@ class TestingWhileLoggedIn(TestCase):
             with captured_templates(self.app) as templates:
                 r = c.get(url_for('worksheets.worksheets_page', author=None, worksheet=None, category=None, page=1))
                 template, context = templates[0]
-                self.assertEqual(context['worksheets'], [worksheet_7, worksheet_6, worksheet_5, worksheet_4, worksheet_3])
+                self.assertEqual(context['worksheets'], [worksheet_3, worksheet_2, worksheet_1, worksheet])
                 self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
-                self.assertEqual(context['next_url'], url_for('worksheets.worksheets_page', author=None, category=None, page=2))
+                self.assertEqual(context['next_url'], None)
                 self.assertEqual(context['prev_url'], url_for('worksheets.worksheets_page', author=None, category=None, page=0))
 
         with self.app.test_client() as c:
             with captured_templates(self.app) as templates:
                 r = c.get(url_for('worksheets.worksheets_page', author=None, worksheet=None, category=None, page=2))
                 template, context = templates[0]
-                self.assertEqual(context['worksheets'], [worksheet_2, worksheet_1, worksheet])
+                self.assertEqual(context['worksheets'], [])
                 self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
                 self.assertEqual(context['next_url'], None)
-                self.assertEqual(context['prev_url'], url_for('worksheets.worksheets_page', author=None, category=None, page=1))
+                self.assertEqual(context['prev_url'], url_for('worksheets.worksheets_page', author=None, worksheet=None, category=None, page=1))
 
         with self.app.test_client() as c:
             with captured_templates(self.app) as templates:
                 r = c.get(url_for('worksheets.worksheets_page', author=None, worksheet=None, category=None, page=0))
                 template, context = templates[0]
-                self.assertEqual(context['worksheets'], [worksheet_12, worksheet_11, worksheet_10, worksheet_9, worksheet_8])
+                self.assertEqual(context['worksheets'], [worksheet_12, worksheet_11, worksheet_10, worksheet_9, worksheet_8, worksheet_7, worksheet_6, worksheet_5, worksheet_4])
                 self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
                 self.assertEqual(context['next_url'], url_for('worksheets.worksheets_page', author=None, category=None, page=1))
                 self.assertEqual(context['prev_url'], None)
@@ -1509,10 +1509,10 @@ class TestingWhileLoggedIn(TestCase):
                 login_learner(c, email='kodyrogers21@gmail.com', password='RockOn')
                 r = c.get(url_for('worksheets.worksheets_page', author=2, category=None, page=0))
                 template, context = templates[1]
-                self.assertEqual(context['worksheets'], [worksheet_12, worksheet_10, worksheet_8, worksheet_6,  worksheet_4])
+                self.assertEqual(context['worksheets'], [worksheet_12, worksheet_10, worksheet_8, worksheet_6,  worksheet_4, worksheet_2])
                 self.assertEqual(context['favourites'], [worksheet, worksheet_1, worksheet_3, worksheet_2])
                 self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
-                self.assertEqual(context['next_url'], url_for('worksheets.worksheets_page', author=2, category=None, page=1))
+                self.assertEqual(context['next_url'], None)
                 self.assertEqual(context['prev_url'], None)
                 logout_learner(c)
 
@@ -1524,10 +1524,10 @@ class TestingWhileLoggedIn(TestCase):
                 login_learner(c, email='kodyrogers21@gmail.com', password='RockOn')
                 r = c.get(url_for('worksheets.worksheets_page', category=2, author=None, page=0))
                 template, context = templates[1]
-                self.assertEqual(context['worksheets'], [worksheet_12, worksheet_10, worksheet_8, worksheet_6,  worksheet_4])
+                self.assertEqual(context['worksheets'], [worksheet_12, worksheet_10, worksheet_8, worksheet_6,  worksheet_4, worksheet_2])
                 self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
                 self.assertEqual(context['favourites'], [worksheet, worksheet_1, worksheet_3, worksheet_2])
-                self.assertEqual(context['next_url'], url_for('worksheets.worksheets_page', category=2, author=None, page=1))
+                self.assertEqual(context['next_url'], None)
                 self.assertEqual(context['prev_url'], None)
                 logout_learner(c)
 
@@ -1540,7 +1540,7 @@ class TestingWhileLoggedIn(TestCase):
                 login_learner(c, email='kodyrogers21@gmail.com', password='RockOn')
                 r = c.get(url_for('worksheets.worksheets_page', author=2, category=None, page=1))
                 template, context = templates[1]
-                self.assertEqual(context['worksheets'], [worksheet_2])
+                self.assertEqual(context['worksheets'], [])
                 self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
                 self.assertEqual(context['favourites'], [worksheet, worksheet_1, worksheet_3, worksheet_2])
                 self.assertEqual(context['next_url'], None)
@@ -1556,7 +1556,7 @@ class TestingWhileLoggedIn(TestCase):
                 login_learner(c, email='kodyrogers21@gmail.com', password='RockOn')
                 r = c.get(url_for('worksheets.worksheets_page', category=2, author=None, page=1))
                 template, context = templates[1]
-                self.assertEqual(context['worksheets'], [worksheet_2])
+                self.assertEqual(context['worksheets'], [])
                 self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
                 self.assertEqual(context['favourites'], [worksheet, worksheet_1, worksheet_3, worksheet_2])
                 self.assertEqual(context['next_url'], None)
@@ -1573,10 +1573,10 @@ class TestingWhileLoggedIn(TestCase):
                 login_learner(c, email='kodyrogers21@gmail.com', password='RockOn')
                 r = c.get(url_for('worksheets.worksheets_page', author=None, worksheet=None, category=None, page=1))
                 template, context = templates[1]
-                self.assertEqual(context['worksheets'], [worksheet_7, worksheet_6, worksheet_5, worksheet_4, worksheet_3])
+                self.assertEqual(context['worksheets'], [worksheet_3, worksheet_2, worksheet_1, worksheet])
                 self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
                 self.assertEqual(context['favourites'], [worksheet, worksheet_1, worksheet_3, worksheet_2])
-                self.assertEqual(context['next_url'], url_for('worksheets.worksheets_page', author=None, category=None, page=2))
+                self.assertEqual(context['next_url'], None)
                 self.assertEqual(context['prev_url'], url_for('worksheets.worksheets_page', author=None, category=None, page=0))
                 logout_learner(c)
 
@@ -1585,7 +1585,7 @@ class TestingWhileLoggedIn(TestCase):
                 login_learner(c, email='kodyrogers21@gmail.com', password='RockOn')
                 r = c.get(url_for('worksheets.worksheets_page', author=None, worksheet=None, category=None, page=2))
                 template, context = templates[1]
-                self.assertEqual(context['worksheets'], [worksheet_2, worksheet_1, worksheet])
+                self.assertEqual(context['worksheets'], [])
                 self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
                 self.assertEqual(context['next_url'], None)
                 self.assertEqual(context['favourites'], [worksheet, worksheet_1, worksheet_3, worksheet_2])
@@ -1597,7 +1597,7 @@ class TestingWhileLoggedIn(TestCase):
                 login_learner(c, email='kodyrogers21@gmail.com', password='RockOn')
                 r = c.get(url_for('worksheets.worksheets_page', author=None, worksheet=None, category=None, page=0))
                 template, context = templates[1]
-                self.assertEqual(context['worksheets'], [worksheet_12, worksheet_11, worksheet_10, worksheet_9, worksheet_8])
+                self.assertEqual(context['worksheets'], [worksheet_12, worksheet_11, worksheet_10, worksheet_9, worksheet_8, worksheet_7, worksheet_6, worksheet_5, worksheet_4])
                 self.assertEqual(context['categories'], [w_cat, w_cat_1, w_cat_2])
                 self.assertEqual(context['favourites'], [worksheet, worksheet_1, worksheet_3, worksheet_2])
                 self.assertEqual(context['next_url'], url_for('worksheets.worksheets_page', author=None, category=None, page=1))

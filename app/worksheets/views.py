@@ -39,9 +39,9 @@ def worksheets_page(page) :
     if not author == None :
         try :
             # get the worksheets done by a specific author
-            worksheets = Worksheet.query.filter_by(author_id=author).order_by(Worksheet.id.desc()).offset(page * 5).limit(5).all()
+            worksheets = Worksheet.query.filter_by(author_id=author).order_by(Worksheet.id.desc()).offset(page * 9).limit(9).all()
 
-            more = Worksheet.query.filter_by(author_id=author).offset((page + 1) * 5).first()
+            more = Worksheet.query.filter_by(author_id=author).offset((page + 1) * 9).first()
         except:
             db.session.rollback()
             return redirect(url_for('other.home'))
@@ -55,15 +55,15 @@ def worksheets_page(page) :
             next_url = url_for('worksheets.worksheets_page', author=author, category=category, page=page + 1)
         else :
             next_url = None
-            
-        return render_template('worksheets.html', worksheets=worksheets, categories=categories, favourites=favourites, learner_id=learner_id, next_url=next_url, prev_url=prev_url)
+
+        return render_template('worksheets.html.j2', worksheets=worksheets, categories=categories, favourites=favourites, learner_id=learner_id, next_url=next_url, prev_url=prev_url)
 
     elif not category == None:
         try :
             # get the worksheets from a specific category
-            worksheets = Worksheet.query.filter_by(category_id=category).order_by(Worksheet.id.desc()).offset(page * 5).limit(5).all()
+            worksheets = Worksheet.query.filter_by(category_id=category).order_by(Worksheet.id.desc()).offset(page * 9).limit(9).all()
 
-            more = Worksheet.query.filter_by(category_id=category).offset((page + 1) * 5).first()
+            more = Worksheet.query.filter_by(category_id=category).offset((page + 1) * 9).first()
         except:
             db.session.rollback()
             raise
@@ -78,15 +78,14 @@ def worksheets_page(page) :
         else :
             next_url = None
 
-        return render_template('worksheets.html', worksheets=worksheets, categories=categories, favourites=favourites, learner_id=learner_id, next_url=next_url, prev_url=prev_url)
-
+        return render_template('worksheets.html.j2', worksheets=worksheets, categories=categories, favourites=favourites, learner_id=learner_id, next_url=next_url, prev_url=prev_url)
     else :
         try :
             # get all the worksheets
             # if a no specific worksheet or category has been selected this if statement will be ran
-            worksheets = Worksheet.query.order_by(Worksheet.id.desc()).offset(page * 5).limit(5).all()
+            worksheets = Worksheet.query.order_by(Worksheet.id.desc()).offset(page * 9).limit(9).all()
 
-            more = Worksheet.query.offset((page + 1) * 5).first()
+            more = Worksheet.query.offset((page + 1) * 9).first()
         except:
             db.session.rollback()
             raise
@@ -101,7 +100,7 @@ def worksheets_page(page) :
         else :
             next_url = None
 
-        return render_template('worksheets.html', worksheets=worksheets, categories=categories, favourites=favourites, learner_id=learner_id, next_url=next_url, prev_url=prev_url)
+        return render_template('worksheets.html.j2', worksheets=worksheets, categories=categories, favourites=favourites, learner_id=learner_id, next_url=next_url, prev_url=prev_url)
 
 
 
