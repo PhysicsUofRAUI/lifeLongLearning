@@ -47,6 +47,18 @@ def learner_logout():
     # redirect to the login page
     return redirect(url_for('other.home'))
 
+
+#
+# Password Reset
+#   Will request the email of the learner and then on submit will change
+#   the password associated with that account to a knew password and email it
+#   to the learner.
+# Look here for advice: https://pythonhosted.org/Flask-Mail/
+# These are also useful: https://pythonbasics.org/flask-mail/
+#                        https://www.hesk.com/knowledgebase/?article=72
+#
+
+
 #
 # Edit Learner
 #   Will edit an author

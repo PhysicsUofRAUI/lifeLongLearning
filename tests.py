@@ -167,6 +167,37 @@ class TestingWhileLearnerLoggedIn(TestCase):
         db.drop_all()
         self.app_context.pop()
 
+    def test_learner_password_reset():
+        learner = Learner(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod'
+                        , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+
+        db.session.add(learner)
+        db.session.commit()
+
+        self.assertEqual(check_password_hash(learner.password, 'RockOn'), True)
+
+        response = self.client.get(url_for('learner.learner_password_reset'), follow_redirects=False)
+
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get(url_for('learner.learner_password_reset'),
+                                    data=dict(email='kodyrogers21@gmail.com'), follow_redirects=False)
+
+        self.assertEqual(response.status_code, 302)
+
+        response = self.client.get(url_for('learner.learner_password_reset'),
+                                    data=dict(email='kodyrogers21@gmail.com'), follow_redirects=False)
+
+        learner = Learner.query.filter_by(name='KJsa').first()
+
+        self.assertNotEqual(check_password_hash(learner.password, 'RockOn'), True)
+
+        #
+        # Need to add some testing involving the mailing part
+        # at the end of this website there is some information: https://pythonhosted.org/Flask-Mail/
+        #
+
+
     def test_learner_signup(self):
         response = self.client.post('/learner_signup',
                     data=dict(name='Kody', screenname='kodster', email='kodyrogers21@gmail.com', password='weeeehooo'), follow_redirects=True)
