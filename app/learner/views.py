@@ -4,6 +4,15 @@ from ..models import Learner, Worksheet
 from .forms import LearnerForm, LearnerLoginForm
 from .. import db
 from werkzeug.security import check_password_hash, generate_password_hash
+from flask_mail import Message
+import random
+import string
+from .. import mail
+
+def get_random_string(length):
+    letters = string.ascii_lowercase
+    result_str = ''.join(random.choice(letters) for i in range(length))
+    return result_str
 
 #
 # Learner Login
@@ -57,8 +66,36 @@ def learner_logout():
 # These are also useful: https://pythonbasics.org/flask-mail/
 #                        https://www.hesk.com/knowledgebase/?article=72
 #
+@learner.route('/learner_password_reset', methods=['GET', 'POST'])
+def learner_password_reset() :
+    form = LearnerForm()
 
+    if form.validate_on_submit():
+        learner = Learner.query.filter_by(email=form.email.data).first()
 
+        if not learner == None :
+            temp_pass = get_random_string(8)
+            try :
+                learner.password = generate_password_hash(temp_pass)
+
+                db.session.commit()
+
+                msg = Message("Temporary Password", sender = 'kodyrogers21@gmail.com', recipients = [learner.email])
+                msg.body = "Your temporary password is '" + temp_pass + "'. It is highly recommended that you change it right away."
+                mail.send(msg)
+
+                return redirect(url_for('learner.learner_login'))
+            except :
+                db.session.rollback()
+                msg = Message("Password Reset Failed", sender = 'kodyrogers21@gmail.com', recipients = [learner.email])
+                msg.body = "Something went wrong on our side and you password was not reset. Please try again or contact admin at kodyroger21@gmail.com."
+                mail.send(msg)
+
+                raise
+        else :
+            return render_template('learner_password_reset.html.j2', form=form)
+
+    return render_template('learner_password_reset.html.j2', form=form)
 #
 # Edit Learner
 #   Will edit an author

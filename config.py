@@ -18,6 +18,14 @@ class ProductionConfiguration(BaseConfiguration):
     SECRET_KEY = secrets.token_urlsafe(16)
     UPLOAD_FOLDER = TOP_LEVEL_DIR + '/app/static'
 
+    # Flask Mail Configuration
+    MAIL_SERVER='smtp.gmail.com'
+    MAIL_PORT = 465
+    MAIL_USERNAME = os.getenv('ADMIN_EMAIL')
+    MAIL_PASSWORD = os.getenv('ADMIN_EMAIL_PASSWORD')
+    MAIL_USE_TLS = False
+    MAIL_USE_SSL = True
+
 
 class TestConfiguration(BaseConfiguration):
     TESTING = True

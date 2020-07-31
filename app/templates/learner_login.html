@@ -22,7 +22,7 @@
         {{ render_field(form.submit) }}
       </dl>
     </form>
-    <p>Any problems with logging in please contact myself at kodyrogers21@gmail.com</p>
+    <p>If you have forgot your password please click this link: <a href="{{ url_for('learner.learner_password_reset') }}">Password Reset</a></p>
   </div>
 </div>
 {% endblock %}
