@@ -4,3 +4,4 @@ venv/
 testing.sqlite
 set_env_vars.sh
 migrations/
+create_test_database.sql
