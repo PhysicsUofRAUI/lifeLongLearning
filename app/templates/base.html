@@ -56,7 +56,7 @@
   {% if session['learner_logged_in'] %}
     <a href="{{ url_for('learner.learner_dashboard') }}" class="w3-bar-item w3-button w3-padding-large" onclick="smallScreenToggle()">Dashboard</a>
   {% else %}
-    <a href="{{ url_for('learner.learner_signup_login_choice') }}" class="w3-bar-item w3-button w3-padding-large" onclick="smallScreenToggle()">Author Login</a>
+    <a href="{{ url_for('learner.learner_signup_login_choice') }}" class="w3-bar-item w3-button w3-padding-large" onclick="smallScreenToggle()">Learner Login/Signup</a>
   {% endif %}
 </div>
 
