@@ -44,7 +44,7 @@ def blog(page) :
             db.session.rollback()
             return redirect(url_for('other.home'))
 
-        return render_template('blog.html', posts=posts, categories=categories, next_url=None, prev_url=None)
+        return render_template('blog.html.j2', posts=posts, categories=categories, next_url=None, prev_url=None)
 
     elif not category == None :
         try :
@@ -66,7 +66,7 @@ def blog(page) :
         else :
             next_url = None
 
-        return render_template('blog.html', posts=posts, categories=categories, next_url=next_url, prev_url=prev_url)
+        return render_template('blog.html.j2', posts=posts, categories=categories, next_url=next_url, prev_url=prev_url)
 
     else :
         try :
@@ -88,7 +88,7 @@ def blog(page) :
         else :
             next_url = None
 
-        return render_template('blog.html', posts=posts, categories=categories, next_url=next_url, prev_url=prev_url)
+        return render_template('blog.html.j2', posts=posts, categories=categories, next_url=next_url, prev_url=prev_url)
 
 
 
