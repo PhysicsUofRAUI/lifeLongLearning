@@ -121,7 +121,7 @@ def add_post():
             db.session.rollback()
             raise
 
-    return render_template('add_post.html', form=form)
+    return render_template('add_post.html.j2', form=form)
 
 #
 # Edit Post
@@ -161,7 +161,7 @@ def edit_post(id):
     form.content.data = post.content
     form.title.data = post.name
     form.category.data = post.category
-    return render_template('edit_post.html', form=form, post=post, title="Edit Post")
+    return render_template('edit_post.html.j2', form=form, post=post, title="Edit Post")
 
 #
 # Delete Post
@@ -218,7 +218,7 @@ def add_blog_category():
 
 
 
-    return render_template('add_blog_category.html', form=form)
+    return render_template('add_blog_category.html.j2', form=form)
 
 #
 # edit_blog_category
@@ -250,7 +250,7 @@ def edit_blog_category(id) :
 
     form.name.data = category.name
 
-    return render_template('edit_blog_category.html', form=form, category=category, title="Edit Blog Category")
+    return render_template('edit_blog_category.html.j2', form=form, category=category, title="Edit Blog Category")
 
 #
 # delete_blog_category
