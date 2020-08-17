@@ -70,6 +70,8 @@ following link very useful: https://www.w3docs.com/snippets/html/how-to-embed-pd
                 <p>
                   Viewed or Downloaded {{ worksheets[index].count }} times
                 </p>
+                <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="Look at this cool worksheet " data-url="{{ url_for('worksheets.specific_worksheet', id=worksheets[index].id,  _external=True) }}" data-hashtags="lifelonglearningrocks" data-show-count="false">Tweet</a>
+                <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                 <p>
                   {% if not worksheets[index].video_url == '' %}
                     <a href="{{ worksheets[index].video_url }}">Video Tutorial</a>
@@ -112,6 +114,8 @@ following link very useful: https://www.w3docs.com/snippets/html/how-to-embed-pd
                 <p>
                   Viewed or Downloaded {{ worksheets[index].count }} times
                 </p>
+                <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="Look at this cool worksheet " data-url="{{ url_for('worksheets.specific_worksheet', id=worksheets[index].id,  _external=True) }}" data-hashtags="lifelonglearningrocks" data-show-count="false">Tweet</a>
+                <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                 <p>
                   {% if not worksheets[index].video_url == '' %}
                     <a href="{{ worksheets[index].video_url }}">Video Tutorial</a>
@@ -154,6 +158,8 @@ following link very useful: https://www.w3docs.com/snippets/html/how-to-embed-pd
                 <p>
                   Viewed or Downloaded {{ worksheets[index].count }} times
                 </p>
+                <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="Look at this cool worksheet " data-url="{{ url_for('worksheets.specific_worksheet', id=worksheets[index].id,  _external=True) }}" data-hashtags="lifelonglearningrocks" data-show-count="false">Tweet</a>
+                <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                 <p>
                   {% if not worksheets[index].video_url == '' %}
                     <a href="{{ worksheets[index].video_url }}">Video Tutorial</a>
