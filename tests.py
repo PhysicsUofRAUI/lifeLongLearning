@@ -1497,6 +1497,10 @@ class TestingWhileLoggedIn(TestCase):
                 self.assertEqual(context['next_url'], None)
                 self.assertEqual(context['prev_url'], url_for('worksheets.worksheets_page', author=None, worksheet=None, category=None, page=1))
 
+        # testing the specific worksheet page
+        res = self.client.get('/specific_worksheet/1', follow_redirects=True)
+        self.assertEqual(res.status_code, 200)
+
 
 
     def test_worksheet_page_learner_logged_in(self) :
@@ -2275,7 +2279,12 @@ class BasicTests(TestCase):
     ###################################
 
     # Checking if any have 404s
+    def test_specific_worksheet_page(self):
+        response = self.client.get('/specific_worksheet', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
 
+        response = self.client.get('/specific_worksheet', follow_redirects=False)
+        self.assertEqual(response.status_code, 200)
 
     def test_add_worksheet_page(self):
         response = self.client.get('/add_worksheet', follow_redirects=True)
