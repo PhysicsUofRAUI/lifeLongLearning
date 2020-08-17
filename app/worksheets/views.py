@@ -103,6 +103,25 @@ def worksheets_page(page) :
         return render_template('worksheets.html.j2', worksheets=worksheets, categories=categories, favourites=favourites, learner_id=learner_id, next_url=next_url, prev_url=prev_url)
 
 
+#
+# Specific Worksheet:
+#   Displays a specified worksheet. It had to be added to make it easier to share
+#   worksheets on Twitter.
+#
+@worksheets.route('/specific_worksheet/<int:id>', methods=['GET', 'POST'])
+def specific_worksheet(id):
+    try :
+        worksheet = Worksheet.query.get(id)
+
+        categories = WorksheetCategory.query.all()
+
+        if not worksheet == None :
+            return render_template('specific_worksheet.html.j2', worksheet=worksheet, categories=categories)
+        else :
+            return redirect(url_for('other.home'))
+    except :
+        db.session.rollback()
+        raise
 
 #
 # Worksheet Count
