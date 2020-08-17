@@ -30,7 +30,7 @@ def contact():
         db.session.rollback()
         return redirect(url_for('other.home'))
 
-    return render_template("contact.html", authors=authors)
+    return render_template("contact.html.j2", authors=authors)
 
 @other.route('/admin', methods=['GET', 'POST'])
 def admin() :
@@ -47,8 +47,8 @@ def admin() :
         db.session.rollback()
         return redirect(url_for('other.home'))
 
-    return render_template('admin.html', worksheet_categories=worksheetCategories, post_categories=postCategories, learners=learners)
+    return render_template('admin.html.j2', worksheet_categories=worksheetCategories, post_categories=postCategories, learners=learners)
 
 @other.route('/building')
 def building():
-    return render_template("building.html")
+    return render_template("building.html.j2")
