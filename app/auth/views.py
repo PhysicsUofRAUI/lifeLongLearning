@@ -49,7 +49,7 @@ def login():
             return redirect(request.url)
 
     # load login template
-    return render_template('login.html', form=form, title='Login')
+    return render_template('login.html.j2', form=form, title='Login')
 
 #
 # Logout
