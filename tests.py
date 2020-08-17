@@ -2280,11 +2280,11 @@ class BasicTests(TestCase):
 
     # Checking if any have 404s
     def test_specific_worksheet_page(self):
-        response = self.client.get('/specific_worksheet', follow_redirects=True)
+        response = self.client.get('/specific_worksheet/1', follow_redirects=True)
         self.assertEqual(response.status_code, 200)
 
-        response = self.client.get('/specific_worksheet', follow_redirects=False)
-        self.assertEqual(response.status_code, 200)
+        response = self.client.get('/specific_worksheet/1', follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
 
     def test_add_worksheet_page(self):
         response = self.client.get('/add_worksheet', follow_redirects=True)
