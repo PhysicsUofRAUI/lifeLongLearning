@@ -179,7 +179,7 @@ def add_worksheet():
         else:
             return redirect(url_for('other.home'))
 
-    return render_template('add_worksheet.html', form=form)
+    return render_template('add_worksheet.html.j2', form=form)
 
 #
 # EditWorksheet
@@ -233,7 +233,7 @@ def edit_worksheet(id):
     form.video_url.data = worksheet.video_url
     form.category.data = worksheet.category
 
-    return render_template('edit_worksheet.html', form=form, worksheet=worksheet, title="Edit Worksheet Category")
+    return render_template('edit_worksheet.html.j2', form=form, worksheet=worksheet, title="Edit Worksheet Category")
 
 
 
@@ -292,7 +292,7 @@ def add_worksheet_category():
             db.session.rollback()
             raise
 
-    return render_template('add_worksheet_category.html', form=form)
+    return render_template('add_worksheet_category.html.j2', form=form)
 
 #
 # EditWorksheetCategory
@@ -324,7 +324,7 @@ def edit_worksheet_category(id) :
 
     form.name.data = category.name
 
-    return render_template('edit_worksheet_category.html', form=form, category=category, title="Edit Worksheet Category")
+    return render_template('edit_worksheet_category.html.j2', form=form, category=category, title="Edit Worksheet Category")
 
 #
 # DeleteWorksheetCategory

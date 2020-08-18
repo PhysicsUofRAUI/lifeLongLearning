@@ -16,7 +16,7 @@ from ..models import Author, PostCategory, WorksheetCategory, Learner
 @other.route('/')
 @other.route('/home')
 def home():
-    return render_template("home.html", title='Home')
+    return render_template("home.html.j2", title='Home')
 
 #
 # Contact/About
