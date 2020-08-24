@@ -12,6 +12,8 @@ img {
 
 {% endblock %}
 {% block body %}
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v8.0" nonce="QxEzkV31"></script>
 
 <!-- Page Container -->
 <div class="w3-content w3-margin-top" style="max-width:1400px;">
@@ -32,10 +34,15 @@ img {
             <a href="{{ url_for('blogs.delete_post', id=blog.id) }}">Delete</a>
           {% endif %}
           </p>
-          
-          <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="Look at this cool worksheet " data-url="{{ url_for('blogs.blog', post=blog.id, page=0, category=None, _external=True) }}" data-hashtags="lifelonglearningrocks" data-show-count="false">Tweet</a>
-          <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
+          <p>
+            <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="Look at this cool blog " data-url="{{ url_for('blogs.blog', post=blog.id, page=0, category=None, _external=True) }}" data-hashtags="lifelonglearningrocks" data-show-count="false">Tweet</a>
+            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+            <div class="fb-share-button" data-href="{{ url_for('blogs.blog', post=blog.id, page=0, category=None, _external=True) }}" data-layout="button_count" data-size="small">
+              <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a>
+            </div>
+          </p>
         {% endfor %}
       {% endif %}
 
