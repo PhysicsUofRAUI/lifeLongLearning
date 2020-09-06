@@ -56,15 +56,14 @@ def blog(page) :
             db.session.rollback()
             return redirect(url_for('other.home'))
 
-        if page != 0 :
+        prev_url = None
+        next_url = None
+        if not page == 0 :
             prev_url = url_for('blogs.blog', category=category, page=page - 1, post=None)
-        else :
-            prev_url = None
 
         if not more == None :
             next_url = url_for('blogs.blog', post=None, category=category, page=page + 1)
-        else :
-            next_url = None
+
 
         return render_template('blog.html.j2', posts=posts, categories=categories, next_url=next_url, prev_url=prev_url)
 
@@ -78,15 +77,13 @@ def blog(page) :
             db.session.rollback()
             return redirect(url_for('other.home'))
 
-        if page != 0 :
+        prev_url = None
+        next_url = None
+        if not page == 0 :
             prev_url = url_for('blogs.blog', category=category, page=page - 1, post=None)
-        else :
-            prev_url = None
 
         if not more == None :
-            next_url = url_for('blogs.blog', category=category, page=page + 1, post=None)
-        else :
-            next_url = None
+            next_url = url_for('blogs.blog', post=None, category=category, page=page + 1)
 
         return render_template('blog.html.j2', posts=posts, categories=categories, next_url=next_url, prev_url=prev_url)
 
