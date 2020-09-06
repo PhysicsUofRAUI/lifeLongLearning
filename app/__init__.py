@@ -58,9 +58,10 @@ def create_app(config_class=ProductionConfiguration):
 
     @app.teardown_appcontext
     def shutdown_session(exception=None):
+        db.session.rollback()
         db.session.close()
         db.session.remove()
-        db.session.rollback()
+
 
 
     return app
