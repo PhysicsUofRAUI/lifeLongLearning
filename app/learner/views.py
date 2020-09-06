@@ -132,7 +132,7 @@ def edit_learner(id) :
     return render_template('edit_learner.html.j2', form=form, learner=learner, title="Edit Learner")
 
 #
-# DeleteAuthor
+# delete_learner
 #   Will delete an author
 #
 @learner.route('/delete_learner/<int:id>', methods=['GET', 'POST'])
@@ -264,8 +264,9 @@ def learner_change_screenname(id):
 
 
 #
-# Learner Dashboard
+# Learner Favourites
 # Purpose: A place for an learner to see all the different options with their account
+# should have remove from favourites
 #
 @learner.route('/add_favourite/<int:learner_id>/<int:worksheet_id>', methods=['GET', 'POST'])
 def add_favourite(learner_id, worksheet_id):
