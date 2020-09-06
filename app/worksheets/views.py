@@ -46,15 +46,14 @@ def worksheets_page(page) :
             db.session.rollback()
             return redirect(url_for('other.home'))
 
-        if page != 0 :
+        prev_url = None
+        next_url = None
+        if not page == 0 :
             prev_url = url_for('worksheets.worksheets_page', author=author, category=category, page=page - 1)
-        else :
-            prev_url = None
 
         if not more == None :
             next_url = url_for('worksheets.worksheets_page', author=author, category=category, page=page + 1)
-        else :
-            next_url = None
+
 
         return render_template('worksheets.html.j2', worksheets=worksheets, categories=categories, favourites=favourites, learner_id=learner_id, next_url=next_url, prev_url=prev_url)
 
@@ -68,15 +67,13 @@ def worksheets_page(page) :
             db.session.rollback()
             raise
 
-        if page != 0 :
-            prev_url = url_for('worksheets.worksheets_page', category=category, author=author, page=page - 1)
-        else :
-            prev_url = None
+        prev_url = None
+        next_url = None
+        if not page == 0 :
+            prev_url = url_for('worksheets.worksheets_page', author=author, category=category, page=page - 1)
 
         if not more == None :
-            next_url = url_for('worksheets.worksheets_page', category=category, author=author, page=page + 1)
-        else :
-            next_url = None
+            next_url = url_for('worksheets.worksheets_page', author=author, category=category, page=page + 1)
 
         return render_template('worksheets.html.j2', worksheets=worksheets, categories=categories, favourites=favourites, learner_id=learner_id, next_url=next_url, prev_url=prev_url)
     else :
@@ -90,15 +87,13 @@ def worksheets_page(page) :
             db.session.rollback()
             raise
 
-        if page != 0 :
-            prev_url = url_for('worksheets.worksheets_page', category=category, author=author, page=page - 1)
-        else :
-            prev_url = None
+        prev_url = None
+        next_url = None
+        if not page == 0 :
+            prev_url = url_for('worksheets.worksheets_page', author=author, category=category, page=page - 1)
 
         if not more == None :
-            next_url = url_for('worksheets.worksheets_page', category=category, author=author, page=page + 1)
-        else :
-            next_url = None
+            next_url = url_for('worksheets.worksheets_page', author=author, category=category, page=page + 1)
 
         return render_template('worksheets.html.j2', worksheets=worksheets, categories=categories, favourites=favourites, learner_id=learner_id, next_url=next_url, prev_url=prev_url)
 
