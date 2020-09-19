@@ -18,10 +18,13 @@ This will add a new tag / category relation to a database entry. Either a new ta
 I think that having this functionality is important, because in textbooks places that are not relevant to many people are mentioned or no places are mentioned at all. I think learners will appreciate having content that references locations that they recognize.
 
 ### Other stuff
-There is more work that I have thought of described at the following link: https://drive.google.com/drive/folders/1_9SmuRiFYpck5_0jZc0jdwnpJSvrbKLC?usp=sharing. 
+There is more work that I have thought of described at the following link: https://drive.google.com/drive/folders/1_9SmuRiFYpck5_0jZc0jdwnpJSvrbKLC?usp=sharing.
 
 #### Wraps
-Could use wraps to do the login required
+Could use wraps to do the login required.
+
+#### Pyenv
+Could be a good option for keeping environment variables https://github.com/pyenv/pyenv
 
 ## Notes about the DigitalOcean droplet
 I have set the droplet to reboot everyday at midnight according to the following web link: https://www.digitalocean.com/community/questions/restarting-droplet-server-automatically-daily
