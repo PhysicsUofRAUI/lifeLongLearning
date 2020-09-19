@@ -991,11 +991,11 @@ class TestingWhileLoggedIn(TestCase):
 
     # executed after each test
     def tearDown(self):
+        logout(self.client)
+
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
-
-        logout(self.client)
 
 
     def test_add_post_page_li(self):
