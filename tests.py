@@ -2356,17 +2356,7 @@ class BasicTests(TestCase):
     # Checking if logged in whether a 200 is found without a redirect
 
 
-    ##############################
-    ### Testing the Auth Views ###
-    ##############################
 
-    def test_login_page(self):
-        response = self.client.get('/login', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
-    def test_logout_page(self):
-        response = self.client.get('/logout', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
 
     ##############################
     ### Testing Error Views ######
