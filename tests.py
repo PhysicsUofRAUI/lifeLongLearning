@@ -2253,34 +2253,6 @@ class BasicTests(TestCase):
         response = self.client.get('/delete_author/1', follow_redirects=False)
         self.assertEqual(response.status_code, 302)
 
-    ##############################
-    ### Testing Error Views ######
-    ##############################
-
-    def test_404_page(self) :
-        response = self.client.get('/loop', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get('/dsagj/aghdsa/sadf', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get('/worksheets', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get('/posts', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get('/bloogs', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
-    def test_500_page(self):
-        # should through 500 errors because there is no database initialized
-        response = self.client.get('/worksheets_page', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get('/contact', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
 
 
 if __name__ == "__main__":
