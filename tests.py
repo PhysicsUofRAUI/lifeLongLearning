@@ -2253,11 +2253,6 @@ class BasicTests(TestCase):
         response = self.client.get('/delete_author/1', follow_redirects=False)
         self.assertEqual(response.status_code, 302)
 
-    # Checking if logged in whether a 200 is found without a redirect
-
-
-
-
     ##############################
     ### Testing Error Views ######
     ##############################
