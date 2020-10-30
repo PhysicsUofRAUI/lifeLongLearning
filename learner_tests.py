@@ -14,7 +14,7 @@ from contextlib import contextmanager
 import pdfkit
 from app.mail import mail
 
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash
 
 def login(client, username, password):
     return client.post('/login', data=dict(
@@ -25,18 +25,7 @@ def login(client, username, password):
 
 def logout(client):
     return client.get('/logout', follow_redirects=True)
-
-
-def login_author(client, email, password):
-    return client.post('/author_login', data=dict(
-        email=email,
-        password=password
-    ), follow_redirects=True)
-
-
-def logout_author(client):
-    return client.get('/author_logout', follow_redirects=True)
-
+    
 def login_learner(client, email, password):
     return client.post('/learner_login', data=dict(
         email=email,
@@ -52,11 +41,103 @@ def captured_templates(app):
     recorded = []
     def record(sender, template, context, **extra):
         recorded.append((template, context))
-    template_rendered.connect(record, app)
+    flask.template_rendered.connect(record, app)
     try:
         yield recorded
     finally:
-        template_rendered.disconnect(record, app)
+        flask.template_rendered.disconnect(record, app)
+        
+class BasicTests(TestCase):
+
+    ############################
+    #### setup and teardown ####
+    ############################
+
+    def create_app(self):
+        app = c_app(TestConfiguration)
+        return app
+
+    # executed prior to each test
+    def setUp(self):
+        pass
+
+    # executed after each test
+    def tearDown(self):
+        pass
+
+
+    ###############################
+    #### testing learner pages ####
+    ###############################
+    def test_learner_dashboard_nl(self):
+        response = self.client.get('/learner_dashboard', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/learner_dashboard', follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+
+    def test_learner_change_password_nl(self):
+        response = self.client.get('/learner_change_password/1', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/learner_change_password/1', follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+
+    def test_learner_change_email_nl(self):
+        response = self.client.get('/learner_change_email/1', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/learner_change_email/1', follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+
+    def test_learner_change_screenname_nl(self):
+        response = self.client.get('/learner_change_screenname/1', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/learner_change_screenname/1', follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+
+    def test_learner_signup_nl(self) :
+        response = self.client.get('/learner_signup', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/learner_signup', follow_redirects=False)
+        self.assertEqual(response.status_code, 200)
+
+    def test_learner_login_signup_choice_page_nl(self) :
+        response = self.client.get('/learner_signup_login_choice', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/learner_signup_login_choice', follow_redirects=False)
+        self.assertEqual(response.status_code, 200)
+
+    def test_learner_add_favourite_nl(self) :
+        response = self.client.get('/add_favourite/1/1', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('/add_favourite/1/1', follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+
+    def test_learner_delete_learner_nl(self):
+        response = self.client.get('delete_learner/1', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('delete_learner/1', follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+
+    def test_learner_edit_learner_nl(self):
+        response = self.client.get('edit_learner/1', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('edit_learner/1', follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+
+    def test_learner_learner_password_reset(self):
+        response = self.client.get('edit_learner', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get('edit_learner', follow_redirects=False)
+        self.assertEqual(response.status_code, 200)
 
 
 class UserLoginLogout(TestCase):
@@ -79,57 +160,52 @@ class UserLoginLogout(TestCase):
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
+        
+    def test_learner_login(self):
+        w_cat = WorksheetCategory(name='dunk')
+        db.session.add(w_cat)
+        db.session.commit()
 
 
-        def test_learner_login(self):
-            w_cat = WorksheetCategory(name='dunk')
-            db.session.add(w_cat)
-            db.session.commit()
+        auth_1 = Author(name='Kidkaid', email='kodyrogers21@gmail.com',
+                        password='pbkdf2:sha256:150000$xZu2ipeP$5d4d84302c1d4628c57f7e3f2cfc4bea4fdf69ef1214e18333ba6ff29ec096d9')
+        db.session.add(auth_1)
+        db.session.commit()
 
+        worksheet = Worksheet(pdf_url='tudoloos.pdf', name='tudoloos', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        db.session.add(worksheet)
+        db.session.commit()
 
-            auth_1 = Author(name='Kidkaid', email='kodyrogers21@gmail.com',
-                            password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
-            db.session.add(auth_1)
-            db.session.commit()
+        worksheet_1 = Worksheet(pdf_url='tudol.pdf', name='tudol', author_id=1, author=auth_1, category_id=1, category=w_cat)
+        db.session.add(worksheet_1)
+        db.session.commit()
 
-            worksheet = Worksheet(pdf_url='tudoloos.pdf', name='tudoloos', author_id=1, author=auth_1, category_id=1, category=w_cat)
-            db.session.add(worksheet)
-            db.session.commit()
+        learner = Learner(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod'
+                        , password='pbkdf2:sha256:150000$xZu2ipeP$5d4d84302c1d4628c57f7e3f2cfc4bea4fdf69ef1214e18333ba6ff29ec096d9')
 
-            worksheet_1 = Worksheet(pdf_url='tudol.pdf', name='tudol', author_id=1, author=auth_1, category_id=1, category=w_cat)
-            db.session.add(worksheet_1)
-            db.session.commit()
+        learner.favourites.append(worksheet)
+        learner.favourites.append(worksheet_1)
 
-            learner = Learner(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod'
-                            , password='pbkdf2:sha256:150000$CgCWVBC6$4090facdcd3e093c7b458362daddbaa7b53387c6042ad46b5970dc7b6d00183c')
+        db.session.add(learner)
+        db.session.commit()
 
-            learner.favourites.append(worksheet)
-            learner.favourites.append(worksheet_1)
+        with self.app.test_client() as c:
+            response = c.post('/learner_login', data=dict(
+                email='kodyrogers21@gmail.com',
+                password='RockOn'
+            ), follow_redirects=True)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(flask.session['learner_logged_in'], True)
 
-            db.session.add(learner)
-            db.session.commit()
+            self.assertEqual(flask.session['learner_name'], 'KJsa')
 
-            with self.app.test_client() as c:
-                response = c.post('/learner_login', data=dict(
-                    email='kodyrogers21@gmail.com',
-                    password='RockOn'
-                ), follow_redirects=True)
-                self.assertEqual(response.status_code, 200)
-                self.assertEqual(flask.session['learner_logged_in'], True)
+            response_1 = c.get('/learner_logout', follow_redirects=True)
+            self.assertEqual(response_1.status_code, 200)
+            self.assertEqual(flask.session['learner_logged_in'], False)
+            
+            
 
-                self.assertEqual(flask.session['learner_name'], 'KJsa')
-
-                response_1 = c.get('/learner_logout', follow_redirects=True)
-                self.assertEqual(response_1.status_code, 200)
-                self.assertEqual(flask.session['learner_logged_in'], False)
-
-
-
-class TestingWhileLearnerLoggedIn(TestCase):
-    ############################
-    #### setup and teardown ####
-    ############################
-
+class DatabaseEditTests(TestCase):
     def create_app(self):
         app = c_app(TestConfiguration)
         return app
@@ -140,12 +216,91 @@ class TestingWhileLearnerLoggedIn(TestCase):
         self.app_context.push()
         db.create_all()
 
+        login(self.client, os.getenv('LOGIN_USERNAME'), os.getenv('LOGIN_PASSWORD'))
+
     # executed after each test
     def tearDown(self):
+        logout(self.client)
+
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
+        
+        
+    #########################################
+    ####### Tests For Pages Admin Uses ######
+    #########################################
+    
+    def test_learner_delete(self) :
+        learner = Learner(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod'
+                        , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
 
+        learner_1 = Learner(name='Ksa', email='kodyroger21@gmail.com', screenname='kod_1'
+                        , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+
+        learner_2 = Learner(name='KoJsa', email='kodyrogers1@gmail.com', screenname='kod2'
+                        , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+
+        learner_3 = Learner(name='KJdsa', email='kodyrogers2@gmail.com', screenname='kod3'
+                        , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+
+        db.session.add(learner)
+        db.session.add(learner_1)
+        db.session.add(learner_2)
+        db.session.add(learner_3)
+        db.session.commit()
+
+        login(self.client, os.getenv('LOGIN_USERNAME'), os.getenv('LOGIN_PASSWORD'))
+
+        r = self.client.get('delete_learner/1', follow_redirects=False)
+
+        deleted_learner = Learner.query.filter_by(name='KJsa').first()
+
+        self.assertEqual(deleted_learner, None)
+
+        logout(self.client)
+
+    def test_edit_learner(self) :
+        learner = Learner(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod'
+                        , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+
+        learner_1 = Learner(name='Ksa', email='kodyroger21@gmail.com', screenname='kod_1'
+                        , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+
+        learner_2 = Learner(name='KoJsa', email='kodyrogers1@gmail.com', screenname='kod2'
+                        , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+
+        learner_3 = Learner(name='KJdsa', email='kodyrogers2@gmail.com', screenname='kod3'
+                        , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
+
+        db.session.add(learner)
+        db.session.add(learner_1)
+        db.session.add(learner_2)
+        db.session.add(learner_3)
+        db.session.commit()
+
+        login(self.client, os.getenv('LOGIN_USERNAME'), os.getenv('LOGIN_PASSWORD'))
+
+        response = self.client.get(url_for('learner.edit_learner', id=learner.id), follow_redirects=False)
+
+        self.assertEqual(response.status_code, 200)
+
+        response_1 = self.client.post('/edit_learner/1',
+                    data=dict(password='yehhaw'), follow_redirects=True)
+
+        edited_learner = Learner.query.filter_by(name='KJsa').first()
+
+        self.assertNotEqual(edited_learner, None)
+
+        self.assertEqual(check_password_hash(learner.password, 'yehhaw'), True)
+
+        logout(self.client)
+        
+        
+    ##########################################
+    ###### Tests For Pages Learner Uses ######
+    ##########################################
+    
     def test_learner_password_reset(self):
         learner = Learner(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod'
                         , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
@@ -398,14 +553,9 @@ class TestingWhileLearnerLoggedIn(TestCase):
         self.assertEqual(learner.screenname, 'logical')
 
         logout_learner(self.client)
+        
 
-
-    
-    
-
-
-
-class DatabaseTests(TestCase):
+class DatabaseModelsTests(TestCase):
 
     ############################
     #### setup and teardown ####
@@ -426,7 +576,8 @@ class DatabaseTests(TestCase):
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
-
+        
+    
     def test_learner_model(self) :
         w_cat = WorksheetCategory(name='dunk')
         db.session.add(w_cat)
@@ -457,200 +608,7 @@ class DatabaseTests(TestCase):
 
         assert learner in db.session
 
-    
-
-
-
-
-
-
-class TestingWhileLoggedIn(TestCase):
-    def create_app(self):
-        app = c_app(TestConfiguration)
-        return app
-
-    # executed prior to each test
-    def setUp(self):
-        self.app_context = self.app.app_context()
-        self.app_context.push()
-        db.create_all()
-
-        login(self.client, os.getenv('LOGIN_USERNAME'), os.getenv('LOGIN_PASSWORD'))
-
-    # executed after each test
-    def tearDown(self):
-        logout(self.client)
-
-        db.session.remove()
-        db.drop_all()
-        self.app_context.pop()
-
-    def test_learner_delete(self) :
-        learner = Learner(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod'
-                        , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
-
-        learner_1 = Learner(name='Ksa', email='kodyroger21@gmail.com', screenname='kod_1'
-                        , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
-
-        learner_2 = Learner(name='KoJsa', email='kodyrogers1@gmail.com', screenname='kod2'
-                        , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
-
-        learner_3 = Learner(name='KJdsa', email='kodyrogers2@gmail.com', screenname='kod3'
-                        , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
-
-        db.session.add(learner)
-        db.session.add(learner_1)
-        db.session.add(learner_2)
-        db.session.add(learner_3)
-        db.session.commit()
-
-        login(self.client, os.getenv('LOGIN_USERNAME'), os.getenv('LOGIN_PASSWORD'))
-
-        r = self.client.get('delete_learner/1', follow_redirects=False)
-
-        deleted_learner = Learner.query.filter_by(name='KJsa').first()
-
-        self.assertEqual(deleted_learner, None)
-
-        logout(self.client)
-
-    def test_edit_learner(self) :
-        learner = Learner(name='KJsa', email='kodyrogers21@gmail.com', screenname='kod'
-                        , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
-
-        learner_1 = Learner(name='Ksa', email='kodyroger21@gmail.com', screenname='kod_1'
-                        , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
-
-        learner_2 = Learner(name='KoJsa', email='kodyrogers1@gmail.com', screenname='kod2'
-                        , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
-
-        learner_3 = Learner(name='KJdsa', email='kodyrogers2@gmail.com', screenname='kod3'
-                        , password='pbkdf2:sha256:150000$73fMtgAp$1a1d8be4973cb2676c5f17275c43dc08583c8e450c94a282f9c443d34f72464c')
-
-        db.session.add(learner)
-        db.session.add(learner_1)
-        db.session.add(learner_2)
-        db.session.add(learner_3)
-        db.session.commit()
-
-        login(self.client, os.getenv('LOGIN_USERNAME'), os.getenv('LOGIN_PASSWORD'))
-
-        response = self.client.get(url_for('learner.edit_learner', id=learner.id), follow_redirects=False)
-
-        self.assertEqual(response.status_code, 200)
-
-        response_1 = self.client.post('/edit_learner/1',
-                    data=dict(password='yehhaw'), follow_redirects=True)
-
-        edited_learner = Learner.query.filter_by(name='KJsa').first()
-
-        self.assertNotEqual(edited_learner, None)
-
-        self.assertEqual(check_password_hash(learner.password, 'yehhaw'), True)
-
-        logout(self.client)
-
-
-
-class BasicTests(TestCase):
-
-    ############################
-    #### setup and teardown ####
-    ############################
-
-    def create_app(self):
-        app = c_app(TestConfiguration)
-        return app
-
-    # executed prior to each test
-    def setUp(self):
-        pass
-
-    # executed after each test
-    def tearDown(self):
-        pass
-
-
-    ###############################
-    #### testing learner pages ####
-    ###############################
-    def test_learner_dashboard_nl(self):
-        response = self.client.get('/learner_dashboard', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get('/learner_dashboard', follow_redirects=False)
-        self.assertEqual(response.status_code, 302)
-
-    def test_learner_change_password_nl(self):
-        response = self.client.get('/learner_change_password/1', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get('/learner_change_password/1', follow_redirects=False)
-        self.assertEqual(response.status_code, 302)
-
-    def test_learner_change_email_nl(self):
-        response = self.client.get('/learner_change_email/1', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get('/learner_change_email/1', follow_redirects=False)
-        self.assertEqual(response.status_code, 302)
-
-    def test_learner_change_screenname_nl(self):
-        response = self.client.get('/learner_change_screenname/1', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get('/learner_change_screenname/1', follow_redirects=False)
-        self.assertEqual(response.status_code, 302)
-
-    def test_learner_signup_nl(self) :
-        response = self.client.get('/learner_signup', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get('/learner_signup', follow_redirects=False)
-        self.assertEqual(response.status_code, 200)
-
-    def test_learner_login_signup_choice_page_nl(self) :
-        response = self.client.get('/learner_signup_login_choice', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get('/learner_signup_login_choice', follow_redirects=False)
-        self.assertEqual(response.status_code, 200)
-
-    def test_learner_add_favourite_nl(self) :
-        response = self.client.get('/add_favourite/1/1', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get('/add_favourite/1/1', follow_redirects=False)
-        self.assertEqual(response.status_code, 302)
-
-    def test_learner_delete_learner_nl(self):
-        response = self.client.get('delete_learner/1', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get('delete_learner/1', follow_redirects=False)
-        self.assertEqual(response.status_code, 302)
-
-    def test_learner_edit_learner_nl(self):
-        response = self.client.get('edit_learner/1', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get('edit_learner/1', follow_redirects=False)
-        self.assertEqual(response.status_code, 302)
-
-    def test_learner_learner_password_reset(self):
-        response = self.client.get('edit_learner', follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-
-        response = self.client.get('edit_learner', follow_redirects=False)
-        self.assertEqual(response.status_code, 200)
-
-
-
-
-
-    
-
-
-
 if __name__ == "__main__":
     unittest.main()
+    
+    
