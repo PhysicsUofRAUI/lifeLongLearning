@@ -12,12 +12,6 @@ def category_choices() :
     return WorksheetCategory.query
 
 #
-# This function is designed to obtain choices for authors in the WorksheetForm
-#
-def author_choices() :
-    return Author.query
-
-#
 # WorksheetForm
 #   Name: A string field for the user to enter the name of the worksheet
 #
