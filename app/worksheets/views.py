@@ -55,7 +55,7 @@ def worksheets_page(page) :
             next_url = url_for('worksheets.worksheets_page', author=author, category=category, page=page + 1)
 
 
-        return render_template('worksheets.html.j2', worksheets=worksheets, categories=categories, favourites=favourites, learner_id=learner_id, next_url=next_url, prev_url=prev_url)
+        return render_template('worksheet_templates/worksheets.html.j2', worksheets=worksheets, categories=categories, favourites=favourites, learner_id=learner_id, next_url=next_url, prev_url=prev_url)
 
     elif not category == None:
         try :
@@ -75,7 +75,7 @@ def worksheets_page(page) :
         if not more == None :
             next_url = url_for('worksheets.worksheets_page', author=author, category=category, page=page + 1)
 
-        return render_template('worksheets.html.j2', worksheets=worksheets, categories=categories, favourites=favourites, learner_id=learner_id, next_url=next_url, prev_url=prev_url)
+        return render_template('worksheet_templates/worksheets.html.j2', worksheets=worksheets, categories=categories, favourites=favourites, learner_id=learner_id, next_url=next_url, prev_url=prev_url)
     else :
         try :
             # get all the worksheets
@@ -95,7 +95,7 @@ def worksheets_page(page) :
         if not more == None :
             next_url = url_for('worksheets.worksheets_page', author=author, category=category, page=page + 1)
 
-        return render_template('worksheets.html.j2', worksheets=worksheets, categories=categories, favourites=favourites, learner_id=learner_id, next_url=next_url, prev_url=prev_url)
+        return render_template('worksheet_templates/worksheets.html.j2', worksheets=worksheets, categories=categories, favourites=favourites, learner_id=learner_id, next_url=next_url, prev_url=prev_url)
 
 
 #
@@ -111,7 +111,7 @@ def specific_worksheet(id):
         categories = WorksheetCategory.query.all()
 
         if not worksheet == None :
-            return render_template('specific_worksheet.html.j2', worksheet=worksheet, categories=categories)
+            return render_template('worksheet_templates/specific_worksheet.html.j2', worksheet=worksheet, categories=categories)
         else :
             return redirect(url_for('other.home'))
     except :
@@ -174,7 +174,7 @@ def add_worksheet():
         else:
             return redirect(url_for('other.home'))
 
-    return render_template('add_worksheet.html.j2', form=form)
+    return render_template('worksheet_templates/add_worksheet.html.j2', form=form)
 
 #
 # EditWorksheet
@@ -228,7 +228,7 @@ def edit_worksheet(id):
     form.video_url.data = worksheet.video_url
     form.category.data = worksheet.category
 
-    return render_template('edit_worksheet.html.j2', form=form, worksheet=worksheet, title="Edit Worksheet Category")
+    return render_template('worksheet_templates/edit_worksheet.html.j2', form=form, worksheet=worksheet, title="Edit Worksheet Category")
 
 
 
@@ -287,7 +287,7 @@ def add_worksheet_category():
             db.session.rollback()
             raise
 
-    return render_template('add_worksheet_category.html.j2', form=form)
+    return render_template('worksheet_templates/add_worksheet_category.html.j2', form=form)
 
 #
 # EditWorksheetCategory
@@ -319,7 +319,7 @@ def edit_worksheet_category(id) :
 
     form.name.data = category.name
 
-    return render_template('edit_worksheet_category.html.j2', form=form, category=category, title="Edit Worksheet Category")
+    return render_template('worksheet_templates/edit_worksheet_category.html.j2', form=form, category=category, title="Edit Worksheet Category")
 
 #
 # DeleteWorksheetCategory

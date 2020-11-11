@@ -30,7 +30,7 @@ def add_author():
             db.session.rollback()
             raise
 
-    return render_template('add_author.html.j2', form=form)
+    return render_template('author_templates/add_author.html.j2', form=form)
 
 
 #
@@ -96,7 +96,7 @@ def edit_author(id) :
     form.name.data = author.email
     form.about.data = author.about
 
-    return render_template('edit_author.html.j2', form=form, author=author, title="Edit Author")
+    return render_template('author_templates/edit_author.html.j2', form=form, author=author, title="Edit Author")
 
 
 #
@@ -126,7 +126,7 @@ def author_login():
             db.session.rollback()
 
     # load login template
-    return render_template('author_login.html.j2', form=form, title='Author Login')
+    return render_template('author_templates/author_login.html.j2', form=form, title='Author Login')
 
 
 
@@ -179,7 +179,7 @@ def author_change_screenname(id):
 
     form.screenname.data = author.screenname
 
-    return render_template('author_change_screenname.html.j2', form=form, author=author, title="Change Screenname")
+    return render_template('author_templates/author_change_screenname.html.j2', form=form, author=author, title="Change Screenname")
 
 
 #
@@ -216,7 +216,7 @@ def author_change_email(id):
 
     form.email.data = author.email
 
-    return render_template('author_change_email.html.j2', form=form, author=author, title="Change Email")
+    return render_template('author_templates/author_change_email.html.j2', form=form, author=author, title="Change Email")
 
 
 #
@@ -253,7 +253,7 @@ def author_change_about(id):
 
     form.about.data = author.about
 
-    return render_template('author_change_about.html.j2', form=form, author=author, title="Change Email")
+    return render_template('author_templates/author_change_about.html.j2', form=form, author=author, title="Change Email")
 
 
 
@@ -288,7 +288,7 @@ def author_change_password(id):
         except :
             db.session.rollback()
             raise
-    return render_template('author_change_password.html.j2', form=form, author=author, title="Change Password")
+    return render_template('author_templates/author_change_password.html.j2', form=form, author=author, title="Change Password")
 
 
 
@@ -316,4 +316,4 @@ def author_dashboard(id):
         raise
 
 
-    return render_template('author_dashboard.html.j2', id=author.id, worksheets=worksheets)
+    return render_template('author_templates/author_dashboard.html.j2', id=author.id, worksheets=worksheets)

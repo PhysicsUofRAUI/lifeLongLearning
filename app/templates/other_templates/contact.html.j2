@@ -1,0 +1,110 @@
+{% extends "base.html.j2" %}
+{% block title %}Worksheets{% endblock %}
+{% block head %}
+{{ super() }}
+<style>
+.authorDark {
+  background-color: black;
+  color: white;
+}
+
+.authorLight {
+  background-color: white;
+  color: black;
+}
+</style>
+{% endblock %}
+{% block body %}
+<!-- Page Container -->
+<div class="w3-content w3-margin-top" style="max-width:1400px;">
+
+<h1>Our Authors</h1>
+{% if authors %}
+{% for author in authors %}
+  {% if loop.index is divisibleby 2 %}
+    <div class="authorDark">
+      <p>
+        Name:
+        {% if author.screenname is none %}
+          {{ author.name }}
+        {% else %}
+          {{ author.screenname }}
+        {% endif %}
+      </p>
+      <p>
+        Email: {{ author.email }}
+      </p>
+      <p>
+        About: {{ author.about }}
+      </p>
+      <p>
+        Worksheets by
+        {% if author.screenname is none %}
+          {{ author.name }}
+        {% else %}
+          {{ author.screenname }}
+        {% endif %}:
+        <a href="{{ url_for('worksheets.worksheets_page', author=author.id, worksheet=None, category=None, page=0) }}">
+          {% if author.screenname is none %}
+            {{ author.name }}
+          {% else %}
+            {{ author.screenname }}
+          {% endif %}
+          's Worksheets!
+        </a>
+      </p>
+    </div>
+    {% if session['logged_in'] %}
+    <p>
+      <a href="{{ url_for('author.edit_author', id=author.id) }}">Edit</a>
+      <a href="{{ url_for('author.delete_author', id=author.id) }}">Delete</a>
+    </p>
+    {% endif %}
+  {% else %}
+  <div class="authorLight">
+    <p>
+      Name:
+      {% if author.screenname is none %}
+        {{ author.name }}
+      {% else %}
+        {{ author.screenname }}
+      {% endif %}
+    </p>
+    <p>
+      Email: {{ author.email }}
+    </p>
+    <p>
+      About: {{ author.about }}
+    </p>
+    <p>
+      Worksheets by
+      {% if author.screenname is none %}
+        {{ author.name }}
+      {% else %}
+        {{ author.screenname }}
+      {% endif %}
+      :
+      <a href="{{ url_for('worksheets.worksheets_page', author=author.id, worksheet=None, category=None, page=0) }}">
+        {% if author.screenname is none %}
+          {{ author.name }}
+        {% else %}
+          {{ author.screenname }}
+        {% endif %}
+        's Worksheets!
+      </a>
+    </p>
+    {% if session['logged_in'] %}
+    <p>
+      <a href="{{ url_for('author.edit_author', id=author.id) }}">Edit</a>
+      <a href="{{ url_for('author.delete_author', id=author.id) }}">Delete</a>
+    </p>
+    {% endif %}
+  </div>
+  {% endif %}
+{% endfor %}
+{% endif %}
+
+</div>
+
+
+{% endblock %}

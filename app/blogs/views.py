@@ -44,7 +44,7 @@ def blog(page) :
             db.session.rollback()
             return redirect(url_for('other.home'))
 
-        return render_template('blog.html.j2', posts=posts, categories=categories, next_url=None, prev_url=None)
+        return render_template('blog_templates/blog.html.j2', posts=posts, categories=categories, next_url=None, prev_url=None)
 
     elif not category == None :
         try :
@@ -65,7 +65,7 @@ def blog(page) :
             next_url = url_for('blogs.blog', post=None, category=category, page=page + 1)
 
 
-        return render_template('blog.html.j2', posts=posts, categories=categories, next_url=next_url, prev_url=prev_url)
+        return render_template('blog_templates/blog.html.j2', posts=posts, categories=categories, next_url=next_url, prev_url=prev_url)
 
     else :
         try :
@@ -85,7 +85,7 @@ def blog(page) :
         if not more == None :
             next_url = url_for('blogs.blog', post=None, category=category, page=page + 1)
 
-        return render_template('blog.html.j2', posts=posts, categories=categories, next_url=next_url, prev_url=prev_url)
+        return render_template('blog_templates/blog.html.j2', posts=posts, categories=categories, next_url=next_url, prev_url=prev_url)
 
 
 
@@ -118,7 +118,7 @@ def add_post():
             db.session.rollback()
             raise
 
-    return render_template('add_post.html.j2', form=form)
+    return render_template('blog_templates/add_post.html.j2', form=form)
 
 #
 # Edit Post
@@ -158,7 +158,7 @@ def edit_post(id):
     form.content.data = post.content
     form.title.data = post.name
     form.category.data = post.category
-    return render_template('edit_post.html.j2', form=form, post=post, title="Edit Post")
+    return render_template('blog_templates/edit_post.html.j2', form=form, post=post, title="Edit Post")
 
 #
 # Delete Post
@@ -215,7 +215,7 @@ def add_blog_category():
 
 
 
-    return render_template('add_blog_category.html.j2', form=form)
+    return render_template('blog_templates/add_blog_category.html.j2', form=form)
 
 #
 # edit_blog_category
@@ -247,7 +247,7 @@ def edit_blog_category(id) :
 
     form.name.data = category.name
 
-    return render_template('edit_blog_category.html.j2', form=form, category=category, title="Edit Blog Category")
+    return render_template('blog_templates/edit_blog_category.html.j2', form=form, category=category, title="Edit Blog Category")
 
 #
 # delete_blog_category

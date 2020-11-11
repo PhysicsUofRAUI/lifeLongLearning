@@ -1,0 +1,38 @@
+{% extends "base.html.j2" %}
+{% from "_form_macros.html" import render_field %}
+{% block title %}
+        {{ Title }}
+{% endblock %}
+{% block head %}
+{{ super() }}
+<style>
+
+textarea {
+  width: 80%;
+  height: 500px;
+}
+
+</style>
+
+{% endblock %}
+{% block body %}
+<div class="content-section">
+ <div class="outer">
+    <div class="middle">
+      <div class="inner">
+        <div class="center">
+          <form action="{{ url_for('blogs.add_post') }}" method="post" enctype="multipart/form-data">
+            {{ form.csrf_token }}
+            <dl>
+              {{ render_field(form.title) }}
+              {{ render_field(form.category) }}
+              {{ render_field(form.content) }}
+              {{ render_field(form.submit) }}
+            </dl>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,7 +1,7 @@
 from flask import render_template, current_app, session, redirect, url_for
 from . import other
 from .. import db
-from ..models import Author, PostCategory, WorksheetCategory, Learner
+from ..models import Author, PostCategory, WorksheetCategory, Learner, Worksheet
 
 #
 # Home
@@ -16,7 +16,11 @@ from ..models import Author, PostCategory, WorksheetCategory, Learner
 @other.route('/')
 @other.route('/home')
 def home():
-    return render_template("home.html.j2", title='Home')
+    try :
+        worksheets = Worksheet.query.all()
+    except:
+        raise
+    return render_template("other_templates/home.html.j2", title='Home', worksheets=worksheets)
 
 #
 # Contact/About
@@ -30,7 +34,7 @@ def contact():
         db.session.rollback()
         return redirect(url_for('other.home'))
 
-    return render_template("contact.html.j2", authors=authors)
+    return render_template("other_templates/contact.html.j2", authors=authors)
 
 @other.route('/admin', methods=['GET', 'POST'])
 def admin() :
@@ -47,8 +51,8 @@ def admin() :
         db.session.rollback()
         return redirect(url_for('other.home'))
 
-    return render_template('admin.html.j2', worksheet_categories=worksheetCategories, post_categories=postCategories, learners=learners)
+    return render_template('other_templates/admin.html.j2', worksheet_categories=worksheetCategories, post_categories=postCategories, learners=learners)
 
 @other.route('/building')
 def building():
-    return render_template("building.html.j2")
+    return render_template("other_templates/building.html.j2")

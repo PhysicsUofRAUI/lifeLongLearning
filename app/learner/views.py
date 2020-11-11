@@ -41,7 +41,7 @@ def learner_login():
             db.session.rollback()
 
     # load login template
-    return render_template('learner_login.html.j2', form=form, title='Learner Login')
+    return render_template('learner_templates/learner_login.html.j2', form=form, title='Learner Login')
 
 #
 # Learner Logout
@@ -93,9 +93,9 @@ def learner_password_reset() :
 
                 raise
         else :
-            return render_template('learner_password_reset.html.j2', form=form)
+            return render_template('learner_templates/learner_password_reset.html.j2', form=form)
 
-    return render_template('learner_password_reset.html.j2', form=form)
+    return render_template('learner_templates/learner_password_reset.html.j2', form=form)
 #
 # Edit Learner
 #   Will edit an author
@@ -129,7 +129,7 @@ def edit_learner(id) :
             db.session.rollback()
             raise
 
-    return render_template('edit_learner.html.j2', form=form, learner=learner, title="Edit Learner")
+    return render_template('learner_templates/edit_learner.html.j2', form=form, learner=learner, title="Edit Learner")
 
 #
 # delete_learner
@@ -187,7 +187,7 @@ def learner_change_password(id):
         except :
             db.session.rollback()
             raise
-    return render_template('learner_change_password.html.j2', form=form, learner=learner, title="Change Password")
+    return render_template('learner_templates/learner_change_password.html.j2', form=form, learner=learner, title="Change Password")
 
 #
 # Learner Change Email
@@ -223,7 +223,7 @@ def learner_change_email(id):
 
     form.email.data = learner.email
 
-    return render_template('learner_change_email.html.j2', form=form, learner=learner, title="Change Email")
+    return render_template('learner_templates/learner_change_email.html.j2', form=form, learner=learner, title="Change Email")
 
 
 #
@@ -260,7 +260,7 @@ def learner_change_screenname(id):
 
     form.screenname.data = learner.screenname
 
-    return render_template('learner_change_screenname.html.j2', form=form, learner=learner, title="Change Screenname")
+    return render_template('learner_templates/learner_change_screenname.html.j2', form=form, learner=learner, title="Change Screenname")
 
 
 #
@@ -314,7 +314,7 @@ def learner_dashboard(id):
 
     favourites = learner.favourites
 
-    return render_template('learner_dashboard.html.j2', id=learner.id, favourites=favourites)
+    return render_template('learner_templates/learner_dashboard.html.j2', id=learner.id, favourites=favourites)
 
 
 #
@@ -323,7 +323,7 @@ def learner_dashboard(id):
 #
 @learner.route('/learner_signup_login_choice', methods=['GET', 'POST'])
 def learner_signup_login_choice():
-    return render_template('learner_signup_login_choice.html.j2')
+    return render_template('learner_templates/learner_signup_login_choice.html.j2')
 
 #
 # Learner Signup
@@ -345,4 +345,4 @@ def learner_signup():
             db.session.rollback()
             raise
 
-    return render_template('learner_signup.html.j2', form=form)
+    return render_template('learner_templates/learner_signup.html.j2', form=form)

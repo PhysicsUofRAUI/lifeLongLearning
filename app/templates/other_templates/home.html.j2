@@ -1,0 +1,76 @@
+{% extends "base.html.j2" %}
+{% block title %}Home{% endblock %}
+{% block head %}
+{{ super() }}
+<link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
+<style>
+body {font-family: "Lato", sans-serif}
+.mySlides {display: none}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+.container-iframe {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+/* Then style the iframe to fit in the container div with full height and width */
+.responsive-iframe {
+  width: 80%;
+  height: 100%;
+}
+
+#mc_embed_signup{background:#A9A9A9; clear:left; font:14px Helvetica,Arial,sans-serif; }
+</style>
+
+{% endblock %}
+{% block body %}
+
+
+<!-- Page content -->
+<div class="w3-content" style="max-width:2000px;margin-top:46px;">
+
+  {% for worksheet in worksheets %}
+    <!-- Automatic Slideshow Images -->
+    <div class="mySlides w3-center">
+      <h2> {{ worksheet.name }} </h2>
+      <div class="container-iframe">
+        <iframe src="{{ url_for('static', filename=worksheet.pdf_url) }}" class="responsive-iframe"></iframe>
+      </div>
+      <p>
+        <a href="{{ url_for('worksheets.worksheets_page', author=worksheet.author_id, category=None, page=0) }}">
+          {% if worksheet.author.screenname is none %}
+            More by the author: {{ worksheet.author.name }}
+          {% else %}
+            More by the author: {{ worksheet.author.screenname }}
+          {% endif %}
+        </a>
+      </p>
+    </div>
+  {% endfor %}
+</div>
+<!-- End Page Content -->
+
+{% endblock %}
+
+{% block script %}
+// Automatic Slideshow - change image every 15 seconds
+var myIndex = 0;
+carousel();
+
+function carousel() {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  myIndex++;
+  if (myIndex > x.length) {myIndex = 1}
+  x[myIndex-1].style.display = "block";
+  setTimeout(carousel, 15000);
+}
+{% endblock %}
