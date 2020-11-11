@@ -44,7 +44,7 @@ def worksheets_page(page) :
             more = Worksheet.query.filter_by(author_id=author).offset((page + 1) * 9).first()
         except:
             db.session.rollback()
-            return redirect(url_for('other.home'))
+            raise
 
         prev_url = None
         next_url = None
