@@ -10,6 +10,8 @@ from contextlib import contextmanager
 import pdfkit
 import io
 
+from app.worksheets.forms import category_choices
+
 def login(client, username, password):
     return client.post('/login', data=dict(
         username=username,
@@ -146,6 +148,18 @@ class DatabaseTests(TestCase):
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
+        
+    def test_category_choice_factory(self) :
+        w_cat_1 = WorksheetCategory(name='dund32k')
+        db.session.add(w_cat_1)
+
+        w_cat_2 = WorksheetCategory(name='dundfsdk')
+        db.session.add(w_cat_2)
+        db.session.commit()
+        
+        choice_factory = category_choices()
+        
+        self.assertEqual(choice_factory.all(), WorksheetCategory.query.all())
         
     def test_worksheet_page(self) :
         # worksheet page
